@@ -17,3 +17,8 @@
 please add any literature you used throught the project with their page numbers down here
 
 - placeholder for the first literature
+
+
+## Good stuff to Read
+
+- :)
