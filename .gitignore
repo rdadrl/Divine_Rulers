@@ -30,3 +30,7 @@ usage.statistics.xml
 tasks.xml
 
 *.iml
+/bin/
+.project
+.classpath
+settings.json
