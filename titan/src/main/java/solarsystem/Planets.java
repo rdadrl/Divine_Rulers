@@ -1,4 +1,4 @@
-package SolarSystem;
+package solarsystem;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**

@@ -6,12 +6,14 @@
     "radius": "695.8e3"
   },
   "Mercury": {
+    "@id": 2,
     "name": "Mercury",
-    "orbits_around": 1,
+    "central_body": 1,
     "mass": "0.33011e24",
     "radius": "2439.7",
     "period": "87.969",
     "locationVars": {
+      "co": 2,
       "a": 0.38709927,
       "a_Cnt": 3.7e-7,
       "e": 0.20563593,
@@ -26,12 +28,14 @@
       "node_Cnt": -0.12534081}
   },
   "Venus": {
+    "@id": 3,
     "name": "Venus",
-    "orbits_around": 1,
+    "central_body": 1,
     "mass": 4.8675e24,
     "radius": 6051.8,
     "period": 224.701,
     "locationVars": {
+      "co": 3,
       "a": 0.72333566,
       "a_Cnt": 0.0000039,
       "e": 0.00677672,
@@ -47,12 +51,14 @@
     }
   },
   "Earth": {
+    "@id": 4,
     "name": "Earth",
-    "orbits_around": 1,
+    "central_body": 1,
     "mass": 5.9723e24,
     "radius": 6371.0,
     "period": 365.256,
     "locationVars": {
+      "co": 4,
       "a": 1.00000261,
       "a_Cnt": 0.00000562,
       "e": 0.01671123,
@@ -68,12 +74,14 @@
     }
   },
   "Mars": {
+    "@id": 5,
     "name": "Mars",
-    "orbits_around": 1,
+    "central_body": 1,
     "mass": 0.64171e24,
     "radius": 3389.5,
     "period": 686.980,
     "locationVars": {
+      "co": 5,
       "a": 1.52371034,
       "a_Cnt": 0.00001847,
       "e": 0.0933941,
@@ -89,12 +97,14 @@
     }
   },
   "Jupiter": {
+    "@id": 6,
     "name": "Jupiter",
-    "orbits_around": 1,
+    "central_body": 1,
     "mass": 1898.19e24,
     "radius": 69911.0,
     "period": 4332.589,
     "locationVars": {
+      "co": 6,
       "a": 5.202887,
       "a_Cnt": -0.00011607,
       "e": 0.04838624,
@@ -110,12 +120,14 @@
     }
   },
   "Saturn": {
+    "@id": 7,
     "name": "Saturn",
-    "orbits_around": 1,
+    "central_body": 1,
     "mass": 568.34e24,
     "radius": 58232.0,
     "period": 10759.22,
     "locationVars": {
+      "co": 7,
       "a": 9.53667594,
       "a_Cnt": -0.0012506,
       "e": 0.05386179,
@@ -131,11 +143,13 @@
     }
   },
   "Uranus": {
+    "@id": 8,
     "name": "Uranus",
     "mass": 86.813e24,
     "radius": 25362.0,
     "period": 30685.4,
     "locationVars": {
+      "co": 8,
       "a": 19.18916464,
       "a_Cnt": -0.00196176,
       "e": 0.04725744,
@@ -151,12 +165,14 @@
     }
   },
   "Neptune": {
+    "@id": 9,
     "name": "Neptune",
-    "orbits_around": 1,
+    "central_body": 1,
     "mass": 102.413e24,
     "radius": 24622.0,
     "period": 60189,
     "locationVars": {
+      "co": 9,
       "a": 30.06992276,
       "a_Cnt": 0.00026291,
       "e": 0.00859048,

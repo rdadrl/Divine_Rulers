@@ -1,8 +1,11 @@
-package SolarSystem;
+package solarsystem;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import util.Coordinate;
+import util.Date;
+import util.HEECoordinate;
 
 import java.util.HashSet;
 
@@ -13,8 +16,8 @@ import java.util.HashSet;
         property = "@id")
 public class CelestialObjects {
 
-    @JsonProperty("orbits_around")
-    private CelestialObjects orbitingParent;
+    @JsonProperty("central_body")
+    private CelestialObjects centralBody;
     private HashSet<CelestialObjects> orbitingChildren;
 
     @JsonProperty("name")
@@ -26,13 +29,7 @@ public class CelestialObjects {
     @JsonProperty("period")
     private double period; // in days
     @JsonProperty("locationVars")
-    private LocationFinder locationVars;
-
-
-
-    private long posX;
-    private long posY;
-    private long posZ;
+    private CelestialObjectPosition locationVars;
 
     public CelestialObjects() {
     }
@@ -48,15 +45,15 @@ public class CelestialObjects {
      * e.g., the moon orbits around the earth.
      * @return the object of which the celestial object is orbiting around
      */
-    public CelestialObjects getOrbitingParent() {
-        return orbitingParent;
+    public CelestialObjects getCentralBody() {
+        return centralBody;
     }
 
     /**
      * @param orbitingCelestialPlanet the object of which the celestial object is orbiting around
      */
-    public void setOrbitingParent(CelestialObjects orbitingCelestialPlanet) {
-        this.orbitingParent = orbitingCelestialPlanet;
+    public void setCentralBody(CelestialObjects orbitingCelestialPlanet) {
+        this.centralBody = orbitingCelestialPlanet;
     }
 
     /**
@@ -105,56 +102,28 @@ public class CelestialObjects {
     /**
      * @return location parameters
      */
-    public LocationFinder getLocationVars() {
+    public CelestialObjectPosition getLocationVars() {
         return locationVars;
     }
 
     /**
      * @param locationVars location parameters
      */
-    public void setLocationVars(LocationFinder locationVars) {
+    public void setLocationVars(CelestialObjectPosition locationVars) {
         this.locationVars = locationVars;
     }
 
-    /**
-     * @return x position of celestial object
-     */
-    public long getPosX() {
-        return posX;
+    public HEECoordinate getHEEpos(Date date){
+        getLocationVars().initializeCartesianStateVectors(date);
+        return getLocationVars().getRelcPos();
+    }
+    public HEECoordinate getHEEvel(Date date){
+        getLocationVars().initializeCartesianStateVectors(date);
+        return getLocationVars().getRelcVel();
     }
 
-    /**
-     * @param posX x position of celestial object
-     */
-    public void setPosX(long posX) {
-        this.posX = posX;
-    }
-
-    /**
-     * @return y position of celestial object
-     */
-    public long getPosY() {
-        return posY;
-    }
-
-    /**
-     * @param posY y position of celestial object
-     */
-    public void setPosY(long posY) {
-        this.posY = posY;
-    }
-
-    /**
-     * @return z position of celestial object
-     */
-    public long getPosZ() {
-        return posZ;
-    }
-
-    /**
-     * @param posZ z position of celestial object
-     */
-    public void setPosZ(long posZ) {
-        this.posZ = posZ;
+    public Coordinate getRCoord(Date date){
+        getLocationVars().initializeCartesianStateVectors(date);
+        return getLocationVars().getRoPos();
     }
 }

@@ -1,4 +1,4 @@
-package SolarSystem;
+package solarsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,7 +25,7 @@ public class SolarSystem {
      * creates the planets
      * @throws IOException
      */
-    public void createPlanets() throws IOException {
+    private void createPlanets() throws IOException {
         // Get JSON file
         InputStream fileStream = new FileInputStream("src/main/resources/planets.json");
         // Create planets from JSON file.

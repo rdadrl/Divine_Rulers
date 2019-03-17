@@ -1,4 +1,4 @@
-package SolarSystem;
+package solarsystem;
 
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class SolarSystemTest {
     public void solarSystemTest() throws IOException {
         SolarSystem solarSystem = new SolarSystem();
         assertEquals(solarSystem.getPlanets().getEarth().getMass(), 5.9723E24, 1e-5);
-        assertEquals(solarSystem.getPlanets().getMercury().getOrbitingParent().getName(), "Sun");
+        assertEquals(solarSystem.getPlanets().getMercury().getCentralBody().getName(), "Sun");
     }
 
 }

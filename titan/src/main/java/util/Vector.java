@@ -1,10 +1,17 @@
-package Util;
+package util;
 
 public class Vector {
 	public static double epsilon = 1e-10;
 	private double x;
 	private double y;
 	private double z;
+
+    public Vector() {
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+    }
+
 	public Vector(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
@@ -33,6 +40,7 @@ public class Vector {
 	public Vector scale(double c) {
 		return new Vector(c * x, c * y, c * z);
 	}
+
 	/*
 	 * calculate the dot product of two vectors
 	 */
@@ -78,7 +86,32 @@ public class Vector {
 	public static boolean isOrthogonal(Vector u, Vector w) {
 		return u.isOrthogonal(w);
 	}
-	public String toString() {
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public void setZ(double z) {
+        this.z = z;
+    }
+
+    public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		sb.append(x);
