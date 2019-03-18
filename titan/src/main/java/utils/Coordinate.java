@@ -67,12 +67,12 @@ public class Coordinate extends Vector{
     }
     @Override
     public void setY(double y){
-        super.setX(y);
+        super.setY(y);
         arr[1] = y;
     }
     @Override
     public void setZ(double z){
-        super.setX(z);
+        super.setZ(z);
         arr[2] = z;
     }
 
