@@ -17,29 +17,30 @@ public class CelestialObjectPosition {
     CelestialObjects celestialObject;
 
     @JsonProperty("a")
-    private double a0;           // Mean a (AU)
+    private double a0;           // Mean semi-major axis (AU)
     @JsonProperty("a_Cnt")
-    private double aCnt;             // Change a per century (AU)
+    private double aCnt;             // Change semi-major per century (AU)
     @JsonProperty("e")
     private double e0;       // Eccentricity of orbit
     @JsonProperty("e_Cnt")
-    private double eCnt;         // Change of e of orbit per century
+    private double eCnt;         // Change of eccentricity of orbit per century
     @JsonProperty("I")
     private double i0;        // Inclination of orbit
     @JsonProperty("I_Cnt")
-    private double iCnt;          // Change of i of orbit per century
+    private double iCnt;          // Change of inclination of orbit per century
     @JsonProperty("L")
-    private double l0;      // Mean l
+    private double l0;      // Mean longitude
     @JsonProperty("L_Cnt")
-    private double lCnt;        // Change of l per century
+    private double lCnt;        // Change of longitude per century
     @JsonProperty("w")
-    private double w0;         // Longitude of w
+    private double w0;         // Longitude of perihelion (degrees)
     @JsonProperty("w_Cnt")
-    private double wCnt;           // Change of w l per century
+    private double wCnt;           // Change of perihelion l per century
     @JsonProperty("node")
     private double o0;      // Longitude of ascending node
     @JsonProperty("node_Cnt")
-    private double oCnt;        // Change of l of ascending node per century
+    private double oCnt;        // Change of longitude of ascending node per
+    // century
 
     private double a;
     private double e;
@@ -65,15 +66,15 @@ public class CelestialObjectPosition {
         if(savedDate != null && date.compareTo(savedDate) == 0){return;}//check
         // whether current values are already stored for these date.
         savedDate = new Date(date);
+
         // step 1
         // compute the value of each of that planet's six elements
-        double JT = date.dateToJulian();
+        double JT = date.dateToJulian(); // in centuries
         double T = (JT - 2451545.0)/36525.0;
 
         a = a0 + aCnt * T;
         e = e0 + eCnt * T;
-        System.out.println(date.get(Calendar.YEAR) +"E: " + e + "\t\t\t" + JT);
-                i = i0 + iCnt * T;
+        i = i0 + iCnt * T;
         l = l0 + lCnt * T;
         w = w0 + wCnt * T;
         o = o0 + oCnt * T;
@@ -171,6 +172,9 @@ public class CelestialObjectPosition {
                 ((-sinD(m)) * cosD(o) - cosD(m) * sinD(o) * cosD(i)) * obC.getY());
         heeC.setY((cosD(m) * sinD(o) + sinD(m) * cosD(o) * cosD(i)) * obC.getX() +
                 ((-sinD(m)) * sinD(o) + cosD(m) * cosD(o) * cosD(i)) * obC.getY());
+        double temp1 = (sinD(m) * sinD(i)) * obC.getX();
+        double temp2 = (cosD(m) * sinD(i)) * obC.getY();
+
         heeC.setZ((sinD(m) * sinD(i)) * obC.getX() +
                 (cosD(m) * sinD(i)) * obC.getY());
         return heeC;
