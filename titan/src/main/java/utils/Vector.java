@@ -1,4 +1,4 @@
-package util;
+package utils;
 
 public class Vector {
 	public static double epsilon = 1e-10;

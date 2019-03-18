@@ -1,4 +1,4 @@
-package util;
+package utils;
 
 /**
  * A Heliocentric Earth ecliptic (HEE) coordinate
