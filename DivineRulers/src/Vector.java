@@ -1,9 +1,9 @@
 
 public class Vector {
 	public static double epsilon = 1e-10;
-	private double x;
-	private double y;
-	private double z;
+	double x;
+	double y;
+	double z;
 	public Vector(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
@@ -14,6 +14,7 @@ public class Vector {
 		this.y = other.y;
 		this.z = other.z;
 	}
+	
 	/*
 	 * add two vectors to each other
 	 */
