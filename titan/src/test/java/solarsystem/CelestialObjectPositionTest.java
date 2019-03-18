@@ -70,7 +70,7 @@ public class CelestialObjectPositionTest {
 
     @Test
     public void Saturn200020002() throws IOException {
-        Date date = new Date(1969, 5, 28, 12, 0, 0);
+        Date date = new Date(2000, 1, 1, 0, 0, 0);
 
         /*
         SolarSystem solarSystem = new SolarSystem();

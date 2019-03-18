@@ -61,6 +61,22 @@ public class Coordinate extends Vector{
     }
 
     @Override
+    public void setX(double x){
+        super.setX(x);
+        arr[0] = x;
+    }
+    @Override
+    public void setY(double y){
+        super.setX(y);
+        arr[1] = y;
+    }
+    @Override
+    public void setZ(double z){
+        super.setX(z);
+        arr[2] = z;
+    }
+
+    @Override
     public String toString() {
         return "Coordinate{" +
                 "x=" + super.getX() +
