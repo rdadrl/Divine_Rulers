@@ -4,7 +4,7 @@ package utils;
  *
  *
  */
-public class Coordinate extends Vector{
+public class Coordinate extends Vector3D{
     private double[] arr;
 
     public Coordinate() {
@@ -20,7 +20,7 @@ public class Coordinate extends Vector{
         this(coordinate.getX(), coordinate.getY(), coordinate.getZ());
     }
 
-    public Coordinate(Vector vector){
+    public Coordinate(Vector3D vector){
         this(vector.getX(), vector.getY(), vector.getZ());
     }
 
