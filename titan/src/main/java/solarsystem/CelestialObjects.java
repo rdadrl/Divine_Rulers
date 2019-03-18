@@ -3,9 +3,9 @@ package solarsystem;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import util.Coordinate;
-import util.Date;
-import util.HEECoordinate;
+import utils.Coordinate;
+import utils.Date;
+import utils.HEECoordinate;
 
 import java.util.HashSet;
 

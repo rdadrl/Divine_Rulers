@@ -1,8 +1,8 @@
 package solarsystem;
 
 import org.junit.Test;
-import util.Coordinate;
-import util.Date;
+import utils.Coordinate;
+import utils.Date;
 
 import java.io.IOException;
 import java.util.Calendar;

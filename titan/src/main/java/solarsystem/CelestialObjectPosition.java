@@ -1,6 +1,6 @@
 package solarsystem;
 
-import util.*;
+import utils.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Calendar;
