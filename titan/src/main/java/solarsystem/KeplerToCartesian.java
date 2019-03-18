@@ -166,11 +166,14 @@ public class KeplerToCartesian {
                                                            double m){
         HEECoordinate heeC = new HEECoordinate();
         heeC.setX((cosD(m) * cosD(o) - sinD(m) * sinD(o) * cosD(i)) * obC.getX() +
-                ((-sinD(m)) * cosD(o) - cosD(m) * sinD(o) * cosD(i)) * obC.getY());
+                ((-sinD(m)) * cosD(o) - cosD(m) * sinD(o) * cosD(i)) * obC.getY() +
+                (sinD(i) * sinD(o) * obC.getZ()));
         heeC.setY((cosD(m) * sinD(o) + sinD(m) * cosD(o) * cosD(i)) * obC.getX() +
-                ((-sinD(m)) * sinD(o) + cosD(m) * cosD(o) * cosD(i)) * obC.getY());
+                ((-sinD(m)) * sinD(o) + cosD(m) * cosD(o) * cosD(i)) * obC.getY() +
+                ((-cosD(o)) * sinD(i) * obC.getZ()));
         heeC.setZ((sinD(m) * sinD(i)) * obC.getX() +
-                (cosD(m) * sinD(i)) * obC.getY());
+                (cosD(m) * sinD(i)) * obC.getY() +
+                (cosD(i) * obC.getZ()));
         return heeC;
     }
 
