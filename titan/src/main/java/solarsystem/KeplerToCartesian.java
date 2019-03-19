@@ -10,7 +10,7 @@ import java.util.Calendar;
  *
  *
  */
-public class CelestialObjectPosition {
+public class KeplerToCartesian {
     private static final double AU = 149597870700.0; // AU in m
     private static final double G = 1.993E-44; // AU/kg*s^2
     @JsonProperty("co")
@@ -85,9 +85,6 @@ public class CelestialObjectPosition {
         double M = l - w;
 
         // Step 3
-        // modulus the mean anomaly so that -180° ≤ M ≤ +180°
-        M = (M % 180.0);
-
         // solve keplers equation
         double EPSILON = 10e-6;
         double eStar = (180D/Math.PI) * e; // e0 star to radians
@@ -169,14 +166,14 @@ public class CelestialObjectPosition {
                                                            double m){
         HEECoordinate heeC = new HEECoordinate();
         heeC.setX((cosD(m) * cosD(o) - sinD(m) * sinD(o) * cosD(i)) * obC.getX() +
-                ((-sinD(m)) * cosD(o) - cosD(m) * sinD(o) * cosD(i)) * obC.getY());
+                ((-sinD(m)) * cosD(o) - cosD(m) * sinD(o) * cosD(i)) * obC.getY() +
+                (sinD(i) * sinD(o) * obC.getZ()));
         heeC.setY((cosD(m) * sinD(o) + sinD(m) * cosD(o) * cosD(i)) * obC.getX() +
-                ((-sinD(m)) * sinD(o) + cosD(m) * cosD(o) * cosD(i)) * obC.getY());
-        double temp1 = (sinD(m) * sinD(i)) * obC.getX();
-        double temp2 = (cosD(m) * sinD(i)) * obC.getY();
-
+                ((-sinD(m)) * sinD(o) + cosD(m) * cosD(o) * cosD(i)) * obC.getY() +
+                ((-cosD(o)) * sinD(i) * obC.getZ()));
         heeC.setZ((sinD(m) * sinD(i)) * obC.getX() +
-                (cosD(m) * sinD(i)) * obC.getY());
+                (cosD(m) * sinD(i)) * obC.getY() +
+                (cosD(i) * obC.getZ()));
         return heeC;
     }
 
@@ -200,7 +197,7 @@ public class CelestialObjectPosition {
 
     @Override
     public String toString() {
-        return "CelestialObjectPosition{" +
+        return "KeplerToCartesian{" +
                 "a=" + a +
                 ", aCnt=" + aCnt +
                 ", e=" + e +

@@ -1,12 +1,10 @@
 package utils;
 
-import java.util.Arrays;
-
 /**
  *
  *
  */
-public class Coordinate extends Vector{
+public class Coordinate extends Vector3D{
     private double[] arr;
 
     public Coordinate() {
@@ -22,7 +20,7 @@ public class Coordinate extends Vector{
         this(coordinate.getX(), coordinate.getY(), coordinate.getZ());
     }
 
-    public Coordinate(Vector vector){
+    public Coordinate(Vector3D vector){
         this(vector.getX(), vector.getY(), vector.getZ());
     }
 
@@ -67,12 +65,12 @@ public class Coordinate extends Vector{
     }
     @Override
     public void setY(double y){
-        super.setX(y);
+        super.setY(y);
         arr[1] = y;
     }
     @Override
     public void setZ(double z){
-        super.setX(z);
+        super.setZ(z);
         arr[2] = z;
     }
 

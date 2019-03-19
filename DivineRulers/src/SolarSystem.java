@@ -1,7 +1,6 @@
-/**
- *
- *
- */
+import java.awt.Color;
+import java.util.List;
+
 public class SolarSystem {
     private CelestialObjects sun;
     private CelestialObjects mercury;
@@ -12,14 +11,22 @@ public class SolarSystem {
     private CelestialObjects saturn;
     private CelestialObjects uranus;
     private CelestialObjects neptune;
+    CelestialObjects[] objects;
 
 
     public SolarSystem() {
         createSolarSystem();
     }
+    
+    public CelestialObjects[] getObjects() {
+    	return objects;
+    }
+        
 
     public void createSolarSystem(){
         sun = new CelestialObjects("Sun", 1.989e30, 695.8e3);
+        sun.setColor(Color.yellow);
+        sun.setPosition(0, 0, 0);
 
         mercury = new CelestialObjects("Mercury", 0.33011e24, 2439.7);
         mercury.setOrbitingParent(sun);
@@ -62,6 +69,8 @@ public class SolarSystem {
         saturn.setPeriod(10759.22);
         saturn.setSemiMajor(9.53707032);
         saturn.setDistance(9.139);
+        
+        saturn.setPosition(351254886446.44037, -1345585527058.3767, -570922577597.4592);
 
         uranus = new CelestialObjects("Uranus", 86.813e24, 25362.0);
         uranus.setOrbitingParent(sun);
@@ -76,6 +85,8 @@ public class SolarSystem {
         neptune.setPeriod(60189);
         neptune.setSemiMajor(30.06896348);
         neptune.setDistance(30.087);
+        
+        objects = new CelestialObjects[]{sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune};
     }
 
     public CelestialObjects getSun() {

@@ -2,16 +2,18 @@ package utils;
 
 import org.junit.Test;
 
+import java.util.GregorianCalendar;
+
 import static org.junit.Assert.*;
 
 /**
- * A test class for the Date class.
+ * A test class for the DateUtil class.
  */
-public class DateTest {
+public class DateUtilTest {
 
     @Test
     public void dateToJulian() {
-        Date date = new Date(2000,0,1,12,0,0);
-        assertEquals(date.dateToJulian(), 2451545.0, 1e-5);
+        GregorianCalendar date = new GregorianCalendar(2000,0,1,12,0,0);
+        assertEquals(DateUtil.dateToJulian(date), 2451545.0, 1e-5);
     }
 }

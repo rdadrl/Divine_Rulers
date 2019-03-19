@@ -62,7 +62,7 @@ public class Date extends GregorianCalendar {
     public String toString() {
         return "Date{" +
                 this.get(Calendar.YEAR) + "-" +
-                this.get(Calendar.MONTH) + "-" +
+                (this.get(Calendar.MONTH) + 1) + "-" +
                 this.get(Calendar.DAY_OF_MONTH) + " " +
                 this.get(Calendar.HOUR_OF_DAY) + ":" +
                 this.get(Calendar.MINUTE) + ":" +
