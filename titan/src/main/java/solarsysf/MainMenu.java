@@ -22,7 +22,7 @@ import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import solarsystem.CelestialObjects;
 import solarsystem.SolarSystem;
-import utils.Coordinate;
+import utils.Vector3D;
 import utils.Date;
 
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class MainMenu extends Application {
         sun.setTranslateY(0);
         Sphere earth    = new Sphere(earthObj.getRadius() / 1000);
 
-        Coordinate coordinate = earthObj.getHEEpos(date);
+        Vector3D coordinate = earthObj.getHEEpos(date);
         earth.setTranslateX(coordinate.getX() * 100);
         earth.setTranslateY(coordinate.getY() * 100);
         earth.setTranslateZ(coordinate.getZ() * 100);
@@ -107,7 +107,7 @@ public class MainMenu extends Application {
                 double t = (currentNanoTime - startNanoTime) / 1000000000.0;
                     date.add(Calendar.DATE, 1);
 
-                    Coordinate coordinate = earthObj.getHEEpos(date);
+                    Vector3D coordinate = earthObj.getHEEpos(date);
                     earth.setTranslateX(coordinate.getX() * 100);
                     earth.setTranslateY(coordinate.getY() * 100);
                     earth.setTranslateZ(coordinate.getZ() * 100);

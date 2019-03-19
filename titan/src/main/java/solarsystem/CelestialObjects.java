@@ -3,11 +3,9 @@ package solarsystem;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import utils.Coordinate;
-import utils.Date;
-import utils.HEECoordinate;
-import utils.MathUtil;
+import utils.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -15,7 +13,7 @@ import java.util.HashSet;
  */
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@id")
-public class CelestialObjects {
+public class CelestialObjects implements ObjectInSpace{
 
     @JsonProperty("central_body")
     private CelestialObjects centralBody;
@@ -63,10 +61,12 @@ public class CelestialObjects {
     // century
 
     private Date coordinateDate;   // Date of the current
-    private Coordinate orbitalPos; // Coordinate in the orbital plane
-    private Coordinate orbitalVel; // Velocity vector in the orbital plane
-    private Coordinate centralPos; // Coordinate central body reference frame
-    private Coordinate centralVel; // Velocity central body reference frame
+    private Vector3D orbitalPos; // Coordinate in the orbital plane
+    private Vector3D orbitalVel; // Velocity vector in the orbital plane
+    private Vector3D HEEpos; // Coordinate central body reference frame
+    private Vector3D HEEvel; // Velocity central body reference frame
+
+    private Vector3D forces;
 
     //@JsonProperty("locationVars")
     //private KeplerToCartesian locationVars;
@@ -96,16 +96,16 @@ public class CelestialObjects {
         o = o0 + oCnt * T;
 
         double Mass = centralBody.getMass();
-        //double mu = Mass * MathUtil.Gm * MathUtil.AU; // get mu AU/s^2
-        double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+        double mu = Mass * MathUtil.G * MathUtil.AU; // get mu AU/s^2
+        //double mu = Mass * MathUtil.GAU; // get mu AU/s^2
 
-        Coordinate[] cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
+        Vector3D[] cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
                 i, l, w, o, mu);
 
         orbitalPos = cartesian[0];
         orbitalVel = cartesian[1];
-        centralPos = cartesian[2];
-        centralVel = cartesian[3];
+        HEEpos = cartesian[2];
+        HEEvel = cartesian[3];
     }
 
     /**
@@ -169,22 +169,61 @@ public class CelestialObjects {
         return a0;
     }
 
-    public Coordinate getHEEpos(Date date){
+    public Vector3D getHEEpos(Date date){
         getCartesianCoordinates(date);
-        return centralPos;
-    }
-    public Coordinate getHEEvel(Date date){
-        getCartesianCoordinates(date);
-        return centralVel;
+        return HEEpos;
     }
 
-    public Coordinate getRCoord(Date date){
+    public Vector3D getHEEpos(){
+        return HEEpos;
+    }
+
+    public void setHEEpos(Vector3D pos){
+        HEEpos = pos;
+    }
+
+    public Vector3D getHEEvel(Date date){
+        getCartesianCoordinates(date);
+        return HEEvel;
+    }
+    public Vector3D getHEEvel(){
+        return HEEvel;
+    }
+
+    public void setHEEvel(Vector3D centralVel){
+        this.HEEvel = centralVel;
+    }
+
+
+    public Vector3D getRCoord(Date date){
         getCartesianCoordinates(date);
         return orbitalPos;
     }
 
-    public Coordinate getVel(Date date){
+    public Vector3D getVel(Date date){
         getCartesianCoordinates(date);
         return orbitalVel;
     }
+
+    /**
+     * gets the gravetational force that are applied on the planet  in space.
+     * @param objectsInSpace arraylist of all the objects that apply a force to
+     * @return forces
+     */
+    public void setForces(ArrayList<ObjectInSpace> objectsInSpace){
+        forces = new Vector3D(); // reset the forces
+        for(ObjectInSpace o: objectsInSpace){
+            if(o == this){continue;}
+            Vector3D r = o.getHEEpos().substract(this.getHEEpos());
+            double netForce = (MathUtil.G * o.getMass() * this.getMass())/
+                    Math.pow(r.length(), 3);
+            Vector3D thisForce = r.unit().scale(netForce);
+            forces = forces.add(thisForce);
+        }
+    }
+
+    public Vector3D getForces(){
+        return forces;
+    }
+
 }
