@@ -44,28 +44,27 @@ public class KeplerToCartesianTest {
         if(PRINT){
             printPosVel(earth.getName(), coordinate, date);
         }
-        assertEquals(coordinate.getX(), -0.16856286531223225, 1e-4);
-        assertEquals(coordinate.getY(), 0.968758969709345, 1e-4);
-        assertEquals(coordinate.getZ(), -2.558653782299318E-7, 1e-4);
+        assertEquals( -0.16856286531223225,coordinate.getX(), 1e-4);
+        assertEquals(0.968758969709345,coordinate.getY(),
+                1e-4);
+        assertEquals(-2.558653782299318E-7, coordinate.getZ(), 1e-4);
 
 
         coordinate = earth.getHEEpos(new Date(2001, 0, 1, 0, 0, 0));
         if(PRINT){
             printPosVel(earth.getName(), coordinate, date);
         }
-        assertEquals(coordinate.getX(), 0.19012537726450277, 1e-4);
-        assertEquals(coordinate.getY(), -0.9987660639452812, 1e-4);
-        assertEquals(coordinate.getZ(), 2.5252586100770815E-6, 1e-4);
+        assertEquals(-0.18135913869197764, coordinate.getX(),1e-4);
+        assertEquals(0.9664354985130857, coordinate.getY(),1e-4);
+        assertEquals(2.5252586100770815E-6, coordinate.getZ(),1e-4);
 
         coordinate = earth.getHEEpos(new Date(2002, 0, 2, 0, 0, 0));
         if(PRINT){
             printPosVel(earth.getName(), coordinate, date);
         }
-        assertEquals(coordinate.getX(), 0.202471824312362, 1e-4);
-        assertEquals(coordinate.getY(), -0.9963429946683185, 1e-4);
-        assertEquals(coordinate.getZ(), 4.775113569186536E-6, 1e-4);
-
-
+        assertEquals(-0.19412419171553183, coordinate.getX(),1e-4);
+        assertEquals( 0.9639457176122871, coordinate.getY(),1e-4);
+        assertEquals(4.775113569186536E-6, coordinate.getZ(),1e-4);
     }
 
     @Test
