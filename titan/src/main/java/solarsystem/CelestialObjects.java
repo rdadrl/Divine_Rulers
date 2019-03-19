@@ -29,7 +29,7 @@ public class CelestialObjects {
     @JsonProperty("period")
     private double period; // in days
     @JsonProperty("locationVars")
-    private CelestialObjectPosition locationVars;
+    private KeplerToCartesian locationVars;
 
     public CelestialObjects() {
     }
@@ -102,28 +102,28 @@ public class CelestialObjects {
     /**
      * @return location parameters
      */
-    public CelestialObjectPosition getLocationVars() {
+    public KeplerToCartesian getCartesianCoordinates() {
         return locationVars;
     }
 
     /**
      * @param locationVars location parameters
      */
-    public void setLocationVars(CelestialObjectPosition locationVars) {
+    public void setLocationVars(KeplerToCartesian locationVars) {
         this.locationVars = locationVars;
     }
 
     public HEECoordinate getHEEpos(Date date){
-        getLocationVars().initializeCartesianStateVectors(date);
-        return getLocationVars().getRelcPos();
+        getCartesianCoordinates().initializeCartesianStateVectors(date);
+        return getCartesianCoordinates().getRelcPos();
     }
     public HEECoordinate getHEEvel(Date date){
-        getLocationVars().initializeCartesianStateVectors(date);
-        return getLocationVars().getRelcVel();
+        getCartesianCoordinates().initializeCartesianStateVectors(date);
+        return getCartesianCoordinates().getRelcVel();
     }
 
     public Coordinate getRCoord(Date date){
-        getLocationVars().initializeCartesianStateVectors(date);
-        return getLocationVars().getRoPos();
+        getCartesianCoordinates().initializeCartesianStateVectors(date);
+        return getCartesianCoordinates().getRoPos();
     }
 }

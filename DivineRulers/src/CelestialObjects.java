@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.HashSet;
 
 /**
@@ -21,7 +22,9 @@ public class CelestialObjects {
     private long posX;
     private long posY;
     private long posZ;
-
+    Vector pos;
+    public Color color = Color.RED;
+    
     /**
      * @param mass mass of celestial object
      * @param radius radius of celestial object
@@ -30,6 +33,15 @@ public class CelestialObjects {
         this.name = name;
         this.mass = mass;
         this.radius = radius;
+    }
+    public void setPosition(Vector v) {
+    	this.pos = v;
+    }
+    public void setPosition(double x, double y, double z) {
+    	this.pos = new Vector(x,y,z);
+    }
+    public Vector getPosition() {
+    	return pos;
     }
 
     /**
@@ -142,6 +154,10 @@ public class CelestialObjects {
      */
     public double getDistanceKm() {
         return distance * AU / 1000.0;
+    }
+    
+    public void setColor(Color _color) {
+    	color = _color;
     }
 
 
