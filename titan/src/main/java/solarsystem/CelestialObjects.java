@@ -3,10 +3,9 @@ package solarsystem;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import utils.Coordinate;
-import utils.Date;
-import utils.HEECoordinate;
+import utils.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -14,7 +13,7 @@ import java.util.HashSet;
  */
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@id")
-public class CelestialObjects {
+public class CelestialObjects implements ObjectInSpace{
 
     @JsonProperty("central_body")
     private CelestialObjects centralBody;
@@ -23,15 +22,90 @@ public class CelestialObjects {
     @JsonProperty("name")
     private String name;
     @JsonProperty("mass")
-    private double mass; // in kg
+    private double mass;        // in kg
     @JsonProperty("radius")
-    private double radius; // in km
+    private double radius;      // in km
     @JsonProperty("period")
-    private double period; // in days
-    @JsonProperty("locationVars")
-    private KeplerToCartesian locationVars;
+    private double period;      // in days
+    @JsonProperty("a")
+    private double a0;          // Mean semi-major axis (AU) at J2000
+    @JsonProperty("a_Cnt")
+    private double aCnt;        // Change semi-major per century (AU)
+    @JsonProperty("e")
+    private double e0;          // Eccentricity of orbit at J2000
+    @JsonProperty("e_Cnt")
+    private double eCnt;        // Change of eccentricity of orbit per century
+    @JsonProperty("I")
+    private double i0;          // Inclination of orbit at J2000
+    @JsonProperty("I_Cnt")
+    private double iCnt;        // Change of inclination of orbit per century
+    @JsonProperty("L")
+    private double l0;          // Mean longitude at J2000
+    @JsonProperty("L_Cnt")
+    private double lCnt;        // Change of longitude per century
+    @JsonProperty("w")
+    private double w0;          // Longitude of perihelion (degrees) at J2000
+    @JsonProperty("w_Cnt")
+    private double wCnt;        // Change of perihelion l per century
+    @JsonProperty("node")
+    private double o0;          // Longitude of ascending node at J2000
+    @JsonProperty("node_Cnt")
+    private double oCnt;        // Change of longitude of ascending node per
+
+    private double a; // semi major axis;
+    private double e; // eccentricity
+    private double i; // inclination
+    private double l; // longitude
+    private double w; // periphelon
+    private double o; // change of ascending node
+    // century
+
+    private Date coordinateDate;   // Date of the current
+    private Vector3D orbitalPos; // Coordinate in the orbital plane
+    private Vector3D orbitalVel; // Velocity vector in the orbital plane
+    private Vector3D HEEpos; // Coordinate central body reference frame
+    private Vector3D HEEvel; // Velocity central body reference frame
+
+    private Vector3D forces;
+
+    //@JsonProperty("locationVars")
+    //private KeplerToCartesian locationVars;
+
 
     public CelestialObjects() {
+    }
+
+    /**
+     * get the cartesian coordinates of a planet
+     */
+    private void getCartesianCoordinates(Date date) {
+        if(coordinateDate != null && date.compareTo(coordinateDate) == 0){return;}//check
+        // whether current values are already stored for these date.
+        coordinateDate = new Date(date);
+
+        // step 1
+        // compute the value of each of that planet's six elements
+        double JT = date.dateToJulian(); // in centuries
+        double T = (JT - 2451545.0)/36525.0;
+
+        a = a0 + aCnt * T;
+        e = e0 + eCnt * T;
+        i = i0 + iCnt * T;
+        l = l0 + lCnt * T;
+        w = w0 + wCnt * T;
+        o = o0 + oCnt * T;
+
+        double Mass = centralBody.getMass();
+        double mu = Mass * MathUtil.G * MathUtil.AU; // get mu AU/s^2
+        //double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+
+        Vector3D[] cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
+                i, l, w, o, mu);
+
+        orbitalPos = cartesian[0];
+        orbitalVel = cartesian[1];
+        HEEpos = cartesian[2];
+        HEEvel = cartesian[3];
     }
 
     /**
@@ -91,39 +165,65 @@ public class CelestialObjects {
         return period;
     }
 
-    /**
-     * @param period the period of which the celestial object orbits around its orbiting
-     *               celestial object
-     */
-    public void setPeriod(double period) {
-        this.period = period;
+    public double getSemiMajorAxisJ2000() {
+        return a0;
+    }
+
+    public Vector3D getHEEpos(Date date){
+        getCartesianCoordinates(date);
+        return HEEpos;
+    }
+
+    public Vector3D getHEEpos(){
+        return HEEpos;
+    }
+
+    public void setHEEpos(Vector3D pos){
+        HEEpos = pos;
+    }
+
+    public Vector3D getHEEvel(Date date){
+        getCartesianCoordinates(date);
+        return HEEvel;
+    }
+    public Vector3D getHEEvel(){
+        return HEEvel;
+    }
+
+    public void setHEEvel(Vector3D centralVel){
+        this.HEEvel = centralVel;
+    }
+
+
+    public Vector3D getRCoord(Date date){
+        getCartesianCoordinates(date);
+        return orbitalPos;
+    }
+
+    public Vector3D getVel(Date date){
+        getCartesianCoordinates(date);
+        return orbitalVel;
     }
 
     /**
-     * @return location parameters
+     * gets the gravetational force that are applied on the planet  in space.
+     * @param objectsInSpace arraylist of all the objects that apply a force to
+     * @return forces
      */
-    public KeplerToCartesian getCartesianCoordinates() {
-        return locationVars;
+    public void setForces(ArrayList<ObjectInSpace> objectsInSpace){
+        forces = new Vector3D(); // reset the forces
+        for(ObjectInSpace o: objectsInSpace){
+            if(o == this){continue;}
+            Vector3D r = o.getHEEpos().substract(this.getHEEpos());
+            double netForce = (MathUtil.G * o.getMass() * this.getMass())/
+                    Math.pow(r.length(), 3);
+            Vector3D thisForce = r.unit().scale(netForce);
+            forces = forces.add(thisForce);
+        }
     }
 
-    /**
-     * @param locationVars location parameters
-     */
-    public void setLocationVars(KeplerToCartesian locationVars) {
-        this.locationVars = locationVars;
+    public Vector3D getForces(){
+        return forces;
     }
 
-    public HEECoordinate getHEEpos(Date date){
-        getCartesianCoordinates().initializeCartesianStateVectors(date);
-        return getCartesianCoordinates().getRelcPos();
-    }
-    public HEECoordinate getHEEvel(Date date){
-        getCartesianCoordinates().initializeCartesianStateVectors(date);
-        return getCartesianCoordinates().getRelcVel();
-    }
-
-    public Coordinate getRCoord(Date date){
-        getCartesianCoordinates().initializeCartesianStateVectors(date);
-        return getCartesianCoordinates().getRoPos();
-    }
 }
