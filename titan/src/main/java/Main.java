@@ -1,10 +1,11 @@
+import java.io.IOException;
+
+import gui.View;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        System.out.println("Hello World!");
-        System.out.println("Not bye");
-
-        System.out.println("try2");
+    	View view = new View();
     }
 }
