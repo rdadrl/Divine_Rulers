@@ -63,24 +63,24 @@ public class HohmannTransfer {
     }
 
     private void setCircularVelocity(){
-        circularVelocity=u/a1;
+        circularVelocity=Math.sqrt(u/a);
     }
 
     private void setPerihelionVelocity(){
-        perihelionVelocity=Math.sqrt(2*(totalEnergy+circularVelocity));
+        perihelionVelocity=Math.sqrt(2*(totalEnergy+u/a1));
     }
 
     private void setApoapsisVelocity(){
-        apoapsisVelocity=Math.sqrt(u/a2);
+        apoapsisVelocity=Math.sqrt(2*totalEnergy+u/a2);
     }
 
     // necessary magnitude of the spacecraft velocity vector
     private void setInitialImpulse(){
-        initialImpulse=perihelionVelocity-Math.sqrt(circularVelocity);
+        initialImpulse=perihelionVelocity-Math.sqrt(u/a1);
     }
 
     private void setFinalImpulse() {
-        finalImpulse=apoapsisVelocity-Math.sqrt(2*totalEnergy+u/a2);
+        finalImpulse=Math.sqrt(u/a2)-apoapsisVelocity;
     }
 
     private void setPhaseAngle(){
