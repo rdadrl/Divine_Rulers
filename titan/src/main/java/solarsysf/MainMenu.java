@@ -48,7 +48,7 @@ public class MainMenu extends Application {
                 new ArrayList<>(solarSystem.getPlanets().getAll());
         ObjectInSpace cannonballObj = new CannonBall(20, 0.01,
                 solarSystem.getPlanets().getEarth(),
-                solarSystem.getPlanets().getMars(),2000);
+                solarSystem.getPlanets().getMars());
         //((CannonBall) cannonballObj).setLaunchForce(new Vector3D(0, 0, 1000));
         cannonballObj.initializeCartesianCoordinates(date);
         allObj.add(cannonballObj);
@@ -66,7 +66,8 @@ public class MainMenu extends Application {
         CelestialObjects venusObj = solarSystem.getPlanets().getVenus();
         
         // Sun
-        Sphere sun      = new Sphere(sunObj.getRadius() / MathUtil.AU * 1000000); // sun is 100 times smaller
+        Sphere sun      =
+                new Sphere(sunObj.getRadius() / MathUtil.AU * 1000000); // sun is 100 times smaller
         PhongMaterial sunMaterial = new PhongMaterial();
         sunMaterial.setDiffuseColor(Color.ORANGE);
         sunMaterial.setSpecularColor(Color.ORANGERED);
@@ -258,7 +259,7 @@ public class MainMenu extends Application {
             public void handle(long currentNanoTime)
             {
                 double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-                verletVelocity.updateLocation(1, TimeUnit.DAYS);
+                verletVelocity.updateLocation(12, TimeUnit.HOURS);
                 dateLabel.setText(date.toDateString());
                 if (t > 1) {
                     t = 0;
@@ -292,10 +293,10 @@ public class MainMenu extends Application {
                     saturn.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
 
                     //Titan Update
-                    /*coordinate = titanObj.getHEEpos();
+                    coordinate = titanObj.getHEEpos();
                     titan.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
                     titan.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    titan.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);*/
+                    titan.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
 
                     coordinate = urAnusObj.getHEEpos();
                     uranus.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);

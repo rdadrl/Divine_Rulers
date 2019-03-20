@@ -82,7 +82,6 @@ public class CannonBall implements ObjectInSpace {
         toPlanet.initializeCartesianCoordinates(date);
         double r = (fromPlanet.getRadius() * 1000 * MathUtil.AU);
         HEEpos = fromPlCoord.add(fromPlCoord.unit().scale(r));
-        HEEvel =
-                fromPlanet.getHEEpos().substract(toPlanet.getHEEpos()).unit().scale(20000);
+        HEEvel = fromPlanet.getHEEpos().substract(toPlanet.getHEEpos()).unit().scale(20000);
     }
 }

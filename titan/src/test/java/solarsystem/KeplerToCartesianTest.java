@@ -192,12 +192,17 @@ public class KeplerToCartesianTest {
             //printXYZ(planet.getName(), OrbPos, date);
             printXYZ(titan.getName(), HEEPosTit, date);
             printXYZ(saturn.getName(), HEEPosSat, date);
+            System.out.println();
+
+            printXYZ(titan.getName(), HEEVelTit, date);
+            printXYZ(saturn.getName(), HEEVelSat, date);
             //printPosVel(saturn.getName(), HEEPosSat, HEEVelSat, date);
             //System.out.println();
         }
     }
 
     private void printXYZ(String name, Vector3D posCoord, Date date){
+        System.out.print(name + ": ");
         System.out.print(date);
         System.out.print("\t\tX: " + posCoord.getX());
         System.out.print("\t\tY: " + posCoord.getY());

@@ -96,30 +96,37 @@ public class CelestialObjects implements ObjectInSpace{
         double JT = date.dateToJulian(); // in centuries
         double T = (JT - Date.J2000)/36525.0;
 
-        double Mass = centralBody.getMass();
-        double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+
 
         Vector3D[] cartesian;
         // as we don't have all the exact details for Titan we need to
         // approximate it.
         if(name.equals("Titan")){
+            double Mass = (centralBody.getMass());
+            double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+
             this.centralBody.initializeCartesianCoordinates(date);
             double dt = 86400 * (JT - Date.J2000); // difference in seconds
             double M = MAJ2000 + dt * Math.sqrt((mu)/(Math.pow(a0,3)));
             cartesian = KeplerToCartesian.calculateKepler(a0, e0, m0, o0, i0, M,
                     mu);
             double mc = centralBody.w - centralBody.o;
-            Vector3D SatPos = cartesian[2];
-            Vector3D SatVel = cartesian[3];
 
-
-            HEEpos = centralBody.getHEEpos().add(cartesian[2]);
+            //Look from here on!!
+            Vector3D SatPlanePos = cartesian[2];
+            Vector3D SatPlaneVel = cartesian[3];
+            Vector3D SatVel = centralBody.getHEEvel();
+            System.out.println(SatPlaneVel);
 
             HEEpos = KeplerToCartesian.rotatePlane(mc, centralBody.o,
-                    centralBody.i, SatPos);
-            HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,
-                    centralBody.i, SatVel);
+                    centralBody.i, SatPlanePos);
+            HEEpos = HEEpos.add(centralBody.getHEEpos());
+            //HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,centralBody.i, SatPlaneVel);
+            HEEvel = SatPlaneVel.add(SatVel);
         }else{
+            double Mass = centralBody.getMass();
+            double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+
             a = a0 + aCnt * T;
             e = e0 + eCnt * T;
             i = i0 + iCnt * T;
@@ -131,7 +138,7 @@ public class CelestialObjects implements ObjectInSpace{
             cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
                     i, l, w, o, mu);
 
-            HEEpos = centralBody.getHEEpos().add(cartesian[2]);
+            HEEpos = cartesian[2];
             HEEvel = cartesian[3];
         }
         orbitalPos = cartesian[0];
