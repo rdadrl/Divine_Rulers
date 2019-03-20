@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -37,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 public class MainMenu extends Application {
     private Scene mainScene;
     private Group root;
-
+    private boolean goNorth, goSouth, goEast, goWest;
     @Override
 
     // TODO: Add WASD keys to move around the zoomPane :)
@@ -176,16 +177,40 @@ public class MainMenu extends Application {
                     return;
                 }
 
-                double scaleFactor =
-                        (event.getDeltaY() > 0)
-                                ? SCALE_DELTA
-                                : 1/SCALE_DELTA;
+                double scaleFactor = (event.getDeltaY() > 0)
+                                        ? SCALE_DELTA
+                                        : 1/SCALE_DELTA;
 
-                camera.setTranslateZ(camera.getTranslateZ() * scaleFactor);
+                System.out.println(camera.getTranslateZ());
+                if (camera.getTranslateZ() * scaleFactor > 2 && camera.getTranslateZ() * scaleFactor < 1000) camera.setTranslateZ(camera.getTranslateZ() * scaleFactor);
             }
         });
 
+        //KeyUp&KeyDown https://stackoverflow.com/questions/29962395/how-to-write-a-keylistener-for-javafx
+        mainScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case UP:    goNorth = true; break;
+                    case DOWN:  goSouth = true; break;
+                    case LEFT:  goWest  = true; break;
+                    case RIGHT: goEast  = true; break;
+                }
+            }
+        });
 
+        mainScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case UP:    goNorth = false; break;
+                    case DOWN:  goSouth = false; break;
+                    case LEFT:  goWest  = false; break;
+                    case RIGHT: goEast  = false; break;
+                }
+            }
+        });
+        //Main Animations Handler
         VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll(), date);
         final long startNanoTime = System.nanoTime();
         new AnimationTimer()
@@ -230,6 +255,12 @@ public class MainMenu extends Application {
                     titan.setTranslateX(coordinate.getX() * 30 / MathUtil.AU);
                     titan.setTranslateY(coordinate.getY() * 30 * -1 / MathUtil.AU);
                     titan.setTranslateZ(coordinate.getZ() * 30 / MathUtil.AU);
+
+                    //Move the camera
+                    if (goNorth) camera.setTranslateY(camera.getTranslateY() - 10);
+                    if (goSouth) camera.setTranslateY(camera.getTranslateY() + 10);
+                    if (goEast)  camera.setTranslateX(camera.getTranslateX() + 10);
+                    if (goWest)  camera.setTranslateX(camera.getTranslateX() - 10);
                 }
             }
         }.start();
