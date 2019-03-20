@@ -88,6 +88,23 @@ public class Vector3D implements Vector<Point3D>{
 		Vector3D other = (Vector3D)_other;
 		return Math.abs(dot(other)) < epsilon;
 	}
+	/*
+	public Vector rotateXDeg(double theta) {
+		return rotateXRad(Math.toRadians(theta));
+	}
+
+
+	public Vector rotateXRad(double theta) {
+		double cosTheta = Math.cos(theta);
+		double sinTheta = Math.sin(theta);
+		return new Vector(
+				this.dot(new Vector3D(1, 0, 0)),
+				this.dot(new Vector3D(0, cosTheta, -1*sinTheta)),
+				this.dot(new Vector3D(0, sinTheta, cosTheta))
+		);
+	}*/
+
+
 	public static boolean isOrthogonal(Vector3D u, Vector3D w) {
 		return u.isOrthogonal(w);
 	}
