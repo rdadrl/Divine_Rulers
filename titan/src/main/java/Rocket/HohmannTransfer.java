@@ -4,20 +4,20 @@ import solarsystem.CelestialObjects;
 
 public class HohmannTransfer {
 
-    private CelestialObjects p1;
-    private CelestialObjects p2;
-    private CelestialObjects c1;
+    private CelestialObjects p1; // Planet 1
+    private CelestialObjects p2; // Planet 2
+    private CelestialObjects c1; // Central planet
 
-    private double time;
-    private double a1;
-    private double a2;
+    private double time; // Time in transfer
+    private double a1; // semimajor axis of p1
+    private double a2; // semimajor axis of p2
     private double a;
-    private double u;
+    private double u; // G(m1+m2)
     private double totalEnergy;
     private double initialImpulse;
     private double finalImpulse;
 
-    private final double G=6.67*Math.pow(10,-11);     //u=G(m1+m2)
+    private final double G=6.67*Math.pow(10,-11);
 
 
     public HohmannTransfer(CelestialObjects p1, CelestialObjects p2){
@@ -51,6 +51,23 @@ public class HohmannTransfer {
     public void setFinalImpulse(CelestialObjects p2) {
         finalImpulse=Math.sqrt(u/a2)-Math.sqrt(2*totalEnergy+u/a2);
     }
+    /*
+
+     * Computes the velocity of a particle in ellipticalOrbit
+     * @param r The radius from the primary focus to the particle
+     * @param a The semimajor axis of the ellipse
+     * @param b The semiminor axis of the ellipse
+     * @param rp The radius of the orbit at periapsis
+     * @return
+
+    public Vector getEllipticalVelocity(Vector r, double a, double b, rp) {
+        // Vis Viva equation obtainins the speed of the satelite relative to the primary focus of its elliptical orbit
+        double softV = sqrt( (2*u/ r.length()) - (u/ a)); // Velocity of the particle relative to the occupied focus of the ellipse
+        double p = Math.square(b)/ a; // Semilatus Rectum
+        double e = 1 - (rp/a);  // Eccentricity
+        return new Vector()
+    }
+    */
 
     /*
     public void targetPlanetPositionToLaunch(Planets target){
