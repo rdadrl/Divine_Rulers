@@ -18,6 +18,7 @@ public class VerletVelocity {
                           Date date) {
         this.currentDate = date;
         this.bodies = bodies;
+        System.out.println(bodies.size());
 
         initializeCartesianCoordinates(date);
 
@@ -27,6 +28,7 @@ public class VerletVelocity {
     }
     private void initializeCartesianCoordinates(Date date){
         for (ObjectInSpace body: bodies) {
+            System.out.println(body);
             body.initializeCartesianCoordinates(date);
             body.setHEEvel(body.getHEEvel().scale(MathUtil.AU/(60*60*24)));
             body.setHEEpos(body.getHEEpos().scale(MathUtil.AU));
