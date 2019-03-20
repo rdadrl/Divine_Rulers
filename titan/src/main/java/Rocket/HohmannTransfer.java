@@ -14,10 +14,16 @@ public class HohmannTransfer {
     private double a;
     private double u; // G(m1+m2)
     private double totalEnergy;
+    private double circularVelocity;
+    private double perihelionVelocity;
     private double initialImpulse;
     private double finalImpulse;
+    private double phaseAngle;
+    private double synodicPeriod;
+    private double infiniteVelocity;
 
     private final double G=6.67*Math.pow(10,-11);
+
 
 
     public HohmannTransfer(CelestialObjects p1, CelestialObjects p2){
@@ -37,7 +43,7 @@ public class HohmannTransfer {
         a=1/2.0*(a1+a2);
     }
 
-    public void setU (CelestialObjects orbiting) {
+    public void setU () {
         u=G*c1.getMass();
     }
 
@@ -45,10 +51,18 @@ public class HohmannTransfer {
         totalEnergy=-u/2*a;
     }
 
-    public void setInitialImpulse(CelestialObjects p1){
-        initialImpulse=Math.sqrt(2*(totalEnergy+u/a1))-Math.sqrt(u/a1);
+    public void setCircularVelocity(){
+        circularVelocity=u/a1;
     }
-    public void setFinalImpulse(CelestialObjects p2) {
+    public void setPerihelionVelocity(){
+        perihelionVelocity=Math.sqrt(2*(totalEnergy+circularVelocity));
+    }
+
+    // necessary magnitude of the spacecraft velocity vector
+    public void setInitialImpulse(){
+        initialImpulse=perihelionVelocity-Math.sqrt(circularVelocity);
+    }
+    public void setFinalImpulse() {
         finalImpulse=Math.sqrt(u/a2)-Math.sqrt(2*totalEnergy+u/a2);
     }
     /*
@@ -69,10 +83,21 @@ public class HohmannTransfer {
     }
     */
 
-    /*
-    public void targetPlanetPositionToLaunch(Planets target){
-        launchPlanetCompleteOrbit*time/target.period;
+    public void phaseAngle(){
+        phaseAngle=Math.PI-Math.sqrt(u)*time/Math.pow(a2,3/2.0);
+        phaseAngle=phaseAngle*180/Math.PI;
     }
-    */
+
+    public void synodicPeriod(){
+        synodicPeriod=2*Math.PI/(Math.sqrt(u/Math.pow(a1,3))-Math.sqrt(u/Math.pow(a2,3)));
+    }
+
+    public void waitingPeriod(){
+
+    }
+
+    public void setInfiniteVelocity(){
+        //infiniteVelocity=Math.acos(-1,eccentricity);
+    }
 
 }
