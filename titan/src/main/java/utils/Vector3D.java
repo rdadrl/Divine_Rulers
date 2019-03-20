@@ -116,20 +116,16 @@ public class Vector3D implements Vector<Point3D>{
         this.z = z;
     }
 
+    @Override
     public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(this.getClass().getSimpleName());
-		sb.append(" [x=");
-		sb.append(x);
-		sb.append(", y="); 
-		sb.append(y);
-		sb.append(", z=");
-		sb.append(z);
-		sb.append("]");
-		return sb.toString();
-	}
-	
-	public static void main(String[] args) {
+        return "Vector3D{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
+    }
+
+    public static void main(String[] args) {
 		Vector3D v = new Vector3D(-5 + Math.random() * 10, -5 + Math.random() * 10, -5 + Math.random() * 10);
 		Vector3D w = new Vector3D(Math.random() * 10, Math.random() * 10, Math.random() * 10);
 		System.out.println("v: " + v);

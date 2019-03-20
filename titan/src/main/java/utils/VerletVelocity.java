@@ -3,20 +3,34 @@ package utils;
 import solarsystem.ObjectInSpace;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
  *
  */
 public class VerletVelocity {
-    private ArrayList<ObjectInSpace> bodies;
+    private ArrayList<? extends ObjectInSpace> bodies;
+    private Date currentDate;
 
-    public VerletVelocity(ArrayList<ObjectInSpace> bodies) {
+    public VerletVelocity(ArrayList<? extends ObjectInSpace> bodies,
+                          Date date) {
+        this.currentDate = date;
         this.bodies = bodies;
+
+        initializeCartesianCoordinates(date);
 
         //Initialize the beginning forces.
         updateForce();
 
+    }
+    private void initializeCartesianCoordinates(Date date){
+        for (ObjectInSpace body: bodies) {
+            body.initializeCartesianCoordinates(date);
+            body.setHEEvel(body.getHEEvel().scale(MathUtil.AU/(60*60*24)));
+            body.setHEEpos(body.getHEEpos().scale(MathUtil.AU));
+        }
     }
 
     private void updateForce(){
@@ -41,9 +55,14 @@ public class VerletVelocity {
      * 3. recalculate forces and get a(t + dt) using x(t + dt)
      * 4. v(t + dt) = v(t + 0.5dt) + 0.5 a(t + dt) * dt
      *
-     * @param dt timestep in seconds
+     * @param time timestep
+     * @param unit unit of the timestep
      */
-    public void updateLocation(double dt){
+    public void updateLocation(long time, TimeUnit unit){
+        time = TimeUnit.SECONDS.convert(time, unit); //convert to seconds
+        currentDate.add(Calendar.SECOND, (int)time);
+        double dt = time;
+
         // Update positions and half-update velocities
         // set the change in position
         // v(t + dt) = x(t) + v(t) dt + 0.5 a(t) dt^2
@@ -56,7 +75,7 @@ public class VerletVelocity {
             Vector3D startAcceleration = startForce.scale(1D / body.getMass());
 
             // step 1 v(t + 0.5dt) = v(t) + 0.5 a(t) * dt
-            Vector3D velChange = startAcceleration.scale((dt) / 2);
+            Vector3D velChange = startAcceleration.scale((dt) / 2.0);
             body.setHEEvel(startVel.add(velChange)); // set half vel
             Vector3D halfVel = body.getHEEvel();
 
@@ -75,7 +94,7 @@ public class VerletVelocity {
             Vector3D endAcceleration = endForce.scale(1D / body.getMass());
 
             // step 4 v(t + dt) = v(t + 0.5dt) + 0.5 a(t + dt) * dt
-            Vector3D velChange = endAcceleration.scale((dt) / 2);
+            Vector3D velChange = endAcceleration.scale((dt) / 2.0);
             body.setHEEvel(halfVel.add(velChange));
         }
     }

@@ -10,6 +10,7 @@ import java.util.TimeZone;
  * !Month starts from 0. So 1st January 2000 needs to be added as 2000, 0, 1
  */
 public class Date extends GregorianCalendar {
+    public static final double J2000 = 2451545.0;
     public Date() {
     }
 
