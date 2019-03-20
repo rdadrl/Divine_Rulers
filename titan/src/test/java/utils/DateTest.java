@@ -14,4 +14,10 @@ public class DateTest {
         Date date = new Date(2000,0,1,12,0,0);
         assertEquals(date.dateToJulian(), 2451545.0, 1e-5);
     }
+
+    @Test
+    public void dateToJulian2() {
+        Date date = new Date(2049,0,1,12,0,0);
+        System.out.println(date.dateToJulian());
+    }
 }

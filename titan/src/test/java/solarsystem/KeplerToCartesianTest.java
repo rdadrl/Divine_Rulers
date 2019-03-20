@@ -1,7 +1,7 @@
 package solarsystem;
 
 import org.junit.Test;
-import utils.Coordinate;
+import utils.Vector3D;
 import utils.Date;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class KeplerToCartesianTest {
         /*
         SolarSystem solarSystem = new SolarSystem();
         CelestialObjects saturn = solarSystem.getPlanets().getSaturn();
-        Coordinate coordinate = saturn.getHEEpos(date);
+        Vector3D coordinate = saturn.getHEEpos(date);
         System.out.println("\nSaturn");
         System.out.println("X: " + coordinate.getX());
         System.out.println("Y: " + coordinate.getY());
@@ -39,7 +39,7 @@ public class KeplerToCartesianTest {
         */
         SolarSystem solarSystem = new SolarSystem();
         CelestialObjects earth = solarSystem.getPlanets().getEarth();
-        Coordinate coordinate = earth.getHEEpos(new Date(2000, 0, 1, 0, 0,
+        Vector3D coordinate = earth.getHEEpos(new Date(2000, 0, 1, 0, 0,
                 0));
         if(PRINT){
             printPosVel(earth.getName(), coordinate, date);
@@ -74,7 +74,7 @@ public class KeplerToCartesianTest {
         /*
         SolarSystem solarSystem = new SolarSystem();
         CelestialObjects saturn = solarSystem.getPlanets().getSaturn();
-        Coordinate HEEPos = saturn.getHEEpos(date);
+        Vector3D HEEPos = saturn.getHEEpos(date);
         System.out.println("\nSaturn");
         System.out.println("X: " + HEEPos.getX());
         System.out.println("Y: " + HEEPos.getY());
@@ -91,8 +91,8 @@ public class KeplerToCartesianTest {
         SolarSystem solarSystem = new SolarSystem();
         CelestialObjects saturn = solarSystem.getPlanets().getSaturn();
 
-        Coordinate HEEPos = saturn.getHEEpos(date);
-        Coordinate HEEVel = saturn.getHEEvel(date);
+        Vector3D HEEPos = saturn.getHEEpos(date);
+        Vector3D HEEVel = saturn.getHEEvel(date);
         if(PRINT){
             printPosVel(saturn.getName(), HEEPos, HEEVel, date);
         }
@@ -149,8 +149,8 @@ public class KeplerToCartesianTest {
         SolarSystem solarSystem = new SolarSystem();
         CelestialObjects planet = solarSystem.getPlanets().getEarth();
         for(int i = 1; i<=12; i++) {
-            Coordinate HEEPos = planet.getHEEpos(date);
-            Coordinate OrbPos = planet.getRCoord(date);
+            Vector3D HEEPos = planet.getHEEpos(date);
+            Vector3D OrbPos = planet.getRCoord(date);
             if(PRINT){
                 //printXYZ(planet.getName(), OrbPos, date);
                 printXYZ(planet.getName(), HEEPos, date);
@@ -161,14 +161,42 @@ public class KeplerToCartesianTest {
 
     }
 
-    private void printXYZ(String name, Coordinate posCoord, Date date){
+    @Test
+    public void Jupiter() throws IOException{
+        Date date = new Date(2000, 0, 0, 0, 0, 0);
+        SolarSystem solarSystem = new SolarSystem();
+        CelestialObjects planet = solarSystem.getPlanets().getJupiter();
+        Vector3D HEEPos = planet.getHEEpos(date);
+        Vector3D OrbPos = planet.getRCoord(date);
+        if(PRINT){
+            //printXYZ(planet.getName(), OrbPos, date);
+            printXYZ(planet.getName(), HEEPos, date);
+            //System.out.println();
+        }
+    }
+
+    @Test
+    public void Titan() throws IOException{
+        Date date = new Date(2000, 0, 1, 12, 0, 0);
+        SolarSystem solarSystem = new SolarSystem();
+        CelestialObjects planet = solarSystem.getPlanets().getTitan();
+        Vector3D HEEPos = planet.getHEEpos(date);
+        Vector3D HEEVel = planet.getHEEvel(date);
+        if(PRINT){
+            //printXYZ(planet.getName(), OrbPos, date);
+            printPosVel(planet.getName(), HEEPos, HEEVel, date);
+            //System.out.println();
+        }
+    }
+
+    private void printXYZ(String name, Vector3D posCoord, Date date){
         System.out.print(date);
         System.out.print("\t\tX: " + posCoord.getX());
         System.out.print("\t\tY: " + posCoord.getY());
         System.out.print("\t\tZ: " + posCoord.getZ() + "\n");
     }
 
-    private void printPosVel(String name, Coordinate posCoord, Date date){
+    private void printPosVel(String name, Vector3D posCoord, Date date){
         System.out.println("\n" + name);
         System.out.println(date);
         System.out.println("\tPosition");
@@ -177,8 +205,8 @@ public class KeplerToCartesianTest {
         System.out.println("\t\tZ: " + posCoord.getZ());
     }
 
-    private void printPosVel(String name, Coordinate posCoord,
-                             Coordinate velCoord, Date date){
+    private void printPosVel(String name, Vector3D posCoord,
+                             Vector3D velCoord, Date date){
         System.out.println("\n" + name);
         System.out.println(date);
         System.out.println("\tPosition");

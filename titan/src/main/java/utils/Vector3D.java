@@ -133,20 +133,16 @@ public class Vector3D implements Vector<Point3D>{
         this.z = z;
     }
 
+    @Override
     public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(this.getClass().getSimpleName());
-		sb.append(" [x=");
-		sb.append(x);
-		sb.append(", y="); 
-		sb.append(y);
-		sb.append(", z=");
-		sb.append(z);
-		sb.append("]");
-		return sb.toString();
-	}
-	
-	public static void main(String[] args) {
+        return "Vector3D{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
+    }
+
+    public static void main(String[] args) {
 		Vector3D v = new Vector3D(-5 + Math.random() * 10, -5 + Math.random() * 10, -5 + Math.random() * 10);
 		Vector3D w = new Vector3D(Math.random() * 10, Math.random() * 10, Math.random() * 10);
 		System.out.println("v: " + v);
@@ -156,6 +152,11 @@ public class Vector3D implements Vector<Point3D>{
 		System.out.println("norm(v): " + v.norm());
 		System.out.println("dot(v, w): " + v.dot(w));
 		System.out.println("dist(v, w): " + v.dist(w));
+		
+//		Vector3D z = new Vector3D(-1.471633868509571E+08, 2.104852097662997E+07, -2.126817645682022E+02);
+		Vector3D z = new Vector3D(-4.054425385519177E+05, -2.557910226152136E+06, 5.277937690315753E+01);
+		System.out.println(29.78);
+		System.out.println(z.length()/24/3600);
 		
 	}
 

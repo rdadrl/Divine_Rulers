@@ -1,9 +1,6 @@
 package solarsystem;
 
 import utils.*;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Calendar;
 
 
 /**
@@ -17,18 +14,33 @@ public class KeplerToCartesian {
     /**
      * source https://ssd.jpl.nasa.gov/txt/aprx_pos_planets.pdf
      * https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
-     * @param date date for which the solar system need to be configured
+     * @param a  semi-major axis
+     * @param e eccentricity
+     * @param i inclination
+     * @param l longitude
+     * @param w periphelon
+     * @param o ascending node
+     * @param mu gravetational force of central body
+     * @return arraylist with coordinate vectors
      */
-    public static Coordinate[] getCartesianCoordinates(
+    public static Vector3D[] getCartesianCoordinates(
             double a, double e, double i, double l, double w, double o,
-            double mu){
+            double mu) {
         // Step 2
         // compute the argument of perihelion, m, and the mean anomaly, M
         double m = w - o;
         double M = l - w;
 
+        return calculateKepler(a, e, m, o, i, M, mu);
+    }
+
+    public static Vector3D[] calculateKepler(double a, double e, double m, double o,
+                                double i, double M, double mu){
+
         // Step 3
         // solve keplers equation
+        M = M % 360; // bring to degree within the circle;
+        if (M<0) M = M + 360D;
         double EPSILON = 10e-6;
         double eStar = (180D/Math.PI) * e; // e0 star to radians
 
@@ -41,29 +53,32 @@ public class KeplerToCartesian {
             E = E + deltaE;
         }while(Math.abs(deltaE) > EPSILON);
 
-        /*
+
+        /* true anomanaly calclulation if necessary
         double vt = 2 * Math.atan2(
                 Math.sqrt(1.0 + e) * sinD(E / 2D),
                 Math.sqrt(1.0 - e) * cosD(E / 2D));
+        vt = Math.toDegrees(vt);
         */
+
 
         // Step 4
         // compute the planet's heliocentric coordinates in its orbital
         // plane, roPos', with the x'-axis aligned from the focus to the perihelion
-        Coordinate orbitalPos; // Coordinate in the orbital plane
-        Coordinate orbitalVel; // Velocity vector in the orbital plane
-        Coordinate centralPos; // Coordinate central body reference frame
-        Coordinate centralVel; // Velocity central body reference frame
+        Vector3D orbitalPos; // Vector3D in the orbital plane
+        Vector3D orbitalVel; // Velocity vector in the orbital plane
+        Vector3D centralPos; // Vector3D central body reference frame
+        Vector3D centralVel; // Velocity central body reference frame
 
 
         double radius = a * (1 - e * cosD(E));
 
-        orbitalPos = new Coordinate();
+        orbitalPos = new Vector3D();
         orbitalPos.setX(a * (cosD(E) - e));
         orbitalPos.setY(a * Math.sqrt(1.0 - e * e) * sinD(E));
         orbitalPos.setZ(0.0);
 
-        orbitalVel = new Coordinate();
+        orbitalVel = new Vector3D();
         orbitalVel.setX(-sinD(E));
         orbitalVel.setY(Math.sqrt(1.0 - e * e) * cosD(E));
         orbitalVel.setZ(0.0);
@@ -75,8 +90,8 @@ public class KeplerToCartesian {
         // Step 5
         // compute the coordinates in the J2000 ecliptic plane, with the x-axis
         // aligned toward the equinox:
-        centralPos = OrbitalCoordinateToHEECoordinate(m, o, i, orbitalPos);
-        centralVel = OrbitalCoordinateToHEECoordinate(m, o, i, orbitalVel);
+        centralPos = rotatePlane(m, o, i, orbitalPos);
+        centralVel = rotatePlane(m, o, i, orbitalVel);
         centralVel = centralVel.scale(60*60*24);
 
         /*
@@ -87,9 +102,9 @@ public class KeplerToCartesian {
         double yeq = cosD(obliquity) * yelc - sinD(obliquity) * zelc;
         double zeq = sinD(obliquity) * yelc + cosD(obliquity) * zelc;
 
-        eq = new Coordinate(xeq, yeq, zeq);
+        eq = new Vector3D(xeq, yeq, zeq);
         */
-        return new Coordinate[]{orbitalPos, orbitalVel, centralPos, centralVel};
+        return new Vector3D[]{orbitalPos, orbitalVel, centralPos, centralVel};
     }
 
     /**
@@ -110,11 +125,9 @@ public class KeplerToCartesian {
         return MathUtil.sinDegree(degree);
     }
 
-    public static HEECoordinate OrbitalCoordinateToHEECoordinate(double m,
-                                                                  double o,
-                                                                  double i,
-                                                                  Coordinate obC){
-        HEECoordinate heeC = new HEECoordinate();
+    public static Vector3D rotatePlane(double m, double o, double i,
+                                       Vector3D obC){
+        Vector3D heeC = new Vector3D();
         heeC.setX((cosD(m) * cosD(o) - sinD(m) * sinD(o) * cosD(i)) * obC.getX() +
                 ((-sinD(m)) * cosD(o) - cosD(m) * sinD(o) * cosD(i)) * obC.getY() +
                 (sinD(i) * sinD(o) * obC.getZ()));
