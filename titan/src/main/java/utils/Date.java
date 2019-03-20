@@ -70,4 +70,10 @@ public class Date extends GregorianCalendar {
                 this.get(Calendar.SECOND) +
                 '}';
     }
+
+    public String toDateString() {
+        return  this.get(Calendar.DAY_OF_MONTH) + "/" +
+                (this.get(Calendar.MONTH) + 1) + "/" +
+                this.get(Calendar.YEAR);
+    }
 }
