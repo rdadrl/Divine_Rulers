@@ -1,9 +1,14 @@
 package utils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Vector3D implements Vector<Point3D>{
 	public static double epsilon = 1e-10;
+	@JsonProperty("X")
 	private double x;
+    @JsonProperty("Y")
 	private double y;
+    @JsonProperty("Z")
 	private double z;
 
     public Vector3D() {

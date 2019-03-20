@@ -14,7 +14,9 @@ import java.util.ArrayList;
  *
  *
  */
+/*
 public class CannonBall2 implements ObjectInSpace {
+
 
     public static void main(String[] args) {
         try {
@@ -58,7 +60,6 @@ public class CannonBall2 implements ObjectInSpace {
         this.radius = radius;
         this.fromPlanet = fromPlanet;
         this.toPlanet = toPlanet;
-        launchForce = ;
     }
 
     public double getProjectedAngle(Vector3D departurePosition3D, Vector3D arrivalPosition3D) {
@@ -120,4 +121,6 @@ public class CannonBall2 implements ObjectInSpace {
     public void initializeCartesianCoordinates(Date date) {
 
     }
+
 }
+*/

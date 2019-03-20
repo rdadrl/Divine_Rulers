@@ -67,10 +67,11 @@ public class CelestialObjects implements ObjectInSpace{
     private Date currentDate;
     private Vector3D orbitalPos; // Coordinate in the orbital plane AU
     private Vector3D orbitalVel; // Velocity vector in the orbital plane AU/day
-
-    private Vector3D HEEpos = new Vector3D(); // Coordinate central body reference
+    @JsonProperty("sPos")
+    private Vector3D HEEpos; // Coordinate central body reference
     // frame AU
-    private Vector3D HEEvel = new Vector3D(); // Velocity central body reference frame
+    @JsonProperty("sVel")
+    private Vector3D HEEvel; // Velocity central body reference frame
     // AU/day
 
     private Vector3D forces;
@@ -101,7 +102,7 @@ public class CelestialObjects implements ObjectInSpace{
         Vector3D[] cartesian;
         // as we don't have all the exact details for Titan we need to
         // approximate it.
-        if(name.equals("Titan")){
+        if(name.equals("titan")){
             double Mass = (centralBody.getMass());
             double mu = Mass * MathUtil.GAU; // get mu AU/s^2
 
@@ -110,19 +111,6 @@ public class CelestialObjects implements ObjectInSpace{
             double M = MAJ2000 + dt * Math.sqrt((mu)/(Math.pow(a0,3)));
             cartesian = KeplerToCartesian.calculateKepler(a0, e0, m0, o0, i0, M,
                     mu);
-            double mc = centralBody.w - centralBody.o;
-
-            //Look from here on!!
-            Vector3D SatPlanePos = cartesian[2];
-            Vector3D SatPlaneVel = cartesian[3];
-            Vector3D SatVel = centralBody.getHEEvel();
-            System.out.println(SatPlaneVel);
-
-            HEEpos = KeplerToCartesian.rotatePlane(mc, centralBody.o,
-                    centralBody.i, SatPlanePos);
-            HEEpos = HEEpos.add(centralBody.getHEEpos());
-            //HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,centralBody.i, SatPlaneVel);
-            HEEvel = SatPlaneVel.add(SatVel);
         }else{
             double Mass = centralBody.getMass();
             double mu = Mass * MathUtil.GAU; // get mu AU/s^2
@@ -137,10 +125,27 @@ public class CelestialObjects implements ObjectInSpace{
 
             cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
                     i, l, w, o, mu);
+        }
 
+        if(name.equals("Titan")){
+            double mc = centralBody.w - centralBody.o;
+
+            //Look from here on!!
+            Vector3D SatPlanePos = cartesian[2];
+            Vector3D SatPlaneVel = cartesian[3];
+            Vector3D SatVel = centralBody.getHEEvel();
+            System.out.println(SatPlaneVel);
+
+            HEEpos = KeplerToCartesian.rotatePlane(mc, centralBody.o,
+                    centralBody.i, SatPlanePos);
+            HEEpos = HEEpos.add(centralBody.getHEEpos());
+            //HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,centralBody.i, SatPlaneVel);
+            HEEvel = SatPlaneVel.add(SatVel);
+        }else{
             HEEpos = cartesian[2];
             HEEvel = cartesian[3];
         }
+
         orbitalPos = cartesian[0];
         orbitalVel = cartesian[1];
     }

@@ -35,6 +35,8 @@ public class CannonBall implements ObjectInSpace {
         this.radius = radius;
         this.toPlanet = toPlanet;
         this.fromPlanet = fromPlanet;
+        HEEpos= new Vector3D();
+        HEEvel= new Vector3D();
     }
     public void setLaunchForce(Vector3D launchForce){
         this.launchForce = launchForce;

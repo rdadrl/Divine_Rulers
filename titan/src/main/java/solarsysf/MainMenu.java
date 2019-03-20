@@ -66,8 +66,7 @@ public class MainMenu extends Application {
         CelestialObjects venusObj = solarSystem.getPlanets().getVenus();
         
         // Sun
-        Sphere sun      =
-                new Sphere(sunObj.getRadius() / MathUtil.AU * 1000000); // sun is 100 times smaller
+        Sphere sun      = new Sphere(sunObj.getRadius() / MathUtil.AU * 1000000); // sun is 100 times smaller
         PhongMaterial sunMaterial = new PhongMaterial();
         sunMaterial.setDiffuseColor(Color.ORANGE);
         sunMaterial.setSpecularColor(Color.ORANGERED);
@@ -219,7 +218,7 @@ public class MainMenu extends Application {
             @Override public void handle(ScrollEvent event) {
                 event.consume();
 
-                System.out.println(event.getDeltaY());
+                //System.out.println(event.getDeltaY());
 
                 if (event.getDeltaY() == 0) return;
                 else if (event.getDeltaY() > 0) camera.setTranslateZ(camera.getTranslateZ() + Math.max(20, event.getDeltaY()));
@@ -263,7 +262,6 @@ public class MainMenu extends Application {
                 dateLabel.setText(date.toDateString());
                 if (t > 1) {
                     t = 0;
-                    date.add(Calendar.DATE, 1);
 
                     Vector3D coordinate;
 

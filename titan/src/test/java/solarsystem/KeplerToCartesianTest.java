@@ -180,24 +180,10 @@ public class KeplerToCartesianTest {
         Date date = new Date(2000, 0, 1, 12, 0, 0);
         System.out.println(date);
         SolarSystem solarSystem = new SolarSystem();
-        CelestialObjects titan = solarSystem.getPlanets().getTitan();
-        Vector3D HEEPosTit = titan.getHEEpos(date);
-        Vector3D HEEVelTit = titan.getHEEvel(date);
-        CelestialObjects saturn = solarSystem.getPlanets().getSaturn();
-        Vector3D HEEPosSat = saturn.getHEEpos(date);
-        Vector3D HEEVelSat = saturn.getHEEvel(date);
-
-        //Vector3D HEEVelTit = planet.getHEEvel(date);
-        if(PRINT){
-            //printXYZ(planet.getName(), OrbPos, date);
-            printXYZ(titan.getName(), HEEPosTit, date);
-            printXYZ(saturn.getName(), HEEPosSat, date);
+        for(CelestialObjects planet:solarSystem.getPlanets().getAll()){
+            printXYZ(planet.getName(), planet.getHEEpos(date), date);
+            printXYZ(planet.getName(), planet.getHEEvel(date), date);
             System.out.println();
-
-            printXYZ(titan.getName(), HEEVelTit, date);
-            printXYZ(saturn.getName(), HEEVelSat, date);
-            //printPosVel(saturn.getName(), HEEPosSat, HEEVelSat, date);
-            //System.out.println();
         }
     }
 
