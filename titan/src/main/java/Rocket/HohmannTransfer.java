@@ -16,11 +16,12 @@ public class HohmannTransfer {
     private double totalEnergy;
     private double circularVelocity;
     private double perihelionVelocity;
+    private double apoapsisVelocity;
     private double initialImpulse;
     private double finalImpulse;
     private double phaseAngle;
     private double synodicPeriod;
-    private double infiniteVelocity;
+    //private double infiniteVelocity;
 
     private final double G=6.67*Math.pow(10,-11);
 
@@ -32,40 +33,127 @@ public class HohmannTransfer {
         this.c1=p1.getCentralBody();
         this.a1=p1.getSemiMajorAxisJ2000();
         this.a2=p2.getSemiMajorAxisJ2000();
+        setA();
+        setU();
+        setTime();
+        setTotalEnergy();
+        setCircularVelocity();
+        setPerihelionVelocity();
+        setApoapsisVelocity();
+        setInitialImpulse();
+        setFinalImpulse();
+        setPhaseAngle();
+        setSynodicPeriod();
     }
 
-
-    public void setTime(){
-        time=Math.PI*Math.sqrt(Math.pow(2*a,3)/8*u);
-    }
-
-    public void setA (){
+    private void setA (){
         a=1/2.0*(a1+a2);
     }
 
-    public void setU () {
+    private void setU () {
         u=G*c1.getMass();
     }
 
-    public void setTotalEnergy(){
+    private void setTime(){
+        time=Math.PI*Math.sqrt(Math.pow(2*a,3)/8*u);
+    }
+
+    private void setTotalEnergy(){
         totalEnergy=-u/2*a;
     }
 
-    public void setCircularVelocity(){
-        circularVelocity=u/a1;
+    private void setCircularVelocity(){
+        circularVelocity=Math.sqrt(u/a);
     }
-    public void setPerihelionVelocity(){
-        perihelionVelocity=Math.sqrt(2*(totalEnergy+circularVelocity));
+
+    private void setPerihelionVelocity(){
+        perihelionVelocity=Math.sqrt(2*(totalEnergy+u/a1));
+    }
+
+    private void setApoapsisVelocity(){
+        apoapsisVelocity=Math.sqrt(2*totalEnergy+u/a2);
     }
 
     // necessary magnitude of the spacecraft velocity vector
-    public void setInitialImpulse(){
-        initialImpulse=perihelionVelocity-Math.sqrt(circularVelocity);
+    private void setInitialImpulse(){
+        initialImpulse=perihelionVelocity-Math.sqrt(u/a1);
     }
-    public void setFinalImpulse() {
-        finalImpulse=Math.sqrt(u/a2)-Math.sqrt(2*totalEnergy+u/a2);
+
+    private void setFinalImpulse() {
+        finalImpulse=Math.sqrt(u/a2)-apoapsisVelocity;
     }
+
+    private void setPhaseAngle(){
+        phaseAngle=Math.PI-Math.sqrt(u)*time/Math.pow(a2,3/2.0);
+        phaseAngle=phaseAngle*180/Math.PI;
+    }
+
+    private void setSynodicPeriod(){
+        synodicPeriod=2*Math.PI/(Math.sqrt(u/Math.pow(a1,3))-Math.sqrt(u/Math.pow(a2,3)));
+    }
+
+    public double getA1(){
+        return a1;
+    }
+
+    public double getA2(){
+        return a2;
+    }
+
+    public double getA(){
+        return a;
+    }
+
+    public double getU(){
+        return u;
+    }
+
+    public double getTime(){
+        return time;
+    }
+
+    public double getTotalEnergy(){
+        return totalEnergy;
+    }
+
+    public double getCircularVelocity(){
+        return circularVelocity;
+    }
+
+    public double getApoapsisVelocity() {
+        return apoapsisVelocity;
+    }
+
+    public double getPerihelionVelocity() {
+        return perihelionVelocity;
+    }
+
+    public double getInitialImpulse(){
+        return initialImpulse;
+    }
+
+    public double getFinalImpulse() {
+        return finalImpulse;
+    }
+
+    public double getPhaseAngle() {
+        return phaseAngle;
+    }
+
+    public double getSynodicPeriod() {
+        return synodicPeriod;
+    }
+
     /*
+    public void waitingPeriod(){
+
+    }
+
+    public void setInfiniteVelocity(){
+        //infiniteVelocity=Math.acos(-1,eccentricity);
+    }
+
+
 
      * Computes the velocity of a particle in ellipticalOrbit
      * @param r The radius from the primary focus to the particle
@@ -82,22 +170,5 @@ public class HohmannTransfer {
         return new Vector()
     }
     */
-
-    public void phaseAngle(){
-        phaseAngle=Math.PI-Math.sqrt(u)*time/Math.pow(a2,3/2.0);
-        phaseAngle=phaseAngle*180/Math.PI;
-    }
-
-    public void synodicPeriod(){
-        synodicPeriod=2*Math.PI/(Math.sqrt(u/Math.pow(a1,3))-Math.sqrt(u/Math.pow(a2,3)));
-    }
-
-    public void waitingPeriod(){
-
-    }
-
-    public void setInfiniteVelocity(){
-        //infiniteVelocity=Math.acos(-1,eccentricity);
-    }
 
 }

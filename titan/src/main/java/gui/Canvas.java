@@ -8,15 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.io.IOException;
+import java.util.Calendar;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import solarsystem.CelestialObjects;
 import solarsystem.Planet;
-import solarsystem.Planets;
-import solarsystem.SolarSystem;
 import utils.Constant;
+import utils.Date;
 import utils.Vector2D;
 import utils.Vector3D;
 
@@ -31,11 +30,16 @@ public class Canvas extends JPanel {
 	Planet sun;
 	Planet mars;
 	Planet saturn;
+	Planet moon;
 	Planet[] planets;
+	Date date;
+	int cnt = 0;
 	public Canvas() throws IOException {
 
 		setPreferredSize(new Dimension(_WIDTH, _HEIGHT));
 		
+		
+		date = new Date(2019, 3, 14); 
 		
 		earth = new Planet(
 				new Vector3D(-1.471633868509571E+11, 2.104852097662997E+10, -2.126817645682022E+05),//pos m
@@ -50,52 +54,52 @@ public class Canvas extends JPanel {
 		saturn = new Planet(new Vector3D(3.478584940740049E+11, -1.463678221158519E+12, 1.159733711534047E+10), 
 				new Vector3D(8.879609027903770E+03, 2.200312023010623E+03, -3.910344211873641E02),
 				5.6834e26, "saturn");
+		moon = new Planet(new Vector3D(-1.469961550052274E+11, 2.139416217572848E+10, -2.665896077882964E+07), 
+				new Vector3D(-5.628284545172739E+03, -2.920876030457305E+04, 6.182609716986498E01), 
+				7.349e22, "moon");
 		
-		planets = new Planet[]{sun, earth, mars, saturn};
+		planets = new Planet[]{sun, earth, mars, saturn, moon};
 		
 		ActionListener lst = new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for(int i = 0; i < planets.length; i++) {
-					if(planets[i] != sun)
-						planets[i].interact(sun);
+					planets[i].interact(planets);
+				}
+				for(int i = 0; i < planets.length; i++) {
+					planets[i].update();
 				}
 				
 //				System.out.println(earth.getPos());
 				repaint();
-
 			}
 
 		};
 
-		Timer t = new Timer(100, lst);
+		Timer t = new Timer(50, lst);
 		t.start();
 
 	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		
+		g2.setColor(Color.blue);
+		g2.fillRect(0, 0, _WIDTH, _HEIGHT);
+		g2.setColor(Color.white);
+		g2.drawString(date.getDateString(), 20, 20);
+		date.add(Calendar.DATE, 1);
+		g2.drawString("days: " + ++cnt, 20, 40);
 		for(int i = 0; i < planets.length; i++) {
 			 Vector2D v = new Vector2D(planets[i].getPos().scale(Constant.scale)).add(new Vector2D(centerX, centerY));
-			 Ellipse2D.Double obj = new Ellipse2D.Double(v.getX(), v.getY(), 20, 20);
-			 g2.draw(obj);
+			 Ellipse2D.Double obj = new Ellipse2D.Double(v.getX(), v.getY(), 10, 10);
+			 g2.setColor(Color.yellow);
+			 g2.fill(obj);
+			 g2.setColor(Color.white);
 			 g2.drawString(planets[i].getName(), (int)v.getX(), (int)v.getY());
 		}
-	
 	}
 
-	public void paintCelestialObject(Graphics g, CelestialObjects obj, Color color) {
-		Graphics2D g2 = (Graphics2D) g;
-		
-		
-
-	}
-
-	public void paintCelestialObjects(Graphics g, CelestialObjects[] objs, Color color) {
-
-	}
 
 	public double[] transform(Vector3D v) {
 		return new double[] { Constant.epsilon * v.getX() + centerX, Constant.epsilon * v.getY() + centerY };
