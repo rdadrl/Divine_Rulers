@@ -22,6 +22,7 @@ import solarsystem.*;
 import utils.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +43,16 @@ public class MainMenu extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        ArrayList<ObjectInSpace> allObj =
+                new ArrayList<>(solarSystem.getPlanets().getAll());
+        ObjectInSpace cannonballObj = new CannonBall(20, 0.01,
+                solarSystem.getPlanets().getEarth(),
+                solarSystem.getPlanets().getMars(),2000);
+        //((CannonBall) cannonballObj).setLaunchForce(new Vector3D(0, 0, 1000));
+        cannonballObj.initializeCartesianCoordinates(date);
+        allObj.add(cannonballObj);
+        solarSystem.setAllObjects(allObj);
 
         CelestialObjects earthObj = solarSystem.getPlanets().getEarth();
         CelestialObjects sunObj = solarSystem.getPlanets().getSun();
@@ -163,6 +174,16 @@ public class MainMenu extends Application {
         venus.setTranslateY(venusCoordinate.getY() * 40 * -1);
         venus.setTranslateZ(venusCoordinate.getZ() * 40);
 
+        //Cannonball
+        Sphere cannonball = new Sphere(earthObj.getRadius() / MathUtil.AU * 1000000000);
+        PhongMaterial cannonbalMaterial = new PhongMaterial();
+        cannonbalMaterial.setDiffuseColor(Color.ORANGE);
+        cannonball.setMaterial(cannonbalMaterial);
+        Vector3D cannonballCoordinate = cannonballObj.getHEEpos();
+        cannonball.setTranslateX(cannonballCoordinate.getX() * 40);
+        cannonball.setTranslateY(cannonballCoordinate.getY() * 40 * -1);
+        cannonball.setTranslateZ(cannonballCoordinate.getZ() * 40);
+
         //Date Label
         Label dateLabel = new Label(date.toDateString());
         dateLabel.setTextFill(Color.WHITE);
@@ -174,7 +195,7 @@ public class MainMenu extends Application {
         camera.setTranslateZ(100);
 
         root = new Group();
-        root.getChildren().addAll(sun, earth, mercury, mars, jupiter, saturn, titan, uranus, neptune, venus);
+        root.getChildren().addAll(sun, earth, mercury, mars, jupiter, saturn, titan, uranus, neptune, venus, cannonball);
 
 
         AnchorPane globalRoot = new AnchorPane();
@@ -230,7 +251,7 @@ public class MainMenu extends Application {
             }
         });
         //Main Animations Handler
-        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll(), date);
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllObjects(), date);
         final long startNanoTime = System.nanoTime();
         new AnimationTimer()
         {
@@ -270,10 +291,11 @@ public class MainMenu extends Application {
                     saturn.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
                     saturn.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
 
-                    coordinate = titanObj.getHEEpos();
+                    //Titan Update
+                    /*coordinate = titanObj.getHEEpos();
                     titan.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
                     titan.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    titan.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    titan.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);*/
 
                     coordinate = urAnusObj.getHEEpos();
                     uranus.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
@@ -290,6 +312,13 @@ public class MainMenu extends Application {
                     venus.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
                     venus.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
 
+                    //Cannonball Update
+                    /*coordinate = cannonballObj.getHEEpos();
+                    cannonball.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
+                    cannonball.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
+                    cannonball.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);*/
+
+                    //System.out.println("Cannonball Positions: X:" + coordinate.getX() + " Y:" + coordinate.getY() + " Z:" + coordinate.getZ());
                     //Move the camera
                     if (goNorth) camera.setTranslateY(camera.getTranslateY() - 10);
                     if (goSouth) camera.setTranslateY(camera.getTranslateY() + 10);
