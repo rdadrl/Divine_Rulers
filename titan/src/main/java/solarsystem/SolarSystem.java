@@ -1,6 +1,7 @@
 package solarsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import utils.Date;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.InputStream;
  */
 public class SolarSystem {
     private Planets planets;
+    private Date currentDate;
 
     /**
      * Constructor of the solar system
@@ -38,5 +40,15 @@ public class SolarSystem {
     public Planets getPlanets() {
         return planets;
     }
+
+    public void getStartingPositionsPlanets(Date date){
+        currentDate = date;
+        for(CelestialObjects planet: getPlanets().getAll()){
+            planet.initializeCartesianCoordinates(date);
+        }
+
+    }
+
+
 
 }

@@ -161,6 +161,34 @@ public class KeplerToCartesianTest {
 
     }
 
+    @Test
+    public void Jupiter() throws IOException{
+        Date date = new Date(2000, 0, 0, 0, 0, 0);
+        SolarSystem solarSystem = new SolarSystem();
+        CelestialObjects planet = solarSystem.getPlanets().getJupiter();
+        Vector3D HEEPos = planet.getHEEpos(date);
+        Vector3D OrbPos = planet.getRCoord(date);
+        if(PRINT){
+            //printXYZ(planet.getName(), OrbPos, date);
+            printXYZ(planet.getName(), HEEPos, date);
+            //System.out.println();
+        }
+    }
+
+    @Test
+    public void Titan() throws IOException{
+        Date date = new Date(2000, 0, 1, 12, 0, 0);
+        SolarSystem solarSystem = new SolarSystem();
+        CelestialObjects planet = solarSystem.getPlanets().getTitan();
+        Vector3D HEEPos = planet.getHEEpos(date);
+        Vector3D HEEVel = planet.getHEEvel(date);
+        if(PRINT){
+            //printXYZ(planet.getName(), OrbPos, date);
+            printPosVel(planet.getName(), HEEPos, HEEVel, date);
+            //System.out.println();
+        }
+    }
+
     private void printXYZ(String name, Vector3D posCoord, Date date){
         System.out.print(date);
         System.out.print("\t\tX: " + posCoord.getX());

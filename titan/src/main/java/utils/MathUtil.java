@@ -1,5 +1,9 @@
 package utils;
 
+import solarsystem.ObjectInSpace;
+
+import java.util.ArrayList;
+
 /**
  *
  *
@@ -16,5 +20,24 @@ public class MathUtil {
 
     public static double cosDegree(double degree){
         return(Math.cos(Math.toRadians(degree)));
+    }
+
+    public static Vector3D gravitationalForces(ObjectInSpace refOb, ArrayList<?
+            extends ObjectInSpace> objectsInSpace) {
+
+        Vector3D gForces = new Vector3D(); // reset the forces
+        for (ObjectInSpace o : objectsInSpace) {
+            if (o == refOb) {
+                continue;
+            }
+            Vector3D r = o.getHEEpos().substract(refOb.getHEEpos());
+            double dist = r.length();
+            // F(m1<-m2) = (G * m1 * m2) / r^2
+            double netForce = (MathUtil.G * o.getMass() * refOb.getMass()) /
+                    Math.pow(dist, 2);
+            Vector3D thisForce = r.unit().scale(netForce);
+            gForces = gForces.add(thisForce);
+        }
+        return gForces;
     }
 }

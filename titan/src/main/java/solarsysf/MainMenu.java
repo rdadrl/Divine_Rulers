@@ -22,11 +22,14 @@ import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import solarsystem.CelestialObjects;
 import solarsystem.SolarSystem;
+import utils.MathUtil;
 import utils.Vector3D;
 import utils.Date;
+import utils.VerletVelocity;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainMenu extends Application {
@@ -44,31 +47,80 @@ public class MainMenu extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         CelestialObjects earthObj = solarSystem.getPlanets().getEarth();
         CelestialObjects sunObj = solarSystem.getPlanets().getSun();
-
-        Sphere sun      = new Sphere(sunObj.getRadius() / 100000);
-        PhongMaterial material = new PhongMaterial();
-        material.setDiffuseColor(Color.ORANGE);
-        material.setSpecularColor(Color.ORANGERED);
-        sun.setMaterial(material);
+        CelestialObjects mercuryObj = solarSystem.getPlanets().getMercury();
+        CelestialObjects marsObj = solarSystem.getPlanets().getMars();
+        CelestialObjects jupiterObj = solarSystem.getPlanets().getJupiter();
+        CelestialObjects saturnObj = solarSystem.getPlanets().getSaturn();
+        CelestialObjects titanObj = solarSystem.getPlanets().getTitan();
+        CelestialObjects urAnusObj = solarSystem.getPlanets().getUranus();
+        CelestialObjects neptuneObj = solarSystem.getPlanets().getNeptune();
+        CelestialObjects venusObj = solarSystem.getPlanets().getVenus();
+        
+        // Sun
+        Sphere sun      = new Sphere(sunObj.getRadius() / MathUtil.AU);
+        PhongMaterial sunMaterial = new PhongMaterial();
+        sunMaterial.setDiffuseColor(Color.ORANGE);
+        sunMaterial.setSpecularColor(Color.ORANGERED);
+        sun.setMaterial(sunMaterial);
         sun.setTranslateX(0);
         sun.setTranslateZ(0);
         sun.setTranslateY(0);
+
+        //Earth
         Sphere earth    = new Sphere(earthObj.getRadius() / 1000);
+        PhongMaterial earthMaterial = new PhongMaterial();
+        earthMaterial.setDiffuseColor(Color.DARKSEAGREEN);
+        earthMaterial.setSpecularColor(Color.GREEN);
+        earth.setMaterial(earthMaterial);
+        Vector3D earthCoordinate = earthObj.getHEEpos(date);
+        earth.setTranslateX(earthCoordinate.getX() * 50);
+        earth.setTranslateY(earthCoordinate.getY() * 50 * -1);
+        earth.setTranslateZ(earthCoordinate.getZ() * 50);
 
-        Vector3D coordinate = earthObj.getHEEpos(date);
-        earth.setTranslateX(coordinate.getX() * 100);
-        earth.setTranslateY(coordinate.getY() * 100);
-        earth.setTranslateZ(coordinate.getZ() * 100);
+        //Mercury
+        Sphere mercury = new Sphere(mercuryObj.getRadius() / 1000);
+        PhongMaterial mercuryMaterial = new PhongMaterial();
+        mercuryMaterial.setDiffuseColor(Color.GREEN);
+        mercuryMaterial.setSpecularColor(Color.DARKSLATEGRAY);
+        mercury.setMaterial(mercuryMaterial);
+        Vector3D mercuryCoordinate = earthObj.getHEEpos(date);
+        mercury.setTranslateX(mercuryCoordinate.getX() * 50);
+        mercury.setTranslateY(mercuryCoordinate.getY() * 50 * -1);
+        mercury.setTranslateZ(mercuryCoordinate.getZ() * 50);
 
+        //Mars
+        Sphere mars = new Sphere(marsObj.getRadius() / 1000);
+        PhongMaterial marsMaterial = new PhongMaterial();
+        marsMaterial.setDiffuseColor(Color.INDIANRED);
+        marsMaterial.setSpecularColor(Color.MEDIUMVIOLETRED);
+        mars.setMaterial(marsMaterial);
+        Vector3D marsCoordinate = marsObj.getHEEpos(date);
+        mars.setTranslateX(marsCoordinate.getX() * 50);
+        mars.setTranslateY(marsCoordinate.getY() * 50 * -1);
+        mars.setTranslateZ(marsCoordinate.getZ() * 50);
+
+        //Jupiter
+        Sphere jupiter = new Sphere(jupiterObj.getRadius() / 1000);
+        PhongMaterial jupiterMaterial = new PhongMaterial();
+        jupiterMaterial.setDiffuseColor(Color.SANDYBROWN);
+        jupiterMaterial.setSpecularColor(Color.MEDIUMVIOLETRED);
+        jupiter.setMaterial(jupiterMaterial);
+        Vector3D jupiterCoordinate = jupiterObj.getHEEpos(date);
+        jupiter.setTranslateX(jupiterCoordinate.getX() * 50);
+        jupiter.setTranslateY(jupiterCoordinate.getY() * 50 * -1);
+        jupiter.setTranslateZ(jupiterCoordinate.getZ() * 50);
+
+        //Camera
         PerspectiveCamera camera = new PerspectiveCamera(false);
         camera.setTranslateX(-400);
         camera.setTranslateY(-300);
         camera.setTranslateZ(100);
 
         root = new Group();
-        root.getChildren().addAll(sun, earth);
+        root.getChildren().addAll(sun, earth, mercury, mars, jupiter);
         /*final double SCALE_DELTA = 1.1;
         final Pane zoomPane = new Pane();
 
@@ -99,20 +151,45 @@ public class MainMenu extends Application {
         primaryStage.setTitle("SolarSysF - Solar Visualization From Scratch");
         primaryStage.setScene(mainScene);
 
+
+
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll(), date);
         final long startNanoTime = System.nanoTime();
         new AnimationTimer()
         {
             public void handle(long currentNanoTime)
             {
                 double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-                    date.add(Calendar.DATE, 1);
+                verletVelocity.updateLocation(1, TimeUnit.DAYS);
 
-                    Vector3D coordinate = earthObj.getHEEpos(date);
-                    earth.setTranslateX(coordinate.getX() * 100);
-                    earth.setTranslateY(coordinate.getY() * 100);
-                    earth.setTranslateZ(coordinate.getZ() * 100);
+                if (t > 1) {
+                    t = 0;
+                    date.add(Calendar.DATE, 1);
+                    Vector3D coordinate;
+
+                    coordinate = earthObj.getHEEpos();
+                    earth.setTranslateX(coordinate.getX() * 50 / MathUtil.AU);
+                    earth.setTranslateY(coordinate.getY() * 50 * -1 / MathUtil.AU);
+                    earth.setTranslateZ(coordinate.getZ() * 50 / MathUtil.AU);
+
+                    coordinate = mercuryObj.getHEEpos();
+                    mercury.setTranslateX(coordinate.getX() * 50 / MathUtil.AU);
+                    mercury.setTranslateY(coordinate.getY() * 50 * -1 / MathUtil.AU);
+                    mercury.setTranslateZ(coordinate.getZ() * 50 / MathUtil.AU);
+
+                    coordinate = marsObj.getHEEpos();
+                    mars.setTranslateX(coordinate.getX() * 50 / MathUtil.AU);
+                    mars.setTranslateY(coordinate.getY() * 50 * -1 / MathUtil.AU);
+                    mars.setTranslateZ(coordinate.getZ() * 50 / MathUtil.AU);
+
+                    coordinate = jupiterObj.getHEEpos();
+                    jupiter.setTranslateX(coordinate.getX() * 50 / MathUtil.AU);
+                    jupiter.setTranslateY(coordinate.getY() * 50 * -1 / MathUtil.AU);
+                    jupiter.setTranslateZ(coordinate.getZ() * 50 / MathUtil.AU);
                 }
+            }
         }.start();
+
 
         primaryStage.show();
     }

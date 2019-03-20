@@ -1,6 +1,8 @@
 package solarsystem;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+
 /**
  * Class including the planets of the solar system. The objects are created by
  * a json file to keep it organized
@@ -20,10 +22,14 @@ public class Planets {
     private CelestialObjects jupiter;
     @JsonProperty("Saturn")
     private CelestialObjects saturn;
+    @JsonProperty("Titan")
+    private CelestialObjects titan;
     @JsonProperty("Uranus")
     private CelestialObjects uranus;
     @JsonProperty("Neptune")
     private CelestialObjects neptune;
+    @JsonProperty("All")
+    private ArrayList<CelestialObjects> all;
 
     public CelestialObjects getSun() {
         return sun;
@@ -59,5 +65,13 @@ public class Planets {
 
     public CelestialObjects getNeptune() {
         return neptune;
+    }
+
+    public CelestialObjects getTitan() {
+        return titan;
+    }
+
+    public ArrayList<CelestialObjects> getAll(){
+        return all;
     }
 }

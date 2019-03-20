@@ -51,6 +51,10 @@ public class CelestialObjects implements ObjectInSpace{
     private double o0;          // Longitude of ascending node at J2000
     @JsonProperty("node_Cnt")
     private double oCnt;        // Change of longitude of ascending node per
+    @JsonProperty("MA_J2000")
+    private double MAJ2000;
+    @JsonProperty("peri")
+    private double m0; // argument of periapsis
 
     private double a; // semi major axis;
     private double e; // eccentricity
@@ -60,11 +64,15 @@ public class CelestialObjects implements ObjectInSpace{
     private double o; // change of ascending node
     // century
 
-    private Date coordinateDate;   // Date of the current
-    private Vector3D orbitalPos; // Coordinate in the orbital plane
-    private Vector3D orbitalVel; // Velocity vector in the orbital plane
-    private Vector3D HEEpos; // Coordinate central body reference frame
-    private Vector3D HEEvel; // Velocity central body reference frame
+    private Date dateStart;   // Date of the current
+    private Date currentDate;
+    private Vector3D orbitalPos; // Coordinate in the orbital plane AU
+    private Vector3D orbitalVel; // Velocity vector in the orbital plane AU/day
+
+    private Vector3D HEEpos = new Vector3D(); // Coordinate central body reference
+    // frame AU
+    private Vector3D HEEvel = new Vector3D(); // Velocity central body reference frame
+    // AU/day
 
     private Vector3D forces;
 
@@ -78,34 +86,51 @@ public class CelestialObjects implements ObjectInSpace{
     /**
      * get the cartesian coordinates of a planet
      */
-    private void getCartesianCoordinates(Date date) {
-        if(coordinateDate != null && date.compareTo(coordinateDate) == 0){return;}//check
+    public void initializeCartesianCoordinates(Date date) {
+        if(centralBody == null) return;
+        if(dateStart != null && date.compareTo(dateStart) == 0){return;}//check
         // whether current values are already stored for these date.
-        coordinateDate = new Date(date);
+        dateStart = new Date(date);
 
         // step 1
         // compute the value of each of that planet's six elements
         double JT = date.dateToJulian(); // in centuries
-        double T = (JT - 2451545.0)/36525.0;
-
-        a = a0 + aCnt * T;
-        e = e0 + eCnt * T;
-        i = i0 + iCnt * T;
-        l = l0 + lCnt * T;
-        w = w0 + wCnt * T;
-        o = o0 + oCnt * T;
+        double T = (JT - Date.J2000)/36525.0;
 
         double Mass = centralBody.getMass();
-        double mu = Mass * MathUtil.G * MathUtil.AU; // get mu AU/s^2
-        //double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+        double mu = Mass * MathUtil.GAU; // get mu AU/s^2
 
-        Vector3D[] cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
-                i, l, w, o, mu);
+        Vector3D[] cartesian;
+        // as we don't have all the exact details for Titan we need to
+        // approximate it.
+        if(name.equals("Titan")){
+            double dt = 86400 * (JT - Date.J2000); // difference in seconds
+            double M = MAJ2000 + dt * Math.sqrt((mu)/(Math.pow(a0,3)));
+            cartesian = KeplerToCartesian.calculateKepler(a0, e0, m0, o0, i0, M,
+                    mu);
+            double mc = centralBody.w - centralBody.o;
 
+            HEEpos = KeplerToCartesian.rotatePlane(mc, centralBody.o,
+                    centralBody.i, cartesian[2]);
+            HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,
+                    centralBody.i, cartesian[3]);
+        }else{
+            a = a0 + aCnt * T;
+            e = e0 + eCnt * T;
+            i = i0 + iCnt * T;
+            l = l0 + lCnt * T;
+            w = w0 + wCnt * T;
+            o = o0 + oCnt * T;
+            //double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+
+            cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
+                    i, l, w, o, mu);
+
+            HEEpos = cartesian[2];
+            HEEvel = cartesian[3];
+        }
         orbitalPos = cartesian[0];
         orbitalVel = cartesian[1];
-        HEEpos = cartesian[2];
-        HEEvel = cartesian[3];
     }
 
     /**
@@ -170,7 +195,7 @@ public class CelestialObjects implements ObjectInSpace{
     }
 
     public Vector3D getHEEpos(Date date){
-        getCartesianCoordinates(date);
+        initializeCartesianCoordinates(date);
         return HEEpos;
     }
 
@@ -183,7 +208,7 @@ public class CelestialObjects implements ObjectInSpace{
     }
 
     public Vector3D getHEEvel(Date date){
-        getCartesianCoordinates(date);
+        initializeCartesianCoordinates(date);
         return HEEvel;
     }
     public Vector3D getHEEvel(){
@@ -196,12 +221,12 @@ public class CelestialObjects implements ObjectInSpace{
 
 
     public Vector3D getRCoord(Date date){
-        getCartesianCoordinates(date);
+        initializeCartesianCoordinates(date);
         return orbitalPos;
     }
 
     public Vector3D getVel(Date date){
-        getCartesianCoordinates(date);
+        initializeCartesianCoordinates(date);
         return orbitalVel;
     }
 
@@ -210,20 +235,20 @@ public class CelestialObjects implements ObjectInSpace{
      * @param objectsInSpace arraylist of all the objects that apply a force to
      * @return forces
      */
-    public void setForces(ArrayList<ObjectInSpace> objectsInSpace){
-        forces = new Vector3D(); // reset the forces
-        for(ObjectInSpace o: objectsInSpace){
-            if(o == this){continue;}
-            Vector3D r = o.getHEEpos().substract(this.getHEEpos());
-            double netForce = (MathUtil.G * o.getMass() * this.getMass())/
-                    Math.pow(r.length(), 3);
-            Vector3D thisForce = r.unit().scale(netForce);
-            forces = forces.add(thisForce);
-        }
+    public void setForces(ArrayList<? extends ObjectInSpace> objectsInSpace){
+        forces = MathUtil.gravitationalForces(this, objectsInSpace);
     }
 
     public Vector3D getForces(){
         return forces;
     }
 
+    @Override
+    public String toString() {
+        return "CelestialObjects{" +
+                "name=" + name +
+                ", HEEpos=" + HEEpos +
+                ", HEEvel=" + HEEvel +
+                '}';
+    }
 }

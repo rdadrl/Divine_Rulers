@@ -88,6 +88,23 @@ public class Vector3D implements Vector<Point3D>{
 		Vector3D other = (Vector3D)_other;
 		return Math.abs(dot(other)) < epsilon;
 	}
+	/*
+	public Vector rotateXDeg(double theta) {
+		return rotateXRad(Math.toRadians(theta));
+	}
+
+
+	public Vector rotateXRad(double theta) {
+		double cosTheta = Math.cos(theta);
+		double sinTheta = Math.sin(theta);
+		return new Vector(
+				this.dot(new Vector3D(1, 0, 0)),
+				this.dot(new Vector3D(0, cosTheta, -1*sinTheta)),
+				this.dot(new Vector3D(0, sinTheta, cosTheta))
+		);
+	}*/
+
+
 	public static boolean isOrthogonal(Vector3D u, Vector3D w) {
 		return u.isOrthogonal(w);
 	}
@@ -116,20 +133,16 @@ public class Vector3D implements Vector<Point3D>{
         this.z = z;
     }
 
+    @Override
     public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(this.getClass().getSimpleName());
-		sb.append(" [x=");
-		sb.append(x);
-		sb.append(", y="); 
-		sb.append(y);
-		sb.append(", z=");
-		sb.append(z);
-		sb.append("]");
-		return sb.toString();
-	}
-	
-	public static void main(String[] args) {
+        return "Vector3D{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
+    }
+
+    public static void main(String[] args) {
 		Vector3D v = new Vector3D(-5 + Math.random() * 10, -5 + Math.random() * 10, -5 + Math.random() * 10);
 		Vector3D w = new Vector3D(Math.random() * 10, Math.random() * 10, Math.random() * 10);
 		System.out.println("v: " + v);

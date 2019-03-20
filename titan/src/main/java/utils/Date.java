@@ -10,6 +10,7 @@ import java.util.TimeZone;
  * 
  */
 public class Date extends GregorianCalendar {
+    public static final double J2000 = 2451545.0;
     public Date() {
     }
 
