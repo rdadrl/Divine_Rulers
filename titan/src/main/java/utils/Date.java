@@ -27,15 +27,15 @@ public class Date extends GregorianCalendar {
     }
 
     public Date(int year, int month, int dayOfMonth) {
-        super(year, month-1, dayOfMonth);
+        super(year, month, dayOfMonth);
     }
 
     public Date(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
-        super(year, month-1, dayOfMonth, hourOfDay, minute);
+        super(year, month, dayOfMonth, hourOfDay, minute);
     }
 
     public Date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
-        super(year, month-1, dayOfMonth, hourOfDay, minute, second);
+        super(year, month, dayOfMonth, hourOfDay, minute, second);
     }
     public Date(Date date){
         this(date.get(Calendar.YEAR), date.get(Calendar.MONTH),

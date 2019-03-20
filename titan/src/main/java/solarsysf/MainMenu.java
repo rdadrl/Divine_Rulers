@@ -23,7 +23,9 @@ import javafx.stage.Stage;
 import javafx.scene.shape.Sphere;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import solarsystem.CannonBall;
 import solarsystem.CelestialObjects;
+import solarsystem.ObjectInSpace;
 import solarsystem.SolarSystem;
 import utils.MathUtil;
 import utils.Vector3D;
@@ -31,6 +33,7 @@ import utils.Date;
 import utils.VerletVelocity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +53,15 @@ public class MainMenu extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        ArrayList<ObjectInSpace> allObj =
+                new ArrayList<>(solarSystem.getPlanets().getAll());
+        ObjectInSpace cannonballObj = new CannonBall(20, 0.01,
+                solarSystem.getPlanets().getEarth(),
+                solarSystem.getPlanets().getMars());
+        cannonballObj.initializeCartesianCoordinates(date);
+        allObj.add(cannonballObj);
+        solarSystem.setAllObjects(allObj);
 
         CelestialObjects earthObj = solarSystem.getPlanets().getEarth();
         CelestialObjects sunObj = solarSystem.getPlanets().getSun();
@@ -138,6 +150,17 @@ public class MainMenu extends Application {
         titan.setTranslateY(titanCoordinate.getY() * 30 * -1);
         titan.setTranslateZ(titanCoordinate.getZ() * 30);
 
+        //Cannonball
+        Sphere cannonball = new Sphere(jupiterObj.getRadius() / 1000);
+        PhongMaterial cannonbalMaterial = new PhongMaterial();
+        cannonbalMaterial.setDiffuseColor(Color.SANDYBROWN);
+        cannonbalMaterial.setSpecularColor(Color.MEDIUMVIOLETRED);
+        cannonball.setMaterial(cannonbalMaterial);
+        Vector3D cannonballCoordinate = cannonballObj.getHEEpos();
+        cannonball.setTranslateX(cannonballCoordinate.getX() * 50);
+        cannonball.setTranslateY(cannonballCoordinate.getY() * 50 * -1);
+        cannonball.setTranslateZ(cannonballCoordinate.getZ() * 50);
+
         //Date Label
         Label dateLabel = new Label(date.toDateString());
         dateLabel.setTextFill(Color.WHITE);
@@ -149,7 +172,8 @@ public class MainMenu extends Application {
         camera.setTranslateZ(100);
 
         root = new Group();
-        root.getChildren().addAll(sun, earth, mercury, mars, jupiter, saturn, titan);
+        root.getChildren().addAll(sun, earth, mercury, mars, jupiter, saturn,
+                titan, cannonball);
 
 
         AnchorPane globalRoot = new AnchorPane();
@@ -211,14 +235,14 @@ public class MainMenu extends Application {
             }
         });
         //Main Animations Handler
-        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll(), date);
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllObjects(), date);
         final long startNanoTime = System.nanoTime();
         new AnimationTimer()
         {
             public void handle(long currentNanoTime)
             {
                 double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-                verletVelocity.updateLocation(1, TimeUnit.DAYS);
+                //verletVelocity.updateLocation(1, TimeUnit.DAYS);
                 dateLabel.setText(date.toDateString());
                 if (t > 1) {
                     t = 0;
@@ -226,32 +250,37 @@ public class MainMenu extends Application {
 
                     Vector3D coordinate;
 
-                    coordinate = earthObj.getHEEpos();
+                    coordinate = earthObj.getHEEpos(date);
                     earth.setTranslateX(coordinate.getX() * 30 / MathUtil.AU);
                     earth.setTranslateY(coordinate.getY() * 30 * -1 / MathUtil.AU);
                     earth.setTranslateZ(coordinate.getZ() * 30 / MathUtil.AU);
 
-                    coordinate = mercuryObj.getHEEpos();
+                    coordinate = mercuryObj.getHEEpos(date);
                     mercury.setTranslateX(coordinate.getX() * 30 / MathUtil.AU);
                     mercury.setTranslateY(coordinate.getY() * 30 * -1 / MathUtil.AU);
                     mercury.setTranslateZ(coordinate.getZ() * 30 / MathUtil.AU);
 
-                    coordinate = marsObj.getHEEpos();
+                    coordinate = marsObj.getHEEpos(date);
                     mars.setTranslateX(coordinate.getX() * 30 / MathUtil.AU);
                     mars.setTranslateY(coordinate.getY() * 30 * -1 / MathUtil.AU);
                     mars.setTranslateZ(coordinate.getZ() * 30 / MathUtil.AU);
 
-                    coordinate = jupiterObj.getHEEpos();
+                    coordinate = jupiterObj.getHEEpos(date);
                     jupiter.setTranslateX(coordinate.getX() * 30 / MathUtil.AU);
                     jupiter.setTranslateY(coordinate.getY() * 30 * -1 / MathUtil.AU);
                     jupiter.setTranslateZ(coordinate.getZ() * 30 / MathUtil.AU);
 
-                    coordinate = saturnObj.getHEEpos();
+                    coordinate = saturnObj.getHEEpos(date);
                     saturn.setTranslateX(coordinate.getX() * 30 / MathUtil.AU);
                     saturn.setTranslateY(coordinate.getY() * 30 * -1 / MathUtil.AU);
                     saturn.setTranslateZ(coordinate.getZ() * 30 / MathUtil.AU);
 
-                    coordinate = titanObj.getHEEpos();
+                    coordinate = titanObj.getHEEpos(date);
+                    titan.setTranslateX(coordinate.getX() * 30 / MathUtil.AU);
+                    titan.setTranslateY(coordinate.getY() * 30 * -1 / MathUtil.AU);
+                    titan.setTranslateZ(coordinate.getZ() * 30 / MathUtil.AU);
+
+                    coordinate = cannonballObj.getHEEpos();
                     titan.setTranslateX(coordinate.getX() * 30 / MathUtil.AU);
                     titan.setTranslateY(coordinate.getY() * 30 * -1 / MathUtil.AU);
                     titan.setTranslateZ(coordinate.getZ() * 30 / MathUtil.AU);

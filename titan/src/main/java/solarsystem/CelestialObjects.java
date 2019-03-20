@@ -14,7 +14,6 @@ import java.util.HashSet;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@id")
 public class CelestialObjects implements ObjectInSpace{
-
     @JsonProperty("central_body")
     private CelestialObjects centralBody;
     private HashSet<CelestialObjects> orbitingChildren;
@@ -104,16 +103,22 @@ public class CelestialObjects implements ObjectInSpace{
         // as we don't have all the exact details for Titan we need to
         // approximate it.
         if(name.equals("Titan")){
+            this.centralBody.initializeCartesianCoordinates(date);
             double dt = 86400 * (JT - Date.J2000); // difference in seconds
             double M = MAJ2000 + dt * Math.sqrt((mu)/(Math.pow(a0,3)));
             cartesian = KeplerToCartesian.calculateKepler(a0, e0, m0, o0, i0, M,
                     mu);
             double mc = centralBody.w - centralBody.o;
+            Vector3D SatPos = cartesian[2];
+            Vector3D SatVel = cartesian[3];
+
+
+            HEEpos = centralBody.getHEEpos().add(cartesian[2]);
 
             HEEpos = KeplerToCartesian.rotatePlane(mc, centralBody.o,
-                    centralBody.i, cartesian[2]);
+                    centralBody.i, SatPos);
             HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,
-                    centralBody.i, cartesian[3]);
+                    centralBody.i, SatVel);
         }else{
             a = a0 + aCnt * T;
             e = e0 + eCnt * T;
@@ -126,7 +131,7 @@ public class CelestialObjects implements ObjectInSpace{
             cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
                     i, l, w, o, mu);
 
-            HEEpos = cartesian[2];
+            HEEpos = centralBody.getHEEpos().add(cartesian[2]);
             HEEvel = cartesian[3];
         }
         orbitalPos = cartesian[0];
@@ -190,6 +195,9 @@ public class CelestialObjects implements ObjectInSpace{
         return period;
     }
 
+    /**
+     * @return semi-major axis
+     */
     public double getSemiMajorAxisJ2000() {
         return a0;
     }
@@ -199,6 +207,9 @@ public class CelestialObjects implements ObjectInSpace{
         return HEEpos;
     }
 
+    /**
+     * @return get coordinates based upon HEE coordinates
+     */
     public Vector3D getHEEpos(){
         return HEEpos;
     }
@@ -219,12 +230,15 @@ public class CelestialObjects implements ObjectInSpace{
         this.HEEvel = centralVel;
     }
 
-
     public Vector3D getRCoord(Date date){
         initializeCartesianCoordinates(date);
         return orbitalPos;
     }
 
+    /**
+     * @param date date
+     * @return velocity vector
+     */
     public Vector3D getVel(Date date){
         initializeCartesianCoordinates(date);
         return orbitalVel;
@@ -235,12 +249,30 @@ public class CelestialObjects implements ObjectInSpace{
      * @param objectsInSpace arraylist of all the objects that apply a force to
      * @return forces
      */
+    @Override
     public void setForces(ArrayList<? extends ObjectInSpace> objectsInSpace){
         forces = MathUtil.gravitationalForces(this, objectsInSpace);
     }
 
+    /**
+     * @return forces
+     */
+    @Override
     public Vector3D getForces(){
         return forces;
+    }
+
+    /**
+     * Get the planet around which the whole solarsystem is based upon. E.g
+     * ., the sun in our case
+     * @return
+     */
+    public CelestialObjects getReferencePlanet(){
+        CelestialObjects ref = centralBody;
+        while(ref.centralBody != null){
+            ref = ref.centralBody;
+        }
+        return centralBody;
     }
 
     @Override
