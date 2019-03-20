@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.io.IOException;
+import java.util.Calendar;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -17,6 +18,7 @@ import solarsystem.Planet;
 import solarsystem.Planets;
 import solarsystem.SolarSystem;
 import utils.Constant;
+import utils.Date;
 import utils.Vector2D;
 import utils.Vector3D;
 
@@ -32,10 +34,14 @@ public class Canvas extends JPanel {
 	Planet mars;
 	Planet saturn;
 	Planet[] planets;
+	Date date;
+	int cnt = 0;
 	public Canvas() throws IOException {
 
 		setPreferredSize(new Dimension(_WIDTH, _HEIGHT));
 		
+		
+		date = new Date(2019, 3, 14); 
 		
 		earth = new Planet(
 				new Vector3D(-1.471633868509571E+11, 2.104852097662997E+10, -2.126817645682022E+05),//pos m
@@ -58,18 +64,19 @@ public class Canvas extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for(int i = 0; i < planets.length; i++) {
-					if(planets[i] != sun)
-						planets[i].interact(sun);
+					planets[i].interact(planets);
+				}
+				for(int i = 0; i < planets.length; i++) {
+					planets[i].update();
 				}
 				
 //				System.out.println(earth.getPos());
 				repaint();
-
 			}
 
 		};
 
-		Timer t = new Timer(100, lst);
+		Timer t = new Timer(50, lst);
 		t.start();
 
 	}
@@ -77,25 +84,18 @@ public class Canvas extends JPanel {
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		
+		g2.drawString(date.getDateString(), 20, 20);
+		date.add(Calendar.DATE, 1);
+		g2.drawString("days: " + ++cnt, 20, 40);
+		
 		for(int i = 0; i < planets.length; i++) {
 			 Vector2D v = new Vector2D(planets[i].getPos().scale(Constant.scale)).add(new Vector2D(centerX, centerY));
 			 Ellipse2D.Double obj = new Ellipse2D.Double(v.getX(), v.getY(), 20, 20);
 			 g2.draw(obj);
 			 g2.drawString(planets[i].getName(), (int)v.getX(), (int)v.getY());
 		}
-	
 	}
 
-	public void paintCelestialObject(Graphics g, CelestialObjects obj, Color color) {
-		Graphics2D g2 = (Graphics2D) g;
-		
-		
-
-	}
-
-	public void paintCelestialObjects(Graphics g, CelestialObjects[] objs, Color color) {
-
-	}
 
 	public double[] transform(Vector3D v) {
 		return new double[] { Constant.epsilon * v.getX() + centerX, Constant.epsilon * v.getY() + centerY };

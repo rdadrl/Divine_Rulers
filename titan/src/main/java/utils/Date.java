@@ -7,7 +7,7 @@ import java.util.TimeZone;
 
 /**
  * A time class used for keeping track of the date.
- * !Month starts from 0. So 1st January 2000 needs to be added as 2000, 0, 1
+ * 
  */
 public class Date extends GregorianCalendar {
     public Date() {
@@ -26,15 +26,15 @@ public class Date extends GregorianCalendar {
     }
 
     public Date(int year, int month, int dayOfMonth) {
-        super(year, month, dayOfMonth);
+        super(year, month-1, dayOfMonth);
     }
 
     public Date(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
-        super(year, month, dayOfMonth, hourOfDay, minute);
+        super(year, month-1, dayOfMonth, hourOfDay, minute);
     }
 
     public Date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
-        super(year, month, dayOfMonth, hourOfDay, minute, second);
+        super(year, month-1, dayOfMonth, hourOfDay, minute, second);
     }
     public Date(Date date){
         this(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
@@ -56,6 +56,18 @@ public class Date extends GregorianCalendar {
         return 367 * Y - Math.floor(7 * (Y + Math.floor((M + 9) / 12D)) / 4D)
                 - Math.floor(3 * (Math.floor((Y + (M - 9) / 7D) / 100D) + 1) / 4D)
                 + Math.floor(275 * M / 9D) + D + 1721028.5 + (H / 24D);
+    }
+    
+    public String getDateString() {
+    	return get(Calendar.YEAR) + ": " + pad(get(Calendar.MONTH)) + ": " + pad(get(Calendar.DATE));
+    }
+    
+    public String pad(int n) {
+    	String str = "" + n;
+    	if(n < 10) {
+    		str = "0" + str;
+    	} 
+    	return str;
     }
 
     @Override
