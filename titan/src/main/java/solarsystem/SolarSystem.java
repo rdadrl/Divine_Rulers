@@ -6,6 +6,7 @@ import utils.Date;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,6 +15,7 @@ import java.io.InputStream;
 public class SolarSystem {
     private Planets planets;
     private Date currentDate;
+    private ArrayList<? extends ObjectInSpace> allObjects;
 
     /**
      * Constructor of the solar system
@@ -39,6 +41,14 @@ public class SolarSystem {
      */
     public Planets getPlanets() {
         return planets;
+    }
+
+    public ArrayList<? extends ObjectInSpace> getAllObjects() {
+        return allObjects;
+    }
+
+    public void setAllObjects(ArrayList<? extends ObjectInSpace> allObjects) {
+        this.allObjects = allObjects;
     }
 
     public void getStartingPositionsPlanets(Date date){

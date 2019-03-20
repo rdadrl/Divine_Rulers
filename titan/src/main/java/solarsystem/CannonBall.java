@@ -2,6 +2,7 @@ package solarsystem;
 
 import utils.Date;
 import utils.MathUtil;
+import utils.Vector;
 import utils.Vector3D;
 
 import java.util.ArrayList;
@@ -12,21 +13,31 @@ import java.util.ArrayList;
  */
 public class CannonBall implements ObjectInSpace {
     private double mass;
+    private double radius;
     private Vector3D HEEpos; // Coordinate central body reference frame
     private Vector3D HEEvel; // Velocity central body reference frame
     private Vector3D forces;
-    private ObjectInSpace fromPlanet;
-    private double launchForce;
+    private CelestialObjects fromPlanet;
+    private CelestialObjects toPlanet;
+    private Vector3D launchForce;
 
 
-    public CannonBall(double mass, ObjectInSpace fromPlanet, double launchForce) {
+
+    /**
+     * @param mass mass of the cannon ball
+     * @param fromPlanet
+     * @param launchForce
+     */
+    public CannonBall(double mass, double radius,
+                         CelestialObjects fromPlanet,
+                      CelestialObjects toPlanet){
         this.mass = mass;
+        this.radius = radius;
+        this.toPlanet = toPlanet;
         this.fromPlanet = fromPlanet;
-        this.launchForce = launchForce;
     }
-    public void setLaunchForce(double launchForce){
+    public void setLaunchForce(Vector3D launchForce){
         this.launchForce = launchForce;
-
     }
 
     @Override
@@ -66,6 +77,12 @@ public class CannonBall implements ObjectInSpace {
 
     @Override
     public void initializeCartesianCoordinates(Date date) {
-
+        //Make our cannon leave from the outside of the planet.
+        Vector3D fromPlCoord = fromPlanet.getHEEpos(date);
+        toPlanet.initializeCartesianCoordinates(date);
+        double r = (fromPlanet.getRadius() * 1000 * MathUtil.AU);
+        HEEpos = fromPlCoord.add(fromPlCoord.unit().scale(r));
+        HEEvel =
+                fromPlanet.getHEEpos().substract(toPlanet.getHEEpos()).unit().scale(20000);
     }
 }
