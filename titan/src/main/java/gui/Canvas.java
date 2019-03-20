@@ -13,10 +13,7 @@ import java.util.Calendar;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import solarsystem.CelestialObjects;
 import solarsystem.Planet;
-import solarsystem.Planets;
-import solarsystem.SolarSystem;
 import utils.Constant;
 import utils.Date;
 import utils.Vector2D;
@@ -33,6 +30,7 @@ public class Canvas extends JPanel {
 	Planet sun;
 	Planet mars;
 	Planet saturn;
+	Planet moon;
 	Planet[] planets;
 	Date date;
 	int cnt = 0;
@@ -56,8 +54,11 @@ public class Canvas extends JPanel {
 		saturn = new Planet(new Vector3D(3.478584940740049E+11, -1.463678221158519E+12, 1.159733711534047E+10), 
 				new Vector3D(8.879609027903770E+03, 2.200312023010623E+03, -3.910344211873641E02),
 				5.6834e26, "saturn");
+		moon = new Planet(new Vector3D(-1.469961550052274E+11, 2.139416217572848E+10, -2.665896077882964E+07), 
+				new Vector3D(-5.628284545172739E+03, -2.920876030457305E+04, 6.182609716986498E01), 
+				7.349e22, "moon");
 		
-		planets = new Planet[]{sun, earth, mars, saturn};
+		planets = new Planet[]{sun, earth, mars, saturn, moon};
 		
 		ActionListener lst = new ActionListener() {
 
@@ -83,15 +84,18 @@ public class Canvas extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		
+		g2.setColor(Color.blue);
+		g2.fillRect(0, 0, _WIDTH, _HEIGHT);
+		g2.setColor(Color.white);
 		g2.drawString(date.getDateString(), 20, 20);
 		date.add(Calendar.DATE, 1);
 		g2.drawString("days: " + ++cnt, 20, 40);
-		
 		for(int i = 0; i < planets.length; i++) {
 			 Vector2D v = new Vector2D(planets[i].getPos().scale(Constant.scale)).add(new Vector2D(centerX, centerY));
-			 Ellipse2D.Double obj = new Ellipse2D.Double(v.getX(), v.getY(), 20, 20);
-			 g2.draw(obj);
+			 Ellipse2D.Double obj = new Ellipse2D.Double(v.getX(), v.getY(), 10, 10);
+			 g2.setColor(Color.yellow);
+			 g2.fill(obj);
+			 g2.setColor(Color.white);
 			 g2.drawString(planets[i].getName(), (int)v.getX(), (int)v.getY());
 		}
 	}

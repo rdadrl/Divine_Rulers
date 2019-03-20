@@ -60,7 +60,7 @@ public class Date extends GregorianCalendar {
     }
     
     public String getDateString() {
-    	return get(Calendar.YEAR) + ": " + pad(get(Calendar.MONTH)) + ": " + pad(get(Calendar.DATE));
+    	return get(Calendar.YEAR) + "/" + pad(get(Calendar.MONTH)) + "/" + pad(get(Calendar.DATE));
     }
     
     public String pad(int n) {
