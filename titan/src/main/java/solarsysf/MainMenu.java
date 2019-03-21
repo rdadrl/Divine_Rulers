@@ -31,6 +31,7 @@ public class MainMenu extends Application {
     private Group root;
     private boolean goNorth, goSouth, goEast, goWest;
     private boolean pauseStatus = false;
+    private final boolean USELIGHTS = true;
     private final int DistanceMultiplier = 40;
     @Override
     public void start(Stage primaryStage) {
@@ -65,7 +66,7 @@ public class MainMenu extends Application {
         CelestialObjects venusObj = solarSystem.getPlanets().getVenus();
 
         //Planet Name Label
-        Label identifierLabel = new Label("Sun\nX:\nY:\nZ:");
+        Label identifierLabel = new Label();
         identifierLabel.setTextFill(Color.WHITE);
 
         // Sun
@@ -79,16 +80,20 @@ public class MainMenu extends Application {
         sun.setTranslateZ(0);
         sun.setTranslateY(0);
 
-        PointLight pointLight = new PointLight(Color.WHITE);
-        pointLight.setTranslateX(0);
-        pointLight.setTranslateY(0);
-        pointLight.setTranslateZ(0);
-        AmbientLight ambientLight = new AmbientLight();
+        PointLight pointLight = null;
+        AmbientLight ambientLight = null;
+        if (USELIGHTS) {
+            pointLight = new PointLight(Color.WHITE);
+            pointLight.setTranslateX(0);
+            pointLight.setTranslateY(0);
+            pointLight.setTranslateZ(0);
+            ambientLight = new AmbientLight();
+        }
 
         sun.setOnMouseEntered(new EventHandler<MouseEvent> () {
             @Override
             public void handle(MouseEvent t) {
-                Vector3D coordinate = earthObj.getHEEpos();
+                Vector3D coordinate = sunObj.getHEEpos();
                 //limit decimals to 3 points
                 float sX = ((int) (coordinate.getX() * 1000)) / 1000F;
                 float sY = ((int) (coordinate.getY() * 1000)) / 1000F;
@@ -118,6 +123,26 @@ public class MainMenu extends Application {
         earth.setTranslateX(earthCoordinate.getX() * DistanceMultiplier);
         earth.setTranslateY(earthCoordinate.getY() * DistanceMultiplier * -1);
         earth.setTranslateZ(earthCoordinate.getZ() * DistanceMultiplier);
+
+        earth.setOnMouseEntered(new EventHandler<MouseEvent> () {
+            @Override
+            public void handle(MouseEvent t) {
+                Vector3D coordinate = earthObj.getHEEpos();
+                //limit decimals to 3 points
+                float sX = ((int) (coordinate.getX() * 1000)) / 1000F;
+                float sY = ((int) (coordinate.getY() * 1000)) / 1000F;
+                float sZ = ((int) (coordinate.getZ() * 1000)) / 1000F;
+
+                identifierLabel.setText("Earth:\nX: " + sX + "\nY: " + sY + "\nZ: " + sZ);
+            }
+        });
+
+        earth.setOnMouseExited(new EventHandler<MouseEvent> () {
+            @Override
+            public void handle(MouseEvent t) {
+                identifierLabel.setText("");
+            }
+        });
 
         //Mercury
         Sphere mercury = new Sphere(mercuryObj.getRadius() / MathUtil.AU * 100000000);
@@ -240,7 +265,8 @@ public class MainMenu extends Application {
         camera.setTranslateZ(100);
 
         root = new Group();
-        root.getChildren().addAll(pointLight, ambientLight, sun, earth, mercury, mars, jupiter, saturn, titan, uranus, neptune, venus, cannonball);
+        if (USELIGHTS) root.getChildren().addAll(pointLight, ambientLight);
+        root.getChildren().addAll(sun, earth, mercury, mars, jupiter, saturn, titan, uranus, neptune, venus, cannonball);
 
 
         AnchorPane globalRoot = new AnchorPane();
