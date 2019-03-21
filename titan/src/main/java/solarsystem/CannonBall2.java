@@ -15,14 +15,14 @@ import java.util.ArrayList;
  *
  */
 /*
-public class CannonBall2 implements ObjectInSpace {
+public class CannonBall2 implements CelestialObject {
 
 
     public static void main(String[] args) {
         try {
             SolarSystem solarSystem = new SolarSystem();
-            CelestialObjects departurePlanet = solarSystem.getPlanets().getEarth();
-            CelestialObjects arrivalPlanet = solarSystem.getPlanets().getSaturn();
+            Planet departurePlanet = solarSystem.getPlanets().getEarth();
+            Planet arrivalPlanet = solarSystem.getPlanets().getSaturn();
 
             Date date = new Date(2000, 0, 1);
             boolean didFindDate = false;
@@ -50,12 +50,12 @@ public class CannonBall2 implements ObjectInSpace {
     private Vector3D HEEpos; // Coordinate central body reference frame
     private Vector3D HEEvel; // Velocity central body reference frame
     private Vector3D forces;
-    private ObjectInSpace fromPlanet;
-    private ObjectInSpace toPlanet;
+    private CelestialObject fromPlanet;
+    private CelestialObject toPlanet;
     private double launchForce;
     private Vector3D launchVector;
 
-    public CannonBall2(double mass, double radius, CelestialObjects fromPlanet, CelestialObjects toPlanet) {
+    public CannonBall2(double mass, double radius, Planet fromPlanet, Planet toPlanet) {
         this.mass = mass;
         this.radius = radius;
         this.fromPlanet = fromPlanet;
@@ -84,7 +84,7 @@ public class CannonBall2 implements ObjectInSpace {
     }
 
     @Override
-    public void setForces(ArrayList<? extends ObjectInSpace> objectsInSpace){
+    public void setForces(ArrayList<? extends CelestialObject> objectsInSpace){
         forces = MathUtil.gravitationalForces(this, objectsInSpace);
     }
 

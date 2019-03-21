@@ -1,25 +1,15 @@
 package gui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.io.IOException;
-import java.util.Calendar;
 
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
-import solarsystem.Planet;
 import utils.Constant;
 import utils.Date;
 import utils.Vector2D;

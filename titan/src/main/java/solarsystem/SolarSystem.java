@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class SolarSystem {
     private Planets planets;
     private Date currentDate;
-    private ArrayList<? extends ObjectInSpace> allObjects;
+    private ArrayList<? extends CelestialObject> allObjects;
 
     /**
      * Constructor of the solar system
@@ -43,17 +43,17 @@ public class SolarSystem {
         return planets;
     }
 
-    public ArrayList<? extends ObjectInSpace> getAllObjects() {
+    public ArrayList<? extends CelestialObject> getAllObjects() {
         return allObjects;
     }
 
-    public void setAllObjects(ArrayList<? extends ObjectInSpace> allObjects) {
+    public void setAllObjects(ArrayList<? extends CelestialObject> allObjects) {
         this.allObjects = allObjects;
     }
 
     public void getStartingPositionsPlanets(Date date){
         currentDate = date;
-        for(CelestialObjects planet: getPlanets().getAll()){
+        for(Planet planet: getPlanets().getAll()){
             planet.initializeCartesianCoordinates(date);
         }
 

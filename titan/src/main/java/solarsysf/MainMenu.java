@@ -31,12 +31,12 @@ public class MainMenu extends Application {
     private Group root;
     private boolean goNorth, goSouth, goEast, goWest;
     private boolean pauseStatus = false;
-    private final boolean USELIGHTS = true;
+    private final boolean USELIGHTS = false;
     private final int DistanceMultiplier = 40;
     @Override
     public void start(Stage primaryStage) {
 
-        Date date = new Date(2000, 0, 1, 12, 0, 0);
+        Date date = new Date(2010, 0, 1, 12, 0, 0);
         SolarSystem solarSystem = null;
         try {
             solarSystem = new SolarSystem();
@@ -44,9 +44,9 @@ public class MainMenu extends Application {
             e.printStackTrace();
         }
 
-        ArrayList<ObjectInSpace> allObj =
+        ArrayList<CelestialObject> allObj =
                 new ArrayList<>(solarSystem.getPlanets().getAll());
-        ObjectInSpace cannonballObj = new CannonBall(20, 1,
+        CelestialObject cannonballObj = new CannonBall(20, 1,
                 solarSystem.getPlanets().getEarth(),
                 solarSystem.getPlanets().getMars());
         //((CannonBall) cannonballObj).setLaunchForce(new Vector3D(0, 0, 1000));
@@ -54,16 +54,16 @@ public class MainMenu extends Application {
         allObj.add(cannonballObj);
         solarSystem.setAllObjects(allObj);
 
-        CelestialObjects earthObj = solarSystem.getPlanets().getEarth();
-        CelestialObjects sunObj = solarSystem.getPlanets().getSun();
-        CelestialObjects mercuryObj = solarSystem.getPlanets().getMercury();
-        CelestialObjects marsObj = solarSystem.getPlanets().getMars();
-        CelestialObjects jupiterObj = solarSystem.getPlanets().getJupiter();
-        CelestialObjects saturnObj = solarSystem.getPlanets().getSaturn();
-        CelestialObjects titanObj = solarSystem.getPlanets().getTitan();
-        CelestialObjects urAnusObj = solarSystem.getPlanets().getUranus();
-        CelestialObjects neptuneObj = solarSystem.getPlanets().getNeptune();
-        CelestialObjects venusObj = solarSystem.getPlanets().getVenus();
+        Planet earthObj = solarSystem.getPlanets().getEarth();
+        Planet sunObj = solarSystem.getPlanets().getSun();
+        Planet mercuryObj = solarSystem.getPlanets().getMercury();
+        Planet marsObj = solarSystem.getPlanets().getMars();
+        Planet jupiterObj = solarSystem.getPlanets().getJupiter();
+        Planet saturnObj = solarSystem.getPlanets().getSaturn();
+        Planet titanObj = solarSystem.getPlanets().getTitan();
+        Planet urAnusObj = solarSystem.getPlanets().getUranus();
+        Planet neptuneObj = solarSystem.getPlanets().getNeptune();
+        Planet venusObj = solarSystem.getPlanets().getVenus();
 
         //Planet Name Label
         Label identifierLabel = new Label();

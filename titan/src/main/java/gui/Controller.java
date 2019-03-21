@@ -2,8 +2,6 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 import java.util.Calendar;
 
 import javax.swing.JSpinner;
@@ -11,9 +9,7 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import solarsystem.Planet;
 import utils.Constant;
-import utils.Vector2D;
 import utils.Vector3D;
 
 public class Controller {

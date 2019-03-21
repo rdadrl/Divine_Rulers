@@ -1,8 +1,6 @@
 package utils;
-import java.awt.Color;
 
-import solarsystem.Orbiter;
-import solarsystem.Planet;
+import gui.Orbiter;
 
 public class Calculator {
 	

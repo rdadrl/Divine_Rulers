@@ -1,4 +1,4 @@
-package solarsystem;
+package gui;
 
 import utils.Vector3D;
 

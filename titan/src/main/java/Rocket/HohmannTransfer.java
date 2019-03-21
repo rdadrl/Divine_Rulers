@@ -1,12 +1,12 @@
 package Rocket;
 
-import solarsystem.CelestialObjects;
+import solarsystem.Planet;
 
 public class HohmannTransfer {
 
-    private CelestialObjects p1; // Planet 1
-    private CelestialObjects p2; // Planet 2
-    private CelestialObjects c1; // Central planet
+    private Planet p1; // Planet 1
+    private Planet p2; // Planet 2
+    private Planet c1; // Central planet
 
     private double time; // Time in transfer
     private double a1; // semimajor axis of p1
@@ -27,7 +27,7 @@ public class HohmannTransfer {
 
 
 
-    public HohmannTransfer(CelestialObjects p1, CelestialObjects p2){
+    public HohmannTransfer(Planet p1, Planet p2){
         this.p1=p1;
         this.p2=p2;
         this.c1=p1.getCentralBody();

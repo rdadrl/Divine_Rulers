@@ -9,69 +9,69 @@ import java.util.ArrayList;
  */
 public class Planets {
     @JsonProperty("Sun")
-    private CelestialObjects sun;
+    private Planet sun;
     @JsonProperty("Mercury")
-    private CelestialObjects mercury;
+    private Planet mercury;
     @JsonProperty("Venus")
-    private CelestialObjects venus;
+    private Planet venus;
     @JsonProperty("Earth")
-    private CelestialObjects earth;
+    private Planet earth;
     @JsonProperty("Mars")
-    private CelestialObjects mars;
+    private Planet mars;
     @JsonProperty("Jupiter")
-    private CelestialObjects jupiter;
+    private Planet jupiter;
     @JsonProperty("Saturn")
-    private CelestialObjects saturn;
+    private Planet saturn;
     @JsonProperty("Titan")
-    private CelestialObjects titan;
+    private Planet titan;
     @JsonProperty("Uranus")
-    private CelestialObjects uranus;
+    private Planet uranus;
     @JsonProperty("Neptune")
-    private CelestialObjects neptune;
+    private Planet neptune;
     @JsonProperty("All")
-    private ArrayList<CelestialObjects> all;
+    private ArrayList<Planet> all;
 
-    public CelestialObjects getSun() {
+    public Planet getSun() {
         return sun;
     }
 
-    public CelestialObjects getMercury() {
+    public Planet getMercury() {
         return mercury;
     }
 
-    public CelestialObjects getVenus() {
+    public Planet getVenus() {
         return venus;
     }
 
-    public CelestialObjects getEarth() {
+    public Planet getEarth() {
         return earth;
     }
 
-    public CelestialObjects getMars() {
+    public Planet getMars() {
         return mars;
     }
 
-    public CelestialObjects getJupiter() {
+    public Planet getJupiter() {
         return jupiter;
     }
 
-    public CelestialObjects getSaturn() {
+    public Planet getSaturn() {
         return saturn;
     }
 
-    public CelestialObjects getUranus() {
+    public Planet getUranus() {
         return uranus;
     }
 
-    public CelestialObjects getNeptune() {
+    public Planet getNeptune() {
         return neptune;
     }
 
-    public CelestialObjects getTitan() {
+    public Planet getTitan() {
         return titan;
     }
 
-    public ArrayList<CelestialObjects> getAll(){
+    public ArrayList<Planet> getAll(){
         return all;
     }
 }

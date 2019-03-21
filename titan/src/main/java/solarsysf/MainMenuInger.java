@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import javafx.stage.Stage;
-import solarsystem.CelestialObjects;
+import solarsystem.Planet;
 import solarsystem.SolarSystem;
 import utils.Date;
 import utils.MathUtil;
@@ -47,9 +47,9 @@ public class MainMenuInger extends Application {
 
 
         /*
-        ArrayList<ObjectInSpace> allObj =
+        ArrayList<CelestialObject> allObj =
                 new ArrayList<>(solarSystem.getPlanets().getAll());
-        ObjectInSpace cannonballObj = new CannonBall(20, 0.01,
+        CelestialObject cannonballObj = new CannonBall(20, 0.01,
                 solarSystem.getPlanets().getEarth(),
                 solarSystem.getPlanets().getMars());
         //((CannonBall) cannonballObj).setLaunchForce(new Vector3D(0, 0, 1000));
@@ -59,16 +59,16 @@ public class MainMenuInger extends Application {
         */
 
 
-        CelestialObjects earthObj = solarSystem.getPlanets().getEarth();
-        CelestialObjects sunObj = solarSystem.getPlanets().getSun();
-        CelestialObjects mercuryObj = solarSystem.getPlanets().getMercury();
-        CelestialObjects marsObj = solarSystem.getPlanets().getMars();
-        CelestialObjects jupiterObj = solarSystem.getPlanets().getJupiter();
-        CelestialObjects saturnObj = solarSystem.getPlanets().getSaturn();
-        CelestialObjects titanObj = solarSystem.getPlanets().getTitan();
-        CelestialObjects urAnusObj = solarSystem.getPlanets().getUranus();
-        CelestialObjects neptuneObj = solarSystem.getPlanets().getNeptune();
-        CelestialObjects venusObj = solarSystem.getPlanets().getVenus();
+        Planet earthObj = solarSystem.getPlanets().getEarth();
+        Planet sunObj = solarSystem.getPlanets().getSun();
+        Planet mercuryObj = solarSystem.getPlanets().getMercury();
+        Planet marsObj = solarSystem.getPlanets().getMars();
+        Planet jupiterObj = solarSystem.getPlanets().getJupiter();
+        Planet saturnObj = solarSystem.getPlanets().getSaturn();
+        Planet titanObj = solarSystem.getPlanets().getTitan();
+        Planet urAnusObj = solarSystem.getPlanets().getUranus();
+        Planet neptuneObj = solarSystem.getPlanets().getNeptune();
+        Planet venusObj = solarSystem.getPlanets().getVenus();
         
         // Sun
         Sphere sun = new Sphere(sunObj.getRadius() * ScFactor); // sun is 100 times smaller
@@ -344,7 +344,7 @@ public class MainMenuInger extends Application {
         launch(args);
     }
     
-    private double scale(CelestialObjects objectInSpace){
+    private double scale(Planet objectInSpace){
         return Math.pow(objectInSpace.getSemiMajorAxisJ2000(), (1/5D)) / MathUtil.AU;
     }
 }
