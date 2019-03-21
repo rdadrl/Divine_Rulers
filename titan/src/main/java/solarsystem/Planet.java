@@ -8,7 +8,7 @@ public class Planet implements Orbiter{
 	Vector3D velocity;
 	double mass;
 	String name;
-	double dt = 1 * 24 * 3600;
+	double dt = 1 * 24 * 3600; 
 //	double ax;
 //	double ay;
 //	double az;
@@ -36,7 +36,7 @@ public class Planet implements Orbiter{
 		acce = new Vector3D(0, 0, 0);
 		for(int i = 0; i < others.length; i++) {
 			Orbiter other = others[i];
-			if(!this.equals(other)) {				
+			if(!this.equals(other) && other!=null) {				
 				Vector3D posB = other.getPos();
 				Vector3D deltaS = posB.substract(this.pos);
 				double r = deltaS.length();
@@ -48,8 +48,8 @@ public class Planet implements Orbiter{
 	}
 
 	public void update() {
+		pos = pos.add(velocity.scale(dt));
 	    velocity = velocity.add(acce.scale(dt));
-	    pos = pos.add(velocity.scale(dt));
 //	    System.out.println(pos);
 	}
 

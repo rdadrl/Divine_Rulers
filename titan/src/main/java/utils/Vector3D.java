@@ -155,6 +155,11 @@ public class Vector3D implements Vector<Point3D>{
     public void setZ(double z) {
         this.z = z;
     }
+    
+    public Vector2D toScreen() {
+		return new Vector2D(this.scale(Constant.scale))
+				.add(new Vector2D(Constant.CANVASCENTERX, Constant.CANVACENTERY));
+	}
 
     @Override
     public String toString() {

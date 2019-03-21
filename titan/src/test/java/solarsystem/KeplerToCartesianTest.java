@@ -187,7 +187,7 @@ public class KeplerToCartesianTest {
         }
     }
 
-    private void printXYZ(String name, Vector3D posCoord, Date date){
+    public void printXYZ(String name, Vector3D posCoord, Date date){
         System.out.print(name + ": ");
         System.out.print(date);
         System.out.print("\t\tX: " + posCoord.getX());

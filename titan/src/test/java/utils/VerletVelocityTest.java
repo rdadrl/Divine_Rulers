@@ -44,29 +44,44 @@ public class VerletVelocityTest {
 
     @Test
     public void verletTest2() throws IOException {
-        Date date = new Date(2000, 0, 1, 0, 0, 0);
         SolarSystem solarSystem = new SolarSystem();
-        solarSystem.getStartingPositionsPlanets(date);
-        ArrayList<CelestialObjects> planets = new ArrayList<>();
-        planets.add(solarSystem.getPlanets().getSun());
-        planets.add(solarSystem.getPlanets().getEarth());
-
-        CelestialObjects plan = solarSystem.getPlanets().getEarth();
-        VerletVelocity verletVelocity = new VerletVelocity(planets, date);
-        System.out.println(plan.getName());
-        for(int i = 0; i < 365*10; i++){
+        CelestialObjects tit = solarSystem.getPlanets().getTitan();
+        CelestialObjects sat = solarSystem.getPlanets().getSaturn();
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll());
+        System.out.println(tit.getName());
+        for(int i = 0; i < 365*7; i++){
             {
-                System.out.print(date);
-                System.out.print("\t\t" + plan.getHEEpos());
-                System.out.print("\t\t" + plan.getHEEvel() + "\n");
+                System.out.println(verletVelocity.getCurrentDate());
+                System.out.println("Tp: \t\t" + tit.getHEEpos());
+                System.out.println("Sp: \t\t" + sat.getHEEpos());
+                System.out.println("Tp: \t\t" + tit.getHEEvel());
+                System.out.println("Sp: \t\t" + sat.getHEEvel());
+
             }
             verletVelocity.updateLocation(1, TimeUnit.DAYS);
         }
+    }
 
+    @Test
+    public void verletTest2Date() throws IOException {
+        SolarSystem solarSystem = new SolarSystem();
+        CelestialObjects tit = solarSystem.getPlanets().getTitan();
+        CelestialObjects sat = solarSystem.getPlanets().getSaturn();
+        Date date = new Date(2000, 0, 1 , 12,0);
 
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll(), date);
 
+        for(int i = 0; i < 365*7; i++){
+            {
+                System.out.println(verletVelocity.getCurrentDate());
+                System.out.println("Tp: \t\t" + tit.getHEEpos());
+                System.out.println("Sp: \t\t" + sat.getHEEpos());
+                System.out.println("Tp: \t\t" + tit.getHEEvel());
+                System.out.println("Sp: \t\t" + sat.getHEEvel());
 
-
+            }
+            verletVelocity.updateLocation(1, TimeUnit.DAYS);
+        }
     }
 
 

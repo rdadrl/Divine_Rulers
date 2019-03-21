@@ -70,7 +70,6 @@ public class KeplerToCartesian {
         Vector3D centralPos; // Vector3D central body reference frame
         Vector3D centralVel; // Velocity central body reference frame
 
-
         double radius = a * (1 - e * cosD(E));
 
         orbitalPos = new Vector3D();

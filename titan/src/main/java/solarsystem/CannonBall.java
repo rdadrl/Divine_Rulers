@@ -12,6 +12,7 @@ import java.util.ArrayList;
  *
  */
 public class CannonBall implements ObjectInSpace {
+    private String name;
     private double mass;
     private double radius;
     private Vector3D HEEpos; // Coordinate central body reference frame
@@ -40,6 +41,11 @@ public class CannonBall implements ObjectInSpace {
     }
     public void setLaunchForce(Vector3D launchForce){
         this.launchForce = launchForce;
+    }
+
+    @Override //TODO:change
+    public String getName() {
+        return "cannonball";
     }
 
     @Override

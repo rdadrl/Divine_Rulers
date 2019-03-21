@@ -97,13 +97,11 @@ public class CelestialObjects implements ObjectInSpace{
         double JT = date.dateToJulian(); // in centuries
         double T = (JT - Date.J2000)/36525.0;
 
-
-
         Vector3D[] cartesian;
         // as we don't have all the exact details for Titan we need to
         // approximate it.
-        if(name.equals("titan")){
-            double Mass = (centralBody.getMass());
+        if(name.equals("Titan")){
+            double Mass = (centralBody.getMass() );
             double mu = Mass * MathUtil.GAU; // get mu AU/s^2
 
             this.centralBody.initializeCartesianCoordinates(date);
@@ -113,7 +111,7 @@ public class CelestialObjects implements ObjectInSpace{
                     mu);
         }else{
             double Mass = centralBody.getMass();
-            double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+            double mu = Mass * MathUtil.GAU; // get mu AU^3/s^2
 
             a = a0 + aCnt * T;
             e = e0 + eCnt * T;
@@ -133,14 +131,12 @@ public class CelestialObjects implements ObjectInSpace{
             //Look from here on!!
             Vector3D SatPlanePos = cartesian[2];
             Vector3D SatPlaneVel = cartesian[3];
-            Vector3D SatVel = centralBody.getHEEvel();
-            System.out.println(SatPlaneVel);
 
             HEEpos = KeplerToCartesian.rotatePlane(mc, centralBody.o,
                     centralBody.i, SatPlanePos);
             HEEpos = HEEpos.add(centralBody.getHEEpos());
-            //HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,centralBody.i, SatPlaneVel);
-            HEEvel = SatPlaneVel.add(SatVel);
+            HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,centralBody.i, SatPlaneVel);
+            HEEvel = HEEvel.add(centralBody.getHEEvel());
         }else{
             HEEpos = cartesian[2];
             HEEvel = cartesian[3];
@@ -263,7 +259,12 @@ public class CelestialObjects implements ObjectInSpace{
      */
     @Override
     public void setForces(ArrayList<? extends ObjectInSpace> objectsInSpace){
-        forces = MathUtil.gravitationalForces(this, objectsInSpace);
+        if(this.name.equals("Titan")){
+            forces = MathUtil.gravitationalForces(this, objectsInSpace);
+        }else{
+            forces = MathUtil.gravitationalForces(this, objectsInSpace);
+        }
+
     }
 
     /**
