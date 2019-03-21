@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class MathUtil {
     public static final double AU = 149597870700.0;    // AU in m
-    public static final double GAU = 1.993E-44;          // AU/kg*s^2
+    public static final double GAU = 1.993E-44;          // AU^3/kg*s^2
     public static final double G =  6.6742867E-11;         // m/kg*s^2
 
 
@@ -36,6 +36,7 @@ public class MathUtil {
             double netForce = (MathUtil.G * o.getMass() * refOb.getMass()) /
                     Math.pow(dist, 2);
             Vector3D thisForce = r.unit().scale(netForce);
+            thisForce.length();
             gForces = gForces.add(thisForce);
         }
         return gForces;

@@ -12,6 +12,7 @@ import java.util.ArrayList;
  *
  */
 public interface ObjectInSpace {
+    String getName();
     Vector3D getForces();
     void setForces(ArrayList<? extends ObjectInSpace> objectInSpace);
     Vector3D getHEEpos();

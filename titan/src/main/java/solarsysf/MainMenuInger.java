@@ -3,31 +3,28 @@ package solarsysf;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-
 import javafx.scene.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
-
 import javafx.stage.Stage;
-
-import solarsystem.*;
-import utils.*;
+import solarsystem.CelestialObjects;
+import solarsystem.SolarSystem;
+import utils.Date;
+import utils.MathUtil;
+import utils.Vector3D;
+import utils.VerletVelocity;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainMenu extends Application {
+public class MainMenuInger extends Application {
+    private final double ScFactor = 40.0 ;
     private Scene mainScene;
     private Group root;
     private boolean goNorth, goSouth, goEast, goWest;
@@ -35,7 +32,8 @@ public class MainMenu extends Application {
 
     // TODO: Add WASD keys to move around the zoomPane :)
     public void start(Stage primaryStage) {
-        Date date = new Date(2000, 0, 1);
+        
+
 
         SolarSystem solarSystem = null;
         try {
@@ -44,8 +42,8 @@ public class MainMenu extends Application {
             e.printStackTrace();
         }
         //Main Animations Handler
-        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll(), date);
-        //Date date = verletVelocity.getCurrentDate();
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll());
+        Date date = verletVelocity.getCurrentDate();
 
 
         /*
@@ -73,7 +71,7 @@ public class MainMenu extends Application {
         CelestialObjects venusObj = solarSystem.getPlanets().getVenus();
         
         // Sun
-        Sphere sun      = new Sphere(sunObj.getRadius() / MathUtil.AU * 1000000); // sun is 100 times smaller
+        Sphere sun = new Sphere(sunObj.getRadius() * ScFactor); // sun is 100 times smaller
         PhongMaterial sunMaterial = new PhongMaterial();
         sunMaterial.setDiffuseColor(Color.ORANGE);
         sunMaterial.setSpecularColor(Color.ORANGERED);
@@ -83,114 +81,114 @@ public class MainMenu extends Application {
         sun.setTranslateY(0);
 
         //Earth
-        Sphere earth    = new Sphere(earthObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere earth    = new Sphere(scale(earthObj));
         PhongMaterial earthMaterial = new PhongMaterial();
         earthMaterial.setDiffuseColor(Color.DARKSEAGREEN);
         earthMaterial.setSpecularColor(Color.GREEN);
         earth.setMaterial(earthMaterial);
         Vector3D earthCoordinate = earthObj.getHEEpos();
-        earth.setTranslateX(earthCoordinate.getX() * 40);
-        earth.setTranslateY(earthCoordinate.getY() * 40 * -1);
-        earth.setTranslateZ(earthCoordinate.getZ() * 40);
+        earth.setTranslateX(earthCoordinate.getX() * ScFactor);
+        earth.setTranslateY(earthCoordinate.getY() * ScFactor * -1);
+        earth.setTranslateZ(earthCoordinate.getZ() * ScFactor);
 
         //Mercury
-        Sphere mercury = new Sphere(mercuryObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere mercury = new Sphere(scale(mercuryObj));
         PhongMaterial mercuryMaterial = new PhongMaterial();
         mercuryMaterial.setDiffuseColor(Color.GREEN);
         mercuryMaterial.setSpecularColor(Color.DARKSLATEGRAY);
         mercury.setMaterial(mercuryMaterial);
         Vector3D mercuryCoordinate = earthObj.getHEEpos();
-        mercury.setTranslateX(mercuryCoordinate.getX() * 40);
-        mercury.setTranslateY(mercuryCoordinate.getY() * 40 * -1);
-        mercury.setTranslateZ(mercuryCoordinate.getZ() * 40);
+        mercury.setTranslateX(mercuryCoordinate.getX() * ScFactor);
+        mercury.setTranslateY(mercuryCoordinate.getY() * ScFactor * -1);
+        mercury.setTranslateZ(mercuryCoordinate.getZ() * ScFactor);
 
         //Mars
-        Sphere mars = new Sphere(marsObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere mars = new Sphere(scale(marsObj));
         PhongMaterial marsMaterial = new PhongMaterial();
         marsMaterial.setDiffuseColor(Color.INDIANRED);
         marsMaterial.setSpecularColor(Color.MEDIUMVIOLETRED);
         mars.setMaterial(marsMaterial);
         Vector3D marsCoordinate = marsObj.getHEEpos();
-        mars.setTranslateX(marsCoordinate.getX() * 40);
-        mars.setTranslateY(marsCoordinate.getY() * 40 * -1);
-        mars.setTranslateZ(marsCoordinate.getZ() * 40);
+        mars.setTranslateX(marsCoordinate.getX() * ScFactor);
+        mars.setTranslateY(marsCoordinate.getY() * ScFactor * -1);
+        mars.setTranslateZ(marsCoordinate.getZ() * ScFactor);
 
         //Jupiter
-        Sphere jupiter = new Sphere(jupiterObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere jupiter = new Sphere(scale(jupiterObj));
         PhongMaterial jupiterMaterial = new PhongMaterial();
         jupiterMaterial.setDiffuseColor(Color.SANDYBROWN);
         jupiterMaterial.setSpecularColor(Color.MEDIUMVIOLETRED);
         jupiter.setMaterial(jupiterMaterial);
         Vector3D jupiterCoordinate = jupiterObj.getHEEpos();
-        jupiter.setTranslateX(jupiterCoordinate.getX() * 40);
-        jupiter.setTranslateY(jupiterCoordinate.getY() * 40 * -1);
-        jupiter.setTranslateZ(jupiterCoordinate.getZ() * 40);
+        jupiter.setTranslateX(jupiterCoordinate.getX() * ScFactor);
+        jupiter.setTranslateY(jupiterCoordinate.getY() * ScFactor * -1);
+        jupiter.setTranslateZ(jupiterCoordinate.getZ() * ScFactor);
 
         //Saturn
-        Sphere saturn = new Sphere(saturnObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere saturn = new Sphere(scale(saturnObj));
         PhongMaterial saturnMaterial = new PhongMaterial();
         saturnMaterial.setDiffuseColor(Color.RED);
         saturnMaterial.setSpecularColor(Color.BLUE);
         saturn.setMaterial(saturnMaterial);
         Vector3D saturnCoordinate = saturnObj.getHEEpos();
-        saturn.setTranslateX(saturnCoordinate.getX() * 40);
-        saturn.setTranslateY(saturnCoordinate.getY() * 40 * -1);
-        saturn.setTranslateZ(saturnCoordinate.getZ() * 40);
+        saturn.setTranslateX(saturnCoordinate.getX() * ScFactor);
+        saturn.setTranslateY(saturnCoordinate.getY() * ScFactor * -1);
+        saturn.setTranslateZ(saturnCoordinate.getZ() * ScFactor);
 
         //Titan
-        Sphere titan = new Sphere(titanObj.getRadius() / MathUtil.AU * 1000000000);
+        Sphere titan = new Sphere(scale(titanObj));
         PhongMaterial titanMaterial = new PhongMaterial();
         titanMaterial.setDiffuseColor(Color.WHITE);
         titanMaterial.setSpecularColor(Color.SANDYBROWN);
         titan.setMaterial(titanMaterial);
         Vector3D titanCoordinate = titanObj.getHEEpos();
-        titan.setTranslateX(titanCoordinate.getX() * 40);
-        titan.setTranslateY(titanCoordinate.getY() * 40 * -1);
-        titan.setTranslateZ(titanCoordinate.getZ() * 40);
+        titan.setTranslateX(titanCoordinate.getX() * ScFactor);
+        titan.setTranslateY(titanCoordinate.getY() * ScFactor* -1);
+        titan.setTranslateZ(titanCoordinate.getZ() * ScFactor);
 
         //Uranus
-        Sphere uranus = new Sphere(urAnusObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere uranus = new Sphere(scale(urAnusObj));
         PhongMaterial uranusMaterial = new PhongMaterial();
         uranusMaterial.setDiffuseColor(Color.LIGHTBLUE);
         uranusMaterial.setSpecularColor(Color.CADETBLUE);
         uranus.setMaterial(uranusMaterial);
         Vector3D uranusCoordinate = urAnusObj.getHEEpos();
-        uranus.setTranslateX(uranusCoordinate.getX() * 40);
-        uranus.setTranslateY(uranusCoordinate.getY() * 40 * -1);
-        uranus.setTranslateZ(uranusCoordinate.getZ() * 40);
+        uranus.setTranslateX(uranusCoordinate.getX() * ScFactor);
+        uranus.setTranslateY(uranusCoordinate.getY() * ScFactor* -1);
+        uranus.setTranslateZ(uranusCoordinate.getZ() * ScFactor);
 
         //Neptune
-        Sphere neptune = new Sphere(neptuneObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere neptune = new Sphere(scale(neptuneObj));
         PhongMaterial neptuneMaterial = new PhongMaterial();
         neptuneMaterial.setDiffuseColor(Color.DARKBLUE);
         neptuneMaterial.setSpecularColor(Color.DARKGRAY);
         neptune.setMaterial(neptuneMaterial);
         Vector3D neptuneCoordinate = neptuneObj.getHEEpos();
-        neptune.setTranslateX(neptuneCoordinate.getX() * 40);
-        neptune.setTranslateY(neptuneCoordinate.getY() * 40 * -1);
-        neptune.setTranslateZ(neptuneCoordinate.getZ() * 40);
+        neptune.setTranslateX(neptuneCoordinate.getX() * ScFactor);
+        neptune.setTranslateY(neptuneCoordinate.getY() * ScFactor * -1);
+        neptune.setTranslateZ(neptuneCoordinate.getZ() * ScFactor);
 
         //Venus
-        Sphere venus = new Sphere(venusObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere venus = new Sphere(scale(venusObj));
         PhongMaterial venusMaterial = new PhongMaterial();
         venusMaterial.setDiffuseColor(Color.SANDYBROWN);
         venusMaterial.setSpecularColor(Color.ROSYBROWN);
         venus.setMaterial(venusMaterial);
         Vector3D venusCoordinate = venusObj.getHEEpos();
-        venus.setTranslateX(venusCoordinate.getX() * 40);
-        venus.setTranslateY(venusCoordinate.getY() * 40 * -1);
-        venus.setTranslateZ(venusCoordinate.getZ() * 40);
+        venus.setTranslateX(venusCoordinate.getX() * ScFactor);
+        venus.setTranslateY(venusCoordinate.getY() * ScFactor* -1);
+        venus.setTranslateZ(venusCoordinate.getZ() * ScFactor);
 
         /*
         //Cannonball
-        Sphere cannonball = new Sphere(earthObj.getRadius() / MathUtil.AU * 1000000000);
+        Sphere cannonball = new Sphere(earthObj.getRadius() * ScFactor / MathUtil.ScFactor * 1000000000);
         PhongMaterial cannonbalMaterial = new PhongMaterial();
         cannonbalMaterial.setDiffuseColor(Color.ORANGE);
         cannonball.setMaterial(cannonbalMaterial);
         Vector3D cannonballCoordinate = cannonballObj.getHEEpos();
-        cannonball.setTranslateX(cannonballCoordinate.getX() * 40);
-        cannonball.setTranslateY(cannonballCoordinate.getY() * 40 * -1);
-        cannonball.setTranslateZ(cannonballCoordinate.getZ() * 40);
+        cannonball.setTranslateX(cannonballCoordinate.getX() * ScFactor * 40);
+        cannonball.setTranslateY(cannonballCoordinate.getY() * ScFactor * 40 * -1);
+        cannonball.setTranslateZ(cannonballCoordinate.getZ() * ScFactor * 40);
         */
 
 
@@ -203,7 +201,7 @@ public class MainMenu extends Application {
         PerspectiveCamera camera = new PerspectiveCamera(false);
         camera.setTranslateX(-400);
         camera.setTranslateY(-400);
-        camera.setTranslateZ(0);
+        camera.setTranslateZ(100);
 
         root = new Group();
         root.getChildren().addAll(sun, earth, mercury, mars, jupiter, saturn, titan, uranus, neptune, venus);
@@ -276,62 +274,60 @@ public class MainMenu extends Application {
                     Vector3D coordinate;
 
                     coordinate = earthObj.getHEEpos();
-                    earth.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    earth.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    earth.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    earth.setTranslateX(coordinate.getX() * scale(earthObj));
+                    earth.setTranslateY(coordinate.getY() * scale(earthObj) *-1);
+                    earth.setTranslateZ(coordinate.getZ() * scale(earthObj ));
 
                     coordinate = mercuryObj.getHEEpos();
-                    mercury.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    mercury.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    mercury.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    mercury.setTranslateX(coordinate.getX() * scale(mercuryObj) );
+                    mercury.setTranslateY(coordinate.getY() * scale(mercuryObj) *-1);
+                    mercury.setTranslateZ(coordinate.getZ() * scale(mercuryObj ));
 
                     coordinate = marsObj.getHEEpos();
-                    mars.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    mars.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    mars.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    mars.setTranslateX(coordinate.getX() * scale(marsObj) );
+                    mars.setTranslateY(coordinate.getY() * scale(marsObj) *-1);
+                    mars.setTranslateZ(coordinate.getZ() * scale(marsObj) );
 
                     coordinate = jupiterObj.getHEEpos();
-                    jupiter.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    jupiter.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    jupiter.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    jupiter.setTranslateX(coordinate.getX() * scale(jupiterObj) );
+                    jupiter.setTranslateY(coordinate.getY() * scale(jupiterObj) *-1);
+                    jupiter.setTranslateZ(coordinate.getZ() * scale(jupiterObj) );
 
                     coordinate = saturnObj.getHEEpos();
-                    //System.out.println("\t" + date.toDateString()+ ", S: " + coordinate);
-                    saturn.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    saturn.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    saturn.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    //System.out.println(date.toDateString()+ ", S: " + coordinate);
+                    saturn.setTranslateX(coordinate.getX() * scale(saturnObj) );
+                    saturn.setTranslateY(coordinate.getY() * scale(saturnObj) *-1);
+                    saturn.setTranslateZ(coordinate.getZ() * scale(saturnObj) );
 
                     //Titan Update
                     coordinate = titanObj.getHEEpos();
-                    //System.out.println("\t" + date.toDateString()+ ", T: " + coordinate);
-                    titan.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    titan.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    titan.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
-                    //System.out.println(date.toDateString()+ ", DT: " + saturnObj.getHEEpos()
-                    // .substract(titanObj.getHEEpos()));
+                    //System.out.println(date.toDateString()+ ", T: " + coordinate);
+                    titan.setTranslateX(coordinate.getX() * scale(titanObj) );
+                    titan.setTranslateY(coordinate.getY() * scale(titanObj) *-1);
+                    titan.setTranslateZ(coordinate.getZ() * scale(titanObj) );
 
                     coordinate = urAnusObj.getHEEpos();
-                    uranus.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    uranus.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    uranus.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    uranus.setTranslateX(coordinate.getX() * scale(urAnusObj) );
+                    uranus.setTranslateY(coordinate.getY() * scale(urAnusObj) *-1);
+                    uranus.setTranslateZ(coordinate.getZ() * scale(urAnusObj) );
 
                     coordinate = neptuneObj.getHEEpos();
-                    neptune.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    neptune.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    neptune.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    neptune.setTranslateX(coordinate.getX() * scale(neptuneObj) );
+                    neptune.setTranslateY(coordinate.getY() * scale(neptuneObj) *-1);
+                    neptune.setTranslateZ(coordinate.getZ() * scale(neptuneObj) );
 
                     coordinate = venusObj.getHEEpos();
-                    venus.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    venus.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    venus.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);
+                    venus.setTranslateX(coordinate.getX() * scale(venusObj) );
+                    venus.setTranslateY(coordinate.getY() * scale(venusObj) *-1);
+                    venus.setTranslateZ(coordinate.getZ() * scale(venusObj) );
 
                     //Cannonball Update
                     /*coordinate = cannonballObj.getHEEpos();
-                    cannonball.setTranslateX(coordinate.getX() * 40 / MathUtil.AU);
-                    cannonball.setTranslateY(coordinate.getY() * 40 * -1 / MathUtil.AU);
-                    cannonball.setTranslateZ(coordinate.getZ() * 40 / MathUtil.AU);*/
+                    cannonball.setTranslateX(coordinate.getX() * ScFactor );
+                    cannonball.setTranslateY(coordinate.getY() * ScFactor *-1);
+                    cannonball.setTranslateZ(coordinate.getZ() * ScFactor );*/
 
-                    //System.out.println("Cannonball Positions: X:" + coordinate.getX() + " Y:" + coordinate.getY() + " Z:" + coordinate.getZ());
+                    //System.out.println("Cannonball Positions: X:" + coordinate.getX() * ScFactor + " Y:" + coordinate.getY() * ScFactor + " Z:" + coordinate.getZ() * ScFactor);
                     //Move the camera
                     if (goNorth) camera.setTranslateY(camera.getTranslateY() - 10);
                     if (goSouth) camera.setTranslateY(camera.getTranslateY() + 10);
@@ -346,5 +342,9 @@ public class MainMenu extends Application {
     }
     public static void main(String args[]){
         launch(args);
+    }
+    
+    private double scale(CelestialObjects objectInSpace){
+        return Math.pow(objectInSpace.getSemiMajorAxisJ2000(), (1/5D)) / MathUtil.AU;
     }
 }
