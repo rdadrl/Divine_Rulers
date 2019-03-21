@@ -178,18 +178,17 @@ public class KeplerToCartesianTest {
     @Test
     public void Titan() throws IOException{
         Date date = new Date(2000, 0, 1, 12, 0, 0);
+        System.out.println(date);
         SolarSystem solarSystem = new SolarSystem();
-        CelestialObjects planet = solarSystem.getPlanets().getTitan();
-        Vector3D HEEPos = planet.getHEEpos(date);
-        Vector3D HEEVel = planet.getHEEvel(date);
-        if(PRINT){
-            //printXYZ(planet.getName(), OrbPos, date);
-            printPosVel(planet.getName(), HEEPos, HEEVel, date);
-            //System.out.println();
+        for(CelestialObjects planet:solarSystem.getPlanets().getAll()){
+            printXYZ(planet.getName(), planet.getHEEpos(date), date);
+            printXYZ(planet.getName(), planet.getHEEvel(date), date);
+            System.out.println();
         }
     }
 
     private void printXYZ(String name, Vector3D posCoord, Date date){
+        System.out.print(name + ": ");
         System.out.print(date);
         System.out.print("\t\tX: " + posCoord.getX());
         System.out.print("\t\tY: " + posCoord.getY());

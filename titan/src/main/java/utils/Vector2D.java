@@ -56,8 +56,7 @@ public class Vector2D implements Vector<Point2D> {
 		Vector2D other = (Vector2D)_other;
 		return this.substract(other).length();
 	}
-	
-	
+
 	public Vector2D unit() {
 		return scale(1/norm());
 	}

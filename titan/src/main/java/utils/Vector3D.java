@@ -1,9 +1,14 @@
 package utils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Vector3D implements Vector<Point3D>{
 	public static double epsilon = 1e-10;
+	@JsonProperty("X")
 	private double x;
+    @JsonProperty("Y")
 	private double y;
+    @JsonProperty("Z")
 	private double z;
 
     public Vector3D() {
@@ -88,21 +93,39 @@ public class Vector3D implements Vector<Point3D>{
 		Vector3D other = (Vector3D)_other;
 		return Math.abs(dot(other)) < epsilon;
 	}
-	/*
-	public Vector rotateXDeg(double theta) {
+
+	public Vector3D rotateXDeg(double theta) {
 		return rotateXRad(Math.toRadians(theta));
 	}
 
+	public Vector3D rotateZDeg(double theta) {
+		return rotateZRad(Math.toRadians(theta));
+	}
 
-	public Vector rotateXRad(double theta) {
+
+	public Vector3D rotateXRad(double theta) {
 		double cosTheta = Math.cos(theta);
 		double sinTheta = Math.sin(theta);
-		return new Vector(
+
+
+		return new Vector3D(
 				this.dot(new Vector3D(1, 0, 0)),
 				this.dot(new Vector3D(0, cosTheta, -1*sinTheta)),
 				this.dot(new Vector3D(0, sinTheta, cosTheta))
 		);
-	}*/
+	}
+
+	public Vector3D rotateZRad(double theta) {
+		double cosTheta = Math.cos(theta);
+		double sinTheta = Math.sin(theta);
+
+
+		return new Vector3D(
+				this.dot(new Vector3D(cosTheta, 0, sinTheta)),
+				this.dot(new Vector3D(0, 1, 0)),
+				this.dot(new Vector3D(-1*sinTheta, 0, cosTheta))
+		);
+	}
 
 
 	public static boolean isOrthogonal(Vector3D u, Vector3D w) {

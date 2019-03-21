@@ -11,7 +11,7 @@ public class HohmannTransfer {
     private double time; // Time in transfer
     private double a1; // semimajor axis of p1
     private double a2; // semimajor axis of p2
-    private double a;
+    private double a; // semimajor axis of transfer orbit
     private double u; // G(m1+m2)
     private double totalEnergy;
     private double circularVelocity;
