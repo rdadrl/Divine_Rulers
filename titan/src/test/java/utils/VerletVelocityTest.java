@@ -1,16 +1,12 @@
 package utils;
 
 import org.junit.Test;
-import solarsystem.CannonBall;
-import solarsystem.CelestialObjects;
-import solarsystem.ObjectInSpace;
+import solarsystem.Planet;
 import solarsystem.SolarSystem;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -23,8 +19,8 @@ public class VerletVelocityTest {
         Date date = new Date(2000, 0, 1, 0, 0, 0);
         SolarSystem solarSystem = new SolarSystem();
         solarSystem.getStartingPositionsPlanets(date);
-        ArrayList<CelestialObjects> planets = solarSystem.getPlanets().getAll();
-        CelestialObjects plan = solarSystem.getPlanets().getEarth();
+        ArrayList<Planet> planets = solarSystem.getPlanets().getAll();
+        Planet plan = solarSystem.getPlanets().getEarth();
         VerletVelocity verletVelocity = new VerletVelocity(planets, date);
         System.out.println(plan.getName());
         for(int i = 0; i < 365*10; i++){
@@ -45,8 +41,8 @@ public class VerletVelocityTest {
     @Test
     public void verletTest2() throws IOException {
         SolarSystem solarSystem = new SolarSystem();
-        CelestialObjects tit = solarSystem.getPlanets().getTitan();
-        CelestialObjects sat = solarSystem.getPlanets().getSaturn();
+        Planet tit = solarSystem.getPlanets().getTitan();
+        Planet sat = solarSystem.getPlanets().getSaturn();
         VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll());
         System.out.println(tit.getName());
         for(int i = 0; i < 365*7; i++){
@@ -65,8 +61,8 @@ public class VerletVelocityTest {
     @Test
     public void verletTest2Date() throws IOException {
         SolarSystem solarSystem = new SolarSystem();
-        CelestialObjects tit = solarSystem.getPlanets().getTitan();
-        CelestialObjects sat = solarSystem.getPlanets().getSaturn();
+        Planet tit = solarSystem.getPlanets().getTitan();
+        Planet sat = solarSystem.getPlanets().getSaturn();
         Date date = new Date(2000, 0, 1 , 12,0);
 
         VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll(), date);

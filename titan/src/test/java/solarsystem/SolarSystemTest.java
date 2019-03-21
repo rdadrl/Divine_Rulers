@@ -18,7 +18,7 @@ public class SolarSystemTest {
         SolarSystem solarSystem = new SolarSystem();
         assertEquals(solarSystem.getPlanets().getEarth().getMass(), 5.9723E24, 1e-5);
         assertEquals(solarSystem.getPlanets().getMercury().getCentralBody().getName(), "Sun");
-        for(CelestialObjects planet: solarSystem.getPlanets().getAll()){
+        for(Planet planet: solarSystem.getPlanets().getAll()){
             System.out.println(planet.getName());
         }
     }

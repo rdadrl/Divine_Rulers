@@ -2,7 +2,6 @@ package solarsystem;
 
 import utils.Date;
 import utils.MathUtil;
-import utils.Vector;
 import utils.Vector3D;
 
 import java.util.ArrayList;
@@ -11,15 +10,15 @@ import java.util.ArrayList;
  *
  *
  */
-public class CannonBall implements ObjectInSpace {
+public class CannonBall implements CelestialObject {
     private String name;
     private double mass;
     private double radius;
     private Vector3D HEEpos; // Coordinate central body reference frame
     private Vector3D HEEvel; // Velocity central body reference frame
     private Vector3D forces;
-    private CelestialObjects fromPlanet;
-    private CelestialObjects toPlanet;
+    private Planet fromPlanet;
+    private Planet toPlanet;
     private Vector3D launchForce;
 
 
@@ -30,8 +29,8 @@ public class CannonBall implements ObjectInSpace {
      * @param launchForce
      */
     public CannonBall(double mass, double radius,
-                         CelestialObjects fromPlanet,
-                      CelestialObjects toPlanet){
+                         Planet fromPlanet,
+                      Planet toPlanet){
         this.mass = mass;
         this.radius = radius;
         this.toPlanet = toPlanet;
@@ -54,7 +53,7 @@ public class CannonBall implements ObjectInSpace {
     }
 
     @Override
-    public void setForces(ArrayList<? extends ObjectInSpace> objectsInSpace){
+    public void setForces(ArrayList<? extends CelestialObject> objectsInSpace){
         forces = MathUtil.gravitationalForces(this, objectsInSpace);
     }
 

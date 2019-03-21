@@ -1,6 +1,6 @@
 package utils;
 
-import solarsystem.ObjectInSpace;
+import solarsystem.CelestialObject;
 
 import java.util.ArrayList;
 
@@ -22,11 +22,11 @@ public class MathUtil {
         return(Math.cos(Math.toRadians(degree)));
     }
 
-    public static Vector3D gravitationalForces(ObjectInSpace refOb, ArrayList<?
-            extends ObjectInSpace> objectsInSpace) {
+    public static Vector3D gravitationalForces(CelestialObject refOb, ArrayList<?
+            extends CelestialObject> objectsInSpace) {
 
         Vector3D gForces = new Vector3D(); // reset the forces
-        for (ObjectInSpace o : objectsInSpace) {
+        for (CelestialObject o : objectsInSpace) {
             if (o == refOb) {
                 continue;
             }

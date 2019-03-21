@@ -1,8 +1,6 @@
 package solarsystem;
 
 import utils.Date;
-import utils.Vector;
-import utils.Vector3D;
 import utils.Vector3D;
 
 import java.util.ArrayList;
@@ -11,10 +9,10 @@ import java.util.ArrayList;
  *
  *
  */
-public interface ObjectInSpace {
+public interface CelestialObject {
     String getName();
     Vector3D getForces();
-    void setForces(ArrayList<? extends ObjectInSpace> objectInSpace);
+    void setForces(ArrayList<? extends CelestialObject> objectInSpace);
     Vector3D getHEEpos();
     void setHEEpos(Vector3D HEEpos);
     Vector3D getHEEvel();

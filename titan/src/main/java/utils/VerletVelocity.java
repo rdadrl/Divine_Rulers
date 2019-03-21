@@ -1,8 +1,6 @@
 package utils;
 
-import solarsystem.CelestialObjects;
-import solarsystem.ObjectInSpace;
-import solarsystem.Orbiter;
+import solarsystem.CelestialObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,49 +11,49 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class VerletVelocity {
-    private ArrayList<? extends ObjectInSpace> bodies;
+    private ArrayList<? extends CelestialObject> bodies;
     private Date currentDate;
     private Vector3D[] oldForces;
 
-    public VerletVelocity(ArrayList<? extends ObjectInSpace> bodies){
+    public VerletVelocity(ArrayList<? extends CelestialObject> bodies){
         this.bodies = bodies;
         currentDate = new Date(2000,0,1,12,0,0);
-        for(ObjectInSpace ob: bodies){
+        for(CelestialObject ob: bodies){
             ob.setHEEvel(ob.getHEEvel().scale(MathUtil.AU/(60*60*24)));
             ob.setHEEpos(ob.getHEEpos().scale(MathUtil.AU));
         }
         oldForces = new Vector3D[bodies.size()];
-        for (ObjectInSpace body: bodies) {
+        for (CelestialObject body: bodies) {
             body.setForces(bodies);
         }
 
     }
 
-    public VerletVelocity(ArrayList<? extends ObjectInSpace> bodies,
+    public VerletVelocity(ArrayList<? extends CelestialObject> bodies,
                           Date date) {
         this.currentDate = date;
         this.bodies = bodies;
         System.out.println(bodies.size());
 
         initializeCartesianCoordinates(date);
-        for(ObjectInSpace planet: bodies){
+        for(CelestialObject planet: bodies){
             printXYZ(planet.getName(), planet.getHEEpos(), date);
             printXYZ(planet.getName(), planet.getHEEvel(), date);
             System.out.println();
         }
         oldForces = new Vector3D[bodies.size()];
         //Initialize the beginning forces.
-        for (ObjectInSpace body: bodies) {
+        for (CelestialObject body: bodies) {
             body.setForces(bodies);
         }
 
     }
     private void initializeCartesianCoordinates(Date date){
-        for (ObjectInSpace body: bodies) {
+        for (CelestialObject body: bodies) {
             System.out.println(body);
             body.initializeCartesianCoordinates(date);
         }
-        for (ObjectInSpace body: bodies){
+        for (CelestialObject body: bodies){
             body.setHEEvel(body.getHEEvel().scale(MathUtil.AU/(60*60*24)));
             body.setHEEpos(body.getHEEpos().scale(MathUtil.AU));
         }
@@ -65,7 +63,7 @@ public class VerletVelocity {
 
     private void updateForce(){
         //int i = 0;
-        for (ObjectInSpace body: bodies) {
+        for (CelestialObject body: bodies) {
             //oldForces[i] = body.getForces();
             body.setForces(bodies);
             //i++;
@@ -102,7 +100,7 @@ public class VerletVelocity {
         // set the change in position
         // v(t + dt) = x(t) + v(t) dt + 0.5 a(t) dt^2
         // a(t) = F(t) / m
-        for (ObjectInSpace body: bodies) {
+        for (CelestialObject body: bodies) {
             Vector3D startVel = body.getHEEvel();
             Vector3D startPos = body.getHEEpos();
 
@@ -122,7 +120,7 @@ public class VerletVelocity {
         // step 3 update the forces halfway
         updateForce();
 
-        for (ObjectInSpace body: bodies) {
+        for (CelestialObject body: bodies) {
             Vector3D halfVel = body.getHEEvel();
 
             Vector3D endForce = body.getForces();
@@ -132,6 +130,8 @@ public class VerletVelocity {
             Vector3D velChange = endAcceleration.scale((dt) / 2.0);
             body.setHEEvel(halfVel.add(velChange));
         }
+
+
     }
 
 
@@ -167,7 +167,7 @@ public class VerletVelocity {
         // set the change in position
         // v(t + dt) = x(t) + v(t) dt + 0.5 a(t) dt^2
         // a(t) = F(t) / m
-        for (ObjectInSpace body: bodies) {
+        for (CelestialObject body: bodies) {
             Vector3D startVel = body.getHEEvel();
             Vector3D startPos = body.getHEEpos();
 
@@ -184,7 +184,7 @@ public class VerletVelocity {
         updateForce();
 
         int i = 0;
-        for (ObjectInSpace body: bodies) {
+        for (CelestialObject body: bodies) {
             Vector3D startVel = body.getHEEvel();
             // step 3 v(t + dt) = v(t) + 0.5 (a(t) + a(t + dt)) * dt
             Vector3D oldAcceleration = oldForces[i].scale(1D / body.getMass());
