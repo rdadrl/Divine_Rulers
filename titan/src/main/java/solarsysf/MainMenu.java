@@ -31,12 +31,12 @@ public class MainMenu extends Application {
     private Group root;
     private boolean goNorth, goSouth, goEast, goWest;
     private boolean pauseStatus = false;
-    private final boolean USELIGHTS = false;
+    private final boolean USELIGHTS = true;
     private final int DistanceMultiplier = 40;
     @Override
     public void start(Stage primaryStage) {
 
-        Date date = new Date(2010, 0, 1, 12, 0, 0);
+        Date date = new Date(2008, 0, 1, 12, 0, 0);
         SolarSystem solarSystem = null;
         try {
             solarSystem = new SolarSystem();
@@ -48,9 +48,7 @@ public class MainMenu extends Application {
                 new ArrayList<>(solarSystem.getPlanets().getAll());
         CelestialObject cannonballObj = new CannonBall(20, 1,
                 solarSystem.getPlanets().getEarth(),
-                solarSystem.getPlanets().getMars());
-        //((CannonBall) cannonballObj).setLaunchForce(new Vector3D(0, 0, 1000));
-        cannonballObj.initializeCartesianCoordinates(date);
+                solarSystem.getPlanets().getTitan(), date, 3, 6000);
         allObj.add(cannonballObj);
         solarSystem.setAllObjects(allObj);
 

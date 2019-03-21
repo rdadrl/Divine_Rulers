@@ -61,6 +61,7 @@ public class Planet implements CelestialObject {
     private double l; // longitude
     private double w; // periphelon
     private double o; // change of ascending node
+    private double om; //change of the perehlipsis
     // century
 
     private Date dateStart;   // Date of the current
@@ -126,16 +127,16 @@ public class Planet implements CelestialObject {
         }
 
         if(name.equals("Titan")){
-            double mc = centralBody.w - centralBody.o;
+            double mu = centralBody.w - centralBody.o;
 
             //Look from here on!!
             Vector3D SatPlanePos = cartesian[2];
             Vector3D SatPlaneVel = cartesian[3];
 
-            HEEpos = KeplerToCartesian.rotatePlane(mc, centralBody.o,
+            HEEpos = KeplerToCartesian.rotatePlane(mu, centralBody.o,
                     centralBody.i, SatPlanePos);
             HEEpos = HEEpos.add(centralBody.getHEEpos());
-            HEEvel = KeplerToCartesian.rotatePlane(mc, centralBody.o,centralBody.i, SatPlaneVel);
+            HEEvel = KeplerToCartesian.rotatePlane(mu, centralBody.o,centralBody.i, SatPlaneVel);
             HEEvel = HEEvel.add(centralBody.getHEEvel());
         }else{
             HEEpos = cartesian[2];

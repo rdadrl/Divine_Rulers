@@ -130,8 +130,6 @@ public class VerletVelocity {
             Vector3D velChange = endAcceleration.scale((dt) / 2.0);
             body.setHEEvel(halfVel.add(velChange));
         }
-
-
     }
 
 

@@ -19,27 +19,25 @@ public class CannonBall implements CelestialObject {
     private Vector3D forces;
     private Planet fromPlanet;
     private Planet toPlanet;
-    private Vector3D launchForce;
-
+    private Date date;
+    private double inclination;
+    private double velocity;
 
 
     /**
      * @param mass mass of the cannon ball
      * @param fromPlanet
-     * @param launchForce
      */
-    public CannonBall(double mass, double radius,
-                         Planet fromPlanet,
-                      Planet toPlanet){
+    public CannonBall(double mass, double radius, Planet fromPlanet,
+                      Planet toPlanet, Date date, double inclination, double velocity){
         this.mass = mass;
         this.radius = radius;
         this.toPlanet = toPlanet;
         this.fromPlanet = fromPlanet;
-        HEEpos= new Vector3D();
-        HEEvel= new Vector3D();
-    }
-    public void setLaunchForce(Vector3D launchForce){
-        this.launchForce = launchForce;
+        this.date = date;
+        this.inclination = inclination;
+        this.velocity = velocity;
+
     }
 
     @Override //TODO:change
@@ -85,10 +83,7 @@ public class CannonBall implements CelestialObject {
     @Override
     public void initializeCartesianCoordinates(Date date) {
         //Make our cannon leave from the outside of the planet.
-        Vector3D fromPlCoord = fromPlanet.getHEEpos(date);
-        toPlanet.initializeCartesianCoordinates(date);
-        double r = (fromPlanet.getRadius() * 1000 * MathUtil.AU);
-        HEEpos = fromPlCoord.add(fromPlCoord.unit().scale(r));
-        HEEvel = fromPlanet.getHEEpos().substract(toPlanet.getHEEpos()).unit().scale(20000);
+        HEEpos = fromPlanet.getHEEpos(date);
+        HEEvel = fromPlanet.getHEEvel(date).add(fromPlanet.getHEEvel().unit().scale(velocity));
     }
 }
