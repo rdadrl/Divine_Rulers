@@ -1,12 +1,18 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -20,23 +26,26 @@ import utils.Vector2D;
 import utils.Vector3D;
 
 public class Canvas extends JPanel {
-	private int _WIDTH = 1200;
-	private int _HEIGHT = 900;
-
-	private int centerX = _WIDTH / 2;
-	private int centerY = _HEIGHT / 2;
 	
+	private int _WIDTH = Constant.CANVASWIDTH;
+	private int _HEIGHT = Constant.CANVASHEIGHT;
+	private int centerX = Constant.CANVASCENTERX;
+	private int centerY = Constant.CANVACENTERY;
+	double arrowX;
+	double arrowY;
 	Planet earth;
 	Planet sun;
 	Planet mars;
 	Planet saturn;
 	Planet moon;
+	Planet jupiter;
 	Planet[] planets;
+	Planet ball;
 	Date date;
 	int cnt = 0;
 	public Canvas() throws IOException {
 
-		setPreferredSize(new Dimension(_WIDTH, _HEIGHT));
+		setPreferredSize(new Dimension(Constant.CANVASWIDTH, Constant.CANVASHEIGHT));
 		
 		
 		date = new Date(2019, 3, 14); 
@@ -57,48 +66,76 @@ public class Canvas extends JPanel {
 		moon = new Planet(new Vector3D(-1.469961550052274E+11, 2.139416217572848E+10, -2.665896077882964E+07), 
 				new Vector3D(-5.628284545172739E+03, -2.920876030457305E+04, 6.182609716986498E01), 
 				7.349e22, "moon");
+		jupiter = new Planet(new Vector3D(-2.452456365019889E+3, -7.584121180836378E+11, 8.637457754131973E+09),
+				new Vector3D(1.228561476070495E+04, -3.406289621808893E+03, -2.607238800858853E2), 
+				1898.13e24, "jupiter");
 		
-		planets = new Planet[]{sun, earth, mars, saturn, moon};
+				 
 		
-		ActionListener lst = new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				for(int i = 0; i < planets.length; i++) {
-					planets[i].interact(planets);
-				}
-				for(int i = 0; i < planets.length; i++) {
-					planets[i].update();
-				}
-				
-//				System.out.println(earth.getPos());
-				repaint();
-			}
-
-		};
-
-		Timer t = new Timer(50, lst);
-		t.start();
-
+		planets = new Planet[]{sun, earth, mars, saturn, moon, jupiter, ball};
+		
 	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
+		
 		g2.setColor(Color.blue);
 		g2.fillRect(0, 0, _WIDTH, _HEIGHT);
 		g2.setColor(Color.white);
 		g2.drawString(date.getDateString(), 20, 20);
-		date.add(Calendar.DATE, 1);
-		g2.drawString("days: " + ++cnt, 20, 40);
+		g2.drawString("days: " + cnt, 20, 40);
+//		if(ball != null) {
+//			Vector2D v = ball.getPos().toScreen();
+////			System.out.println(ball.getPos());
+//			g2.setColor(Color.DARK_GRAY);
+//			 Ellipse2D.Double obj = new Ellipse2D.Double(v.getX(), v.getY(), 10, 10);
+//			 g2.fill(obj);
+//		}
 		for(int i = 0; i < planets.length; i++) {
-			 Vector2D v = new Vector2D(planets[i].getPos().scale(Constant.scale)).add(new Vector2D(centerX, centerY));
+			if(planets[i] == null)
+				break;
+			 Vector2D v = (planets[i].getPos()).toScreen();
 			 Ellipse2D.Double obj = new Ellipse2D.Double(v.getX(), v.getY(), 10, 10);
 			 g2.setColor(Color.yellow);
 			 g2.fill(obj);
 			 g2.setColor(Color.white);
 			 g2.drawString(planets[i].getName(), (int)v.getX(), (int)v.getY());
+			 if(planets[i].equals(earth)) {
+				 Point from = new Point((int)v.getX()+5, (int)v.getY() + 5);
+				 Point to = new Point((int)(from.getX() + arrowX), (int)from.getY());
+				 Point to1 = new Point((int)from.x, (int)(from.y-arrowY));
+				 Point comb = new Point((int)(from.getX()+arrowX), (int)(from.getY()-arrowY));
+				 g2.setColor(Color.CYAN);
+				 drawArrowLine(g, (int)from.x, (int)from.y, (int)comb.x, (int)comb.y, 10, 4);
+				 g2.setColor(Color.RED);
+				 drawArrowLine(g, (int)from.x, (int)from.y, (int)to.x, (int)to.y,10, 4);
+				 drawArrowLine(g, (int)from.x, (int)from.y, (int)to1.x, (int)to1.y,10, 4);
+			 }
 		}
 	}
+
+	private void drawArrowLine(Graphics g, int x1, int y1, int x2, int y2, int d, int h) {
+	    int dx = x2 - x1, dy = y2 - y1;
+	    double D = Math.sqrt(dx*dx + dy*dy);
+	    double xm = D - d, xn = xm, ym = h, yn = -h, x;
+	    double sin = dy / D, cos = dx / D;
+
+	    x = xm*cos - ym*sin + x1;
+	    ym = xm*sin + ym*cos + y1;
+	    xm = x;
+
+	    x = xn*cos - yn*sin + x1;
+	    yn = xn*sin + yn*cos + y1;
+	    xn = x;
+
+	    int[] xpoints = {x2, (int) xm, (int) xn};
+	    int[] ypoints = {y2, (int) ym, (int) yn};
+
+	    g.drawLine(x1, y1, x2, y2);
+	    g.fillPolygon(xpoints, ypoints, 3);
+	}
+
+	
 
 
 	public double[] transform(Vector3D v) {
