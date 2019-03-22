@@ -110,7 +110,7 @@ public class CannonBall implements CelestialObject {
         //Make our cannon leave from the outside of the planet.
         HEEpos = fromPlanet.getHEEpos(date);
         Vector3D addRad = HEEpos.unit().scale(fromPlanet.getRadius()*1000);
-        HEEpos = HEEpos.add(addRad);
+        HEEpos = HEEpos.substract(addRad);
         /*
         double dist = HEEpos.substract(fromPlanet.getHEEpos()).length();
         Vector3D test = HEEpos.substract(fromPlanet.getHEEpos());

@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class MainMenu extends Application {
     // runing variables
     private final boolean RUNFRAMEFORFRAME = false;
+    private final boolean Rocket = false;
 
     // Timing variables
     private Date date = new Date(2000, 0, 1, 12, 0, 0);
@@ -194,13 +195,15 @@ public class MainMenu extends Application {
         venus.setMaterial(venusMaterial);
 
         //Cannonball
-        for(int i = 0; i < 100; i++){
-            CelestialObject cannonballObj = new CannonBall(1000, 1000,
-                    solarSystem.getPlanets().getEarth(),
-                    solarSystem.getPlanets().getTitan(), date,
-                    Vector3D.randomVector(-cannonballRange, cannonballRange));
-                    //new Vector3D(0,0,0));
-            spaceObjectsList.put(createGUIobject(cannonballObj), cannonballObj);
+        if(Rocket) {
+            for (int i = 0; i < 100; i++) {
+                CelestialObject cannonballObj = new CannonBall(1000, 1000,
+                        solarSystem.getPlanets().getEarth(),
+                        solarSystem.getPlanets().getTitan(), date,
+                        Vector3D.randomVector(-cannonballRange, cannonballRange));
+                //new Vector3D(0,0,0));
+                spaceObjectsList.put(createGUIobject(cannonballObj), cannonballObj);
+            }
         }
 
         /*Cannonball
