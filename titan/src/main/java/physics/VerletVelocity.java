@@ -1,6 +1,9 @@
-package utils;
+package physics;
 
+import solarsystem.CannonBall;
 import solarsystem.CelestialObject;
+import utils.Date;
+import utils.Vector3D;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,10 +21,12 @@ public class VerletVelocity {
     public VerletVelocity(ArrayList<? extends CelestialObject> bodies){
         this.bodies = bodies;
         currentDate = new Date(2000,0,1,12,0,0);
+        /*
         for(CelestialObject ob: bodies){
             ob.setHEEvel(ob.getHEEvel().scale(MathUtil.AU/(60*60*24)));
             ob.setHEEpos(ob.getHEEpos().scale(MathUtil.AU));
         }
+        */
         oldForces = new Vector3D[bodies.size()];
         for (CelestialObject body: bodies) {
             body.setForces(bodies);
@@ -53,10 +58,12 @@ public class VerletVelocity {
             System.out.println(body);
             body.initializeCartesianCoordinates(date);
         }
+        /*
         for (CelestialObject body: bodies){
             body.setHEEvel(body.getHEEvel().scale(MathUtil.AU/(60*60*24)));
             body.setHEEpos(body.getHEEpos().scale(MathUtil.AU));
         }
+        */
     }
 
 
@@ -114,6 +121,10 @@ public class VerletVelocity {
 
             // step 2 x(t + dt) = x(t) + v(t + 0.5dt) * dt
             Vector3D posChange = halfVel.scale(dt);
+
+            Vector3D Earthpos = bodies.get(3).getHEEpos();
+
+            Vector3D HEEpos = startPos.add(posChange).substract(bodies.get(3).getHEEpos());
             body.setHEEpos(startPos.add(posChange));
         }
 

@@ -1,6 +1,7 @@
-package utils;
+package gui;
 
 import gui.Orbiter;
+import utils.Constant;
 
 public class Calculator {
 	

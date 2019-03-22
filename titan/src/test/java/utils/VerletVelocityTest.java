@@ -1,6 +1,7 @@
 package utils;
 
 import org.junit.Test;
+import physics.VerletVelocity;
 import solarsystem.Planet;
 import solarsystem.SolarSystem;
 

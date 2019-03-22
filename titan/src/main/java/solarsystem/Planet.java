@@ -3,6 +3,8 @@ package solarsystem;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import physics.KeplerToCartesian;
+import physics.MathUtil;
 import utils.*;
 
 import java.util.ArrayList;
@@ -101,20 +103,20 @@ public class Planet implements CelestialObject {
         Vector3D[] cartesian;
         // as we don't have all the exact details for Titan we need to
         // approximate it.
-        if(name.equals("Titan")){
+        if(name.equals("titan")){
             double Mass = (centralBody.getMass() );
-            double mu = Mass * MathUtil.GAU; // get mu AU/s^2
+            double mu = Mass * MathUtil.G; // get mu m/s^2
 
             this.centralBody.initializeCartesianCoordinates(date);
             double dt = 86400 * (JT - Date.J2000); // difference in seconds
             double M = MAJ2000 + dt * Math.sqrt((mu)/(Math.pow(a0,3)));
-            cartesian = KeplerToCartesian.calculateKepler(a0, e0, m0, o0, i0, M,
+            cartesian = KeplerToCartesian.calculateKepler(a0 * MathUtil.AU, e0, m0, o0, i0, M,
                     mu);
         }else{
             double Mass = centralBody.getMass();
-            double mu = Mass * MathUtil.GAU; // get mu AU^3/s^2
+            double mu = Mass * MathUtil.G; // get mu AU^3/s^2
 
-            a = a0 + aCnt * T;
+            a = (a0 + aCnt * T) * MathUtil.AU; // convert to meters
             e = e0 + eCnt * T;
             i = i0 + iCnt * T;
             l = l0 + lCnt * T;

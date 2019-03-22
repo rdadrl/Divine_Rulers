@@ -1,4 +1,4 @@
-package solarsystem;
+package physics;
 
 import utils.*;
 
@@ -82,7 +82,6 @@ public class KeplerToCartesian {
         orbitalVel.setY(Math.sqrt(1.0 - e * e) * cosD(E));
         orbitalVel.setZ(0.0);
 
-
         orbitalVel = orbitalVel.scale(Math.sqrt(mu * a)/radius);
 
 
@@ -91,7 +90,7 @@ public class KeplerToCartesian {
         // aligned toward the equinox:
         centralPos = rotatePlane(m, o, i, orbitalPos);
         centralVel = rotatePlane(m, o, i, orbitalVel);
-        centralVel = centralVel.scale(60*60*24);
+        //centralVel = centralVel.scale(60*60*24);
 
         /*
         // Step 6

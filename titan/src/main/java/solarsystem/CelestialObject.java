@@ -18,6 +18,7 @@ public interface CelestialObject {
     Vector3D getHEEvel();
     void setHEEvel(Vector3D HEEvel);
     double getMass();
+    double getRadius();
     void initializeCartesianCoordinates(Date date);
 
 

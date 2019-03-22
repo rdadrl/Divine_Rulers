@@ -1,6 +1,8 @@
-package utils;
+package physics;
 
+import solarsystem.CannonBall;
 import solarsystem.CelestialObject;
+import utils.Vector3D;
 
 import java.util.ArrayList;
 
@@ -27,7 +29,7 @@ public class MathUtil {
 
         Vector3D gForces = new Vector3D(); // reset the forces
         for (CelestialObject o : objectsInSpace) {
-            if (o == refOb) {
+            if (o == refOb || o instanceof CannonBall) {
                 continue;
             }
             Vector3D r = o.getHEEpos().substract(refOb.getHEEpos());

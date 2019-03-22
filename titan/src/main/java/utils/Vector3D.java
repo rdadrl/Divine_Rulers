@@ -2,7 +2,9 @@ package utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Vector3D implements Vector<Point3D>{
+import java.util.Random;
+
+public class Vector3D implements Vector<Integer> {
 	public static double epsilon = 1e-10;
 	@JsonProperty("X")
 	private double x;
@@ -30,14 +32,14 @@ public class Vector3D implements Vector<Point3D>{
 	/*
 	 * add two vectors to each other
 	 */
-	public Vector3D add(Vector<Point3D> _other) {
+	public Vector3D add(Vector<Integer> _other) {
 		Vector3D other = (Vector3D)_other;
 		return new Vector3D(x + other.x, y + other.y, z + other.z);
 	}
 	/*
 	 * substract two vectors
 	 */
-	public Vector3D substract(Vector<Point3D> _other) {
+	public Vector3D substract(Vector<Integer> _other) {
 		Vector3D other = (Vector3D)_other;
 		return new Vector3D(x - other.x, y - other.y, z - other.z);
 	}
@@ -51,7 +53,7 @@ public class Vector3D implements Vector<Point3D>{
 	/*
 	 * calculate the dot product of two vectors
 	 */
-	public double dot(Vector<Point3D> _other) {
+	public double dot(Vector<Integer> _other) {
 		Vector3D other = (Vector3D)_other;
 		return x * other.x + y * other.y + z * other.z;
 	}
@@ -78,7 +80,7 @@ public class Vector3D implements Vector<Point3D>{
 	/*
 	 * calculate distance between two vectors
 	 */
-	public double dist(Vector<Point3D> _other) {
+	public double dist(Vector<Integer> _other) {
 		Vector3D other = (Vector3D)_other;
 		Vector3D v = substract(other);
 		return v.length();
@@ -89,7 +91,7 @@ public class Vector3D implements Vector<Point3D>{
 	/*
 	 * check if two vectors are orthogonal
 	 */
-	public boolean isOrthogonal(Vector<Point3D>_other) {
+	public boolean isOrthogonal(Vector<Integer>_other) {
 		Vector3D other = (Vector3D)_other;
 		return Math.abs(dot(other)) < epsilon;
 	}
@@ -161,6 +163,14 @@ public class Vector3D implements Vector<Point3D>{
 				.add(new Vector2D(Constant.CANVASCENTERX, Constant.CANVACENTERY));
 	}
 
+	public static Vector3D randomVector(double rangeMin, double rangeMax){
+        Random r = new Random();
+        double x = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        double y = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        double z = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        return new Vector3D(x, y, z);
+    }
+
     @Override
     public String toString() {
         return "Vector3D{" +
@@ -185,6 +195,8 @@ public class Vector3D implements Vector<Point3D>{
 		Vector3D z = new Vector3D(-4.054425385519177E+05, -2.557910226152136E+06, 5.277937690315753E+01);
 		System.out.println(29.78);
 		System.out.println(z.length()/24/3600);
+
+		System.out.println(Vector3D.randomVector(0, 30));
 		
 	}
 
