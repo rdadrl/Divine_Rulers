@@ -28,6 +28,7 @@ import utils.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
@@ -36,9 +37,11 @@ public class MainMenu extends Application {
     private final boolean RUNFRAMEFORFRAME = false;
 
     // Timing variables
-    private Date date = new Date(2008, 0, 1, 12, 0, 0);
-    private final long dt = 3;
+    private Date date = new Date(2000, 0, 1, 12, 0, 0);
+    private final long dt = 6;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
+
+    private int cannonballRange = 100000;
 
     // gui variables
     private Scene mainScene;
@@ -194,10 +197,20 @@ public class MainMenu extends Application {
         for(int i = 0; i < 100; i++){
             CelestialObject cannonballObj = new CannonBall(1000, 1000,
                     solarSystem.getPlanets().getEarth(),
-                    solarSystem.getPlanets().getTitan(), date, Vector3D.randomVector(-10000,
-                    10000));
+                    solarSystem.getPlanets().getTitan(), date,
+                    Vector3D.randomVector(-cannonballRange, cannonballRange));
+                    //new Vector3D(0,0,0));
             spaceObjectsList.put(createGUIobject(cannonballObj), cannonballObj);
         }
+
+        /*Cannonball
+        for(int i = 0; i < 1; i++){
+            Random r = new Random();
+            CelestialObject rocketObj = new Rocket(1000, 1000,
+                    solarSystem.getPlanets().getEarth(),
+                    solarSystem.getPlanets().getTitan(), date, r.nextDouble()*1);
+            spaceObjectsList.put(createGUIobject(rocketObj), rocketObj);
+        }*/
 
         //Date Label
         Label dateLabel = new Label(date.toDateString());

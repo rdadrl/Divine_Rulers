@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  *
  */
-public class CannonBall implements CelestialObject {
+public class Rocket implements CelestialObject {
     private String name;
     private double mass;
     private double radius;
@@ -30,30 +30,20 @@ public class CannonBall implements CelestialObject {
      * @param mass mass of the cannon ball
      * @param fromPlanet
      */
-    public CannonBall(double mass, double radius, Planet fromPlanet,
-                      Planet toPlanet, Date date, double inclination, double velocity){
+    public Rocket(double mass, double radius, Planet fromPlanet,
+                      Planet toPlanet, Date date, double velocity){
         this.mass = mass;
         this.radius = radius;
         this.toPlanet = toPlanet;
         this.fromPlanet = fromPlanet;
         this.date = date;
-        this.inclination = inclination;
         this.velocity = velocity * 1000;
-    }
 
-    public CannonBall(double mass, double radius, Planet fromPlanet,
-                      Planet toPlanet, Date date, Vector3D velocity){
-        this.mass = mass;
-        this.radius = radius;
-        this.toPlanet = toPlanet;
-        this.fromPlanet = fromPlanet;
-        this.date = date;
-        this.startVelVec = velocity;
     }
 
     @Override //TODO:change
     public String getName() {
-        return "cannonball";
+        return "rocket";
     }
 
     @Override
@@ -63,7 +53,12 @@ public class CannonBall implements CelestialObject {
 
     @Override
     public void setForces(ArrayList<? extends CelestialObject> objectsInSpace){
-        forces = MathUtil.gravitationalForces(this, objectsInSpace);
+        Vector3D gravity = MathUtil.gravitationalForces(this, objectsInSpace);
+        Vector3D dir = toPlanet.getHEEpos().substract(HEEpos).unit().scale(velocity);
+        double dist = toPlanet.getHEEpos().substract(HEEpos).length();
+        dir = dir.scale(Math.pow(dist, 2)/toPlanet.getMass());
+        Vector3D thrust = dir.substract(gravity);
+        forces = gravity.add(thrust);
     }
 
     @Override
@@ -72,17 +67,18 @@ public class CannonBall implements CelestialObject {
     }
 
     @Override
-    public void setHEEpos(Vector3D newHEEpos) {
-        /*
-        boolean colFromPlanet = MathUtil.FindLineSphereIntersections(HEEpos,newHEEpos,
-                fromPlanet.getHEEpos(),
-                fromPlanet.getRadius()*1000);
-        */
-        if(false){
-            System.out.println("collision!");
+    public void setHEEpos(Vector3D HEEpos) {
+        Vector3D test = HEEpos.substract(fromPlanet.getHEEpos());
+        double distF = HEEpos.substract(fromPlanet.getHEEpos()).length() - (fromPlanet.getRadius() * 1000);
+        if(distF < 0){
             this.HEEpos = fromPlanet.getHEEpos();
         }
-        this.HEEpos = newHEEpos;
+        double distT =
+                HEEpos.substract(toPlanet.getHEEpos()).length() - (toPlanet.getRadius() * 1000);
+        if(distT < 0){
+            this.HEEpos = toPlanet.getHEEpos();
+        }
+        this.HEEpos = HEEpos;
     }
 
     @Override
@@ -109,7 +105,7 @@ public class CannonBall implements CelestialObject {
     public void initializeCartesianCoordinates(Date date) {
         //Make our cannon leave from the outside of the planet.
         HEEpos = fromPlanet.getHEEpos(date);
-        Vector3D addRad = HEEpos.unit().scale(fromPlanet.getRadius()*1000);
+        Vector3D addRad = HEEpos.unit().scale(fromPlanet.getRadius()*2000);
         HEEpos = HEEpos.add(addRad);
         /*
         double dist = HEEpos.substract(fromPlanet.getHEEpos()).length();
