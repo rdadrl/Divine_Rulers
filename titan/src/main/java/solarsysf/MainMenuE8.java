@@ -14,27 +14,38 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
-import physics.MathUtil;
+import utils.MathUtil;
 import physics.VerletVelocity;
-import solarsystem.*;
+import solarsystem.CannonBall;
+import solarsystem.CelestialObject;
+import solarsystem.Planet;
+import solarsystem.SolarSystem;
 import utils.Date;
 import utils.Vector3D;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainMenuTryMoon extends Application {
+public class MainMenuE8 extends Application {
     // runing variables
     private final boolean RUNFRAMEFORFRAME = false;
+    private final boolean Rocket = true;
 
     // Timing variables
-    private Date date = new Date(2000, 0, 1, 12, 0, 0);
-    private final long dt = 1;
+    private Date date = new Date(2002, 9, 18, 12, 0, 0);
+    private final long dt = 6;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
+
+    private double cannonballMin = 95.24313;
+    private double cannonballMax = 95.24318;
+    private double inclinationMin = 38.74850;
+    private double inclinationMax = 38.74855;
 
     // gui variables
     private Scene mainScene;
@@ -67,7 +78,6 @@ public class MainMenuTryMoon extends Application {
         Planet urAnusObj = solarSystem.getPlanets().getUranus();
         Planet neptuneObj = solarSystem.getPlanets().getNeptune();
         Planet venusObj = solarSystem.getPlanets().getVenus();
-        Moon moonObj = new Moon();
 
         //Planet Name Label
         Label identifierLabel = new Label();
@@ -94,10 +104,13 @@ public class MainMenuTryMoon extends Application {
             ambientLight = new AmbientLight();
         }
 
+        Rotate rxBox = new Rotate(85, 0, 0, 0, Rotate.X_AXIS);
         // Sun
         Sphere sun  = new Sphere(sunObj.getRadius() / MathUtil.AU * 1000000); // sun is 100 times smaller
         PhongMaterial sunMaterial = new PhongMaterial();
         sunMaterial.setDiffuseMap(new Image("textures/sunmap.jpg"));
+        sun.setMaterial(sunMaterial);
+        sun.getTransforms().add(rxBox);
         sun.setOnMouseEntered(new EventHandler<MouseEvent> () {
             @Override
             public void handle(MouseEvent t) {
@@ -117,8 +130,9 @@ public class MainMenuTryMoon extends Application {
         PhongMaterial earthMaterial = new PhongMaterial();
         earthMaterial.setDiffuseMap(new Image("textures/earthmap.jpg"));
         earthMaterial.setBumpMap(new Image("textures/earthbump.jpg"));
-        earthMaterial.setSpecularMap(new Image("textures/earthspecular.jpg"));
+        //earthMaterial.setSpecularMap(new Image("textures/earthspecular.jpg"));
         earth.setMaterial(earthMaterial);
+        earth.getTransforms().add(rxBox);
         earth.setOnMouseEntered(new EventHandler<MouseEvent> () {
             @Override
             public void handle(MouseEvent t) {
@@ -135,12 +149,14 @@ public class MainMenuTryMoon extends Application {
 
         spaceObjectsList = new HashMap<>();
 
+
         //Mercury
         Sphere mercury = new Sphere(mercuryObj.getRadius() / MathUtil.AU * 100000000);
         PhongMaterial mercuryMaterial = new PhongMaterial();
         mercuryMaterial.setDiffuseMap(new Image("textures/mercurymap.jpg"));
         mercuryMaterial.setBumpMap(new Image("textures/mercurybump.jpg"));
         mercury.setMaterial(mercuryMaterial);
+        mercury.getTransforms().add(rxBox);
 
         //Mars
         Sphere mars = new Sphere(marsObj.getRadius() / MathUtil.AU * 100000000);
@@ -148,18 +164,22 @@ public class MainMenuTryMoon extends Application {
         marsMaterial.setDiffuseMap(new Image("textures/marsmap.jpg"));
         marsMaterial.setBumpMap(new Image("textures/marsbump.jpg"));
         mars.setMaterial(marsMaterial);
+        mars.getTransforms().add(rxBox);
 
         //Jupiter
         Sphere jupiter = new Sphere(jupiterObj.getRadius() / MathUtil.AU * 100000000);
         PhongMaterial jupiterMaterial = new PhongMaterial();
         jupiterMaterial.setDiffuseMap(new Image("textures/jupitermap.jpg"));
         jupiter.setMaterial(jupiterMaterial);
+        jupiter.getTransforms().add(rxBox);
 
         //Saturn
         Sphere saturn = new Sphere(saturnObj.getRadius() / MathUtil.AU * 100000000);
         PhongMaterial saturnMaterial = new PhongMaterial();
         saturnMaterial.setDiffuseMap(new Image("textures/saturnmap.jpg"));
         saturn.setMaterial(saturnMaterial);
+        saturn.rotateProperty();
+        saturn.getTransforms().addAll(rxBox);
 
         //Titan
         Sphere titan = new Sphere(titanObj.getRadius() / MathUtil.AU * 100000000);
@@ -167,22 +187,21 @@ public class MainMenuTryMoon extends Application {
         titanMaterial.setDiffuseMap(new Image("textures/moonmap.jpg"));
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
         titan.setMaterial(titanMaterial);
-
-        //Moon
-        Sphere moon = new Sphere(moonObj.getRadius() / MathUtil.AU * 100000000);
-        moon.setMaterial(titanMaterial);
+        titan.getTransforms().add(rxBox);
 
         //Uranus
         Sphere uranus = new Sphere(urAnusObj.getRadius() / MathUtil.AU * 100000000);
         PhongMaterial uranusMaterial = new PhongMaterial();
         uranusMaterial.setDiffuseMap(new Image("textures/uranusmap.jpg"));
         uranus.setMaterial(uranusMaterial);
+        uranus.getTransforms().add(rxBox);
 
         //Neptune
         Sphere neptune = new Sphere(neptuneObj.getRadius() / MathUtil.AU * 100000000);
         PhongMaterial neptuneMaterial = new PhongMaterial();
         neptuneMaterial.setDiffuseMap(new Image("textures/neptunemap.jpg"));
         neptune.setMaterial(neptuneMaterial);
+        neptune.getTransforms().add(rxBox);
 
         //Venus
         Sphere venus = new Sphere(venusObj.getRadius() / MathUtil.AU * 100000000);
@@ -190,15 +209,40 @@ public class MainMenuTryMoon extends Application {
         venusMaterial.setDiffuseMap(new Image("textures/venusmap.jpg"));
         venusMaterial.setBumpMap(new Image("textures/venusbump.jpg"));
         venus.setMaterial(venusMaterial);
+        venus.getTransforms().add(rxBox);
+
 
         //Cannonball
-        for(int i = 0; i < 100; i++){
-            CelestialObject cannonballObj = new CannonBall(1000, 1000,
-                    solarSystem.getPlanets().getEarth(),
-                    solarSystem.getPlanets().getTitan(), date, Vector3D.randomVector(-10000,
-                    10000));
-            spaceObjectsList.put(createGUIobject(cannonballObj), cannonballObj);
+        if(Rocket) {
+            for (int i = 0; i < 1000; i++) {
+                Random r = new Random();
+                /*
+                double xv = -cannonballRange + (cannonballRange + cannonballRange) * r.nextDouble();
+                double yv = -cannonballRange + (cannonballRange + cannonballRange) * r.nextDouble();
+                double zv = -cannonballRange + (cannonballRange + cannonballRange) * r.nextDouble();
+                */
+
+                Double velocity = cannonballMin + (cannonballMax - cannonballMin) * r.nextDouble();
+                Double inclination = inclinationMin + (inclinationMax - inclinationMin) * r.nextDouble();
+                //Double inclination = ThreadLocalRandom.current().nextDouble(0, inclinationRange);
+                CelestialObject cannonballObj = new CannonBall(100, 1000,
+                        solarSystem.getPlanets().getEarth(),
+                        solarSystem.getPlanets().getTitan(), date,
+                        inclination, velocity);
+                        //titanObj.getHEEpos().substract(earthObj.getHEEpos()).unit().scale
+                // (velocity));
+                spaceObjectsList.put(createGUIobject(cannonballObj), cannonballObj);
+            }
         }
+
+        /*Cannonball
+        for(int i = 0; i < 1; i++){
+            Random r = new Random();
+            CelestialObject rocketObj = new Rocket(1000, 1000,
+                    solarSystem.getPlanets().getEarth(),
+                    solarSystem.getPlanets().getTitan(), date, r.nextDouble()*1);
+            spaceObjectsList.put(createGUIobject(rocketObj), rocketObj);
+        }*/
 
         //Date Label
         Label dateLabel = new Label(date.toDateString());
@@ -213,8 +257,7 @@ public class MainMenuTryMoon extends Application {
         //root has the celestialobjects and the lights.
         root = new Group();
         if (USELIGHTS) root.getChildren().addAll(pointLight, ambientLight);
-        root.getChildren().addAll(sun, earth, mercury, mars, jupiter, saturn, titan, uranus,
-                neptune, venus, moon);
+        root.getChildren().addAll(sun, earth, mercury, mars, jupiter, saturn, titan, uranus, neptune, venus);
         root.getChildren().addAll(spaceObjectsList.keySet());
 
 
@@ -240,9 +283,8 @@ public class MainMenuTryMoon extends Application {
 
 
         ArrayList<CelestialObject> allObj =
-                new ArrayList<>(solarSystem.getPlanets().getAll());
-        allObj.addAll(spaceObjectsList.values());
-        allObj.add(moonObj);
+                new ArrayList<>(spaceObjectsList.values());
+        allObj.addAll(solarSystem.getPlanets().getAll());
         solarSystem.setAllObjects(allObj);
 
         VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllObjects(), date);
@@ -301,15 +343,13 @@ public class MainMenuTryMoon extends Application {
                     sun.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     sun.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     sun.setRotate(sun.getRotate() + 2);
-                    //System.out.println("Sun:\nX: " + coordinate.getX() + "\nY: " + coordinate
-                    // .getY() + "\nZ: " + coordinate.getZ());
+                    //System.out.println("Sun:\nX: " + coordinate.getX() + "\nY: " + coordinate// .getY() + "\nZ: " + coordinate.getZ());
 
                     coordinate = earthObj.getHEEpos();
                     earth.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     earth.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     earth.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     earth.setRotate(earth.getRotate() + 20);
-                    System.out.println(date + "\tE_pos: " + earthObj.getHEEpos());
 
                     coordinate = mercuryObj.getHEEpos();
                     mercury.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
@@ -341,15 +381,6 @@ public class MainMenuTryMoon extends Application {
                     titan.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     titan.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     titan.setRotate(titan.getRotate() + 20);
-
-                    //Titan Update
-                    coordinate = moonObj.getHEEpos();
-                    moon.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
-                    moon.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
-                    moon.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
-                    moon.setRotate(moon.getRotate() + 20);
-                    System.out.println(date + "\tM_pos: " + moonObj.getHEEpos());
-
 
                     coordinate = urAnusObj.getHEEpos();
                     uranus.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);

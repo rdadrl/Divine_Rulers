@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import physics.KeplerToCartesian;
-import physics.MathUtil;
+import utils.MathUtil;
 import utils.*;
 
 import java.util.ArrayList;
@@ -53,9 +53,9 @@ public class Planet implements CelestialObject {
     @JsonProperty("node_Cnt")
     private double oCnt;        // Change of longitude of ascending node per
     @JsonProperty("MA_J2000")
-    private double MAJ2000;
+    private double MA0;         // Mean anomaly at J2000
     @JsonProperty("peri")
-    private double m0; // argument of periapsis
+    private double w_peri; // argument of periapsis
 
     private double a; // semi major axis;
     private double e; // eccentricity
@@ -63,7 +63,6 @@ public class Planet implements CelestialObject {
     private double l; // longitude
     private double w; // periphelon
     private double o; // change of ascending node
-    private double om; //change of the perehlipsis
     // century
 
     private Date dateStart;   // Date of the current
@@ -88,6 +87,7 @@ public class Planet implements CelestialObject {
 
     /**
      * get the cartesian coordinates of a planet
+     * part of this is based upon
      */
     public void initializeCartesianCoordinates(Date date) {
         if(centralBody == null) return;
@@ -106,11 +106,10 @@ public class Planet implements CelestialObject {
         if(name.equals("titan")){
             double Mass = (centralBody.getMass() );
             double mu = Mass * MathUtil.G; // get mu m/s^2
-
             this.centralBody.initializeCartesianCoordinates(date);
             double dt = 86400 * (JT - Date.J2000); // difference in seconds
-            double M = MAJ2000 + dt * Math.sqrt((mu)/(Math.pow(a0,3)));
-            cartesian = KeplerToCartesian.calculateKepler(a0 * MathUtil.AU, e0, m0, o0, i0, M,
+            double M = MA0 + dt * Math.sqrt((mu)/(Math.pow(a0,3)));
+            cartesian = KeplerToCartesian.calculateKepler(a0 * MathUtil.AU, e0, w_peri, o0, i0, M,
                     mu);
         }else{
             double Mass = centralBody.getMass();
@@ -122,6 +121,8 @@ public class Planet implements CelestialObject {
             l = l0 + lCnt * T;
             w = w0 + wCnt * T;
             o = o0 + oCnt * T;
+
+            w_peri = w - o;
             //double mu = Mass * MathUtil.GAU; // get mu AU/s^2
 
             cartesian = KeplerToCartesian.getCartesianCoordinates(a, e,
@@ -129,16 +130,17 @@ public class Planet implements CelestialObject {
         }
 
         if(name.equals("Titan")){
-            double mu = centralBody.w - centralBody.o;
+            centralBody.initializeCartesianCoordinates(date);
+            double omC = centralBody.w - centralBody.o;
 
             //Look from here on!!
             Vector3D SatPlanePos = cartesian[2];
             Vector3D SatPlaneVel = cartesian[3];
 
-            HEEpos = KeplerToCartesian.rotatePlane(mu, centralBody.o,
+            HEEpos = KeplerToCartesian.orbitalToEclipticPlane(omC, centralBody.o,
                     centralBody.i, SatPlanePos);
             HEEpos = HEEpos.add(centralBody.getHEEpos());
-            HEEvel = KeplerToCartesian.rotatePlane(mu, centralBody.o,centralBody.i, SatPlaneVel);
+            HEEvel = KeplerToCartesian.orbitalToEclipticPlane(omC, centralBody.o,centralBody.i, SatPlaneVel);
             HEEvel = HEEvel.add(centralBody.getHEEvel());
         }else{
             HEEpos = cartesian[2];
@@ -241,9 +243,18 @@ public class Planet implements CelestialObject {
         this.HEEvel = centralVel;
     }
 
-    public Vector3D getRCoord(Date date){
+    public Vector3D getOrbitalPos(Date date){
         initializeCartesianCoordinates(date);
         return orbitalPos;
+    }
+
+    public Vector3D getOrbitalVel(Date date){
+        initializeCartesianCoordinates(date);
+        return orbitalVel;
+    }
+
+    public Vector3D getOrbitalVel(){
+        return orbitalVel;
     }
 
     /**
@@ -262,12 +273,7 @@ public class Planet implements CelestialObject {
      */
     @Override
     public void setForces(ArrayList<? extends CelestialObject> objectsInSpace){
-        if(this.name.equals("Titan")){
-            forces = MathUtil.gravitationalForces(this, objectsInSpace);
-        }else{
-            forces = MathUtil.gravitationalForces(this, objectsInSpace);
-        }
-
+        forces = MathUtil.gravitationalForces(this, objectsInSpace);
     }
 
     /**
@@ -281,7 +287,7 @@ public class Planet implements CelestialObject {
     /**
      * Get the planet around which the whole solarsystem is based upon. E.g
      * ., the sun in our case
-     * @return
+     * @return the sun
      */
     public Planet getReferencePlanet(){
         Planet ref = centralBody;
@@ -290,6 +296,17 @@ public class Planet implements CelestialObject {
         }
         return centralBody;
     }
+
+    public double getPeriapsis() {
+        return w_peri;
+    }
+    public double getInclination(){
+        return i;
+    }
+    public double getAscendingNode(){
+        return o;
+    }
+
 
     @Override
     public String toString() {

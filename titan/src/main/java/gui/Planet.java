@@ -1,7 +1,5 @@
 package gui;
 
-import gui.Orbiter;
-import utils.Constant;
 import utils.Vector3D;
 
 public class Planet implements Orbiter {

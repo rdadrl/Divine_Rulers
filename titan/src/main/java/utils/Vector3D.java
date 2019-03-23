@@ -1,10 +1,12 @@
 package utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import gui.Constant;
+import javafx.geometry.Point3D;
 
 import java.util.Random;
 
-public class Vector3D implements Vector<Integer> {
+public class Vector3D implements Vector<Point3D> {
 	public static double epsilon = 1e-10;
 	@JsonProperty("X")
 	private double x;
@@ -32,14 +34,14 @@ public class Vector3D implements Vector<Integer> {
 	/*
 	 * add two vectors to each other
 	 */
-	public Vector3D add(Vector<Integer> _other) {
+	public Vector3D add(Vector<Point3D> _other) {
 		Vector3D other = (Vector3D)_other;
 		return new Vector3D(x + other.x, y + other.y, z + other.z);
 	}
 	/*
 	 * substract two vectors
 	 */
-	public Vector3D substract(Vector<Integer> _other) {
+	public Vector3D substract(Vector<Point3D> _other) {
 		Vector3D other = (Vector3D)_other;
 		return new Vector3D(x - other.x, y - other.y, z - other.z);
 	}
@@ -53,7 +55,7 @@ public class Vector3D implements Vector<Integer> {
 	/*
 	 * calculate the dot product of two vectors
 	 */
-	public double dot(Vector<Integer> _other) {
+	public double dot(Vector<Point3D> _other) {
 		Vector3D other = (Vector3D)_other;
 		return x * other.x + y * other.y + z * other.z;
 	}
@@ -80,7 +82,7 @@ public class Vector3D implements Vector<Integer> {
 	/*
 	 * calculate distance between two vectors
 	 */
-	public double dist(Vector<Integer> _other) {
+	public double dist(Vector<Point3D> _other) {
 		Vector3D other = (Vector3D)_other;
 		Vector3D v = substract(other);
 		return v.length();
@@ -91,7 +93,7 @@ public class Vector3D implements Vector<Integer> {
 	/*
 	 * check if two vectors are orthogonal
 	 */
-	public boolean isOrthogonal(Vector<Integer>_other) {
+	public boolean isOrthogonal(Vector<Point3D>_other) {
 		Vector3D other = (Vector3D)_other;
 		return Math.abs(dot(other)) < epsilon;
 	}
@@ -105,6 +107,11 @@ public class Vector3D implements Vector<Integer> {
 	}
 
 
+	/**
+	 * rotate around the x axis
+	 * @param theta degree to be rotated
+	 * @return rotated vector
+	 */
 	public Vector3D rotateXRad(double theta) {
 		double cosTheta = Math.cos(theta);
 		double sinTheta = Math.sin(theta);
@@ -117,6 +124,21 @@ public class Vector3D implements Vector<Integer> {
 		);
 	}
 
+
+	/*
+	public Vector3D rotateXRadInverse(double theta) {
+        double cosTheta = Math.cos(theta);
+        double sinTheta = Math.sin(theta);
+
+
+        return new Vector3D(
+                this.dot(new Vector3D(1, 0, 0)),
+                this.dot(new Vector3D(0, cosTheta, sinTheta)),
+                this.dot(new Vector3D(0, -1*sinTheta, cosTheta))
+        );
+    }
+    */
+
 	public Vector3D rotateZRad(double theta) {
 		double cosTheta = Math.cos(theta);
 		double sinTheta = Math.sin(theta);
@@ -128,6 +150,29 @@ public class Vector3D implements Vector<Integer> {
 				this.dot(new Vector3D(-1*sinTheta, 0, cosTheta))
 		);
 	}
+   /* TODO: Check code think it might be accurate
+    public Vector3D rotateZRadInverse(double theta) {
+        double cosTheta = Math.cos(theta);
+        double sinTheta = Math.sin(theta);
+
+
+        return new Vector3D(
+                this.dot(new Vector3D(cosTheta, 0, -1*sinTheta)),
+                this.dot(new Vector3D(0, 1, 0)),
+                this.dot(new Vector3D(sinTheta, 0, cosTheta))
+        );
+    }
+    */
+
+    public Vector3D rotateClockWise(double theta){
+        double cs = Math.cos(theta);
+        double sn = Math.sin(theta);
+        return new Vector3D(x * cs - y * sn, x * sn + y * cs, z);
+    }
+
+    public Vector3D rotateAntiClockWise(double theta){
+	    return rotateClockWise(-theta);
+    }
 
 
 	public static boolean isOrthogonal(Vector3D u, Vector3D w) {

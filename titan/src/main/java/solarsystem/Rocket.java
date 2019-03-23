@@ -1,7 +1,7 @@
 package solarsystem;
 
 import utils.Date;
-import physics.MathUtil;
+import utils.MathUtil;
 import utils.Vector3D;
 
 

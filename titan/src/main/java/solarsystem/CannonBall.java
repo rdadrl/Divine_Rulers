@@ -1,25 +1,34 @@
 package solarsystem;
 
+import javafx.geometry.Point3D;
+import physics.KeplerToCartesian;
+import utils.Constant;
 import utils.Date;
-import physics.MathUtil;
+import utils.MathUtil;
 import utils.Vector3D;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
  *
  */
 public class CannonBall implements CelestialObject {
+    static double closestDistance = 1E8;
     private String name;
     private double mass;
     private double radius;
     private Vector3D HEEpos; // Coordinate central body reference frame
+    private Vector3D oldHEEpos;
     private Vector3D HEEvel; // Velocity central body reference frame
     private Vector3D forces;
     private Planet fromPlanet;
     private Planet toPlanet;
+
+    private boolean crashed;
+    private Planet crashedPlanet;
     private Date date;
     private double inclination;
     private double velocity;
@@ -37,8 +46,10 @@ public class CannonBall implements CelestialObject {
         this.toPlanet = toPlanet;
         this.fromPlanet = fromPlanet;
         this.date = date;
-        this.inclination = inclination;
+        this.inclination = Math.toRadians(inclination);
         this.velocity = velocity * 1000;
+
+        //this.velocity = fromPlanet.getHEEvel(date).length();
     }
 
     public CannonBall(double mass, double radius, Planet fromPlanet,
@@ -73,16 +84,32 @@ public class CannonBall implements CelestialObject {
 
     @Override
     public void setHEEpos(Vector3D newHEEpos) {
-        /*
-        boolean colFromPlanet = MathUtil.FindLineSphereIntersections(HEEpos,newHEEpos,
-                fromPlanet.getHEEpos(),
-                fromPlanet.getRadius()*1000);
-        */
-        if(false){
-            System.out.println("collision!");
-            this.HEEpos = fromPlanet.getHEEpos();
+        cleckClosestDistance(newHEEpos, toPlanet, velocity, inclination, startVelVec);
+        if(!crashed){
+            checkCrash(fromPlanet, newHEEpos);
+            checkCrash(toPlanet, newHEEpos);
+            checkCrash(toPlanet.getCentralBody(), newHEEpos);
+            oldHEEpos = HEEpos;
+            HEEpos = newHEEpos;
+        }else{
+            HEEpos = crashedPlanet.getHEEpos();
         }
-        this.HEEpos = newHEEpos;
+    }
+    private void checkCrash(Planet planet, Vector3D newHEEpos){
+        Point3D[] crash = MathUtil.collisionDetector(HEEpos, newHEEpos,
+                planet.getHEEpos(),
+                planet.getRadius()*1000);
+
+        if(crash != null){
+            System.out.println("collision with: " + planet.getName());
+            System.out.println(Arrays.toString(crash));
+            System.out.println(velocity);
+            System.out.println(inclination);
+
+            this.HEEpos = planet.getHEEpos();
+            this.crashedPlanet = planet;
+            crashed = true;
+        }
     }
 
     @Override
@@ -109,8 +136,13 @@ public class CannonBall implements CelestialObject {
     public void initializeCartesianCoordinates(Date date) {
         //Make our cannon leave from the outside of the planet.
         HEEpos = fromPlanet.getHEEpos(date);
-        Vector3D addRad = HEEpos.unit().scale(fromPlanet.getRadius()*1000);
-        HEEpos = HEEpos.substract(addRad);
+        Vector3D addRadX = fromPlanet.getHEEpos(date).unit().scale((fromPlanet.getRadius() * 1000));
+        Vector3D addRadY = fromPlanet.getHEEvel(date).unit().scale((fromPlanet.getRadius() * 1000));
+        //addRad = addRad.add(new Vector3D(10,10,10000));
+        HEEpos = HEEpos.add(addRadX);
+        HEEpos = HEEpos.add(addRadY);
+        //System.out.println(HEEpos.substract(fromPlanet.getHEEpos()).length()/1000);
+        //System.out.println(fromPlanet.getRadius());
         /*
         double dist = HEEpos.substract(fromPlanet.getHEEpos()).length();
         Vector3D test = HEEpos.substract(fromPlanet.getHEEpos());
@@ -118,10 +150,34 @@ public class CannonBall implements CelestialObject {
         */
 
         //HEEvel = toPlanet.getHEEpos().substract(fromPlanet.getHEEpos()).unit().scale(velocity);
-        if(startVelVec== null){
-            startVelVec = fromPlanet.getHEEvel().unit().scale(velocity);
+        if (startVelVec == null) {
+            getStartVelocity();
         }
         HEEvel = startVelVec;
+    }
+
+    private void getStartVelocity(){
+        Vector3D relEartV =
+                fromPlanet.getOrbitalVel(date).rotateAntiClockWise(inclination).unit().scale(velocity);
+        double w = fromPlanet.getPeriapsis();
+        double o = fromPlanet.getAscendingNode();
+        double i = fromPlanet.getInclination();
+        startVelVec = KeplerToCartesian.orbitalToEclipticPlane(w, o, i, relEartV);
+        //System.out.println(KeplerToCartesian.orbitalToEclipticPlane(w, o, i,fromPlanet.getOrbitalVel()));
+        //System.out.println(fromPlanet.getHEEvel());
+    }
+
+    private static void cleckClosestDistance(Vector3D newHEEpos, Planet toPlanet, double velocity
+            , double inclination, Vector3D startVelVec){
+        double temp = closestDistance;
+        Vector3D diff = newHEEpos.substract(toPlanet.getHEEpos());
+        double distance = diff.length();
+
+        double tempw = distance;
+        if(distance < closestDistance){
+            closestDistance = distance;
+            System.out.println("Dist: " + closestDistance + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);
+        }
 
     }
 

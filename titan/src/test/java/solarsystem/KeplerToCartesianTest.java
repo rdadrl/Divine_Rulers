@@ -1,6 +1,7 @@
 package solarsystem;
 
 import org.junit.Test;
+import utils.MathUtil;
 import utils.Vector3D;
 import utils.Date;
 
@@ -15,6 +16,7 @@ import static org.junit.Assert.*;
  */
 public class KeplerToCartesianTest {
     private static boolean PRINT = true;
+    private final double AU = MathUtil.AU;
 
     @Test
     public void Earth200020002() throws IOException {
@@ -44,27 +46,27 @@ public class KeplerToCartesianTest {
         if(PRINT){
             printPosVel(earth.getName(), coordinate, date);
         }
-        assertEquals( -0.16856286531223225,coordinate.getX(), 1e-4);
-        assertEquals(0.968758969709345,coordinate.getY(),
+        assertEquals( -0.16856286531223225,coordinate.getX()/AU, 1e-4);
+        assertEquals(0.968758969709345,coordinate.getY()/AU,
                 1e-4);
-        assertEquals(-2.558653782299318E-7, coordinate.getZ(), 1e-4);
+        assertEquals(-2.558653782299318E-7, coordinate.getZ()/AU, 1e-4);
 
 
         coordinate = earth.getHEEpos(new Date(2001, 0, 1, 0, 0, 0));
         if(PRINT){
             printPosVel(earth.getName(), coordinate, date);
         }
-        assertEquals(-0.18135913869197764, coordinate.getX(),1e-4);
-        assertEquals(0.9664354985130857, coordinate.getY(),1e-4);
-        assertEquals(2.5252586100770815E-6, coordinate.getZ(),1e-4);
+        assertEquals(-0.18135913869197764, coordinate.getX()/AU,1e-4);
+        assertEquals(0.9664354985130857, coordinate.getY()/AU,1e-4);
+        assertEquals(-2.5252586100770815E-6, coordinate.getZ()/AU,1e-4);
 
         coordinate = earth.getHEEpos(new Date(2002, 0, 2, 0, 0, 0));
         if(PRINT){
             printPosVel(earth.getName(), coordinate, date);
         }
-        assertEquals(-0.19412419171553183, coordinate.getX(),1e-4);
-        assertEquals( 0.9639457176122871, coordinate.getY(),1e-4);
-        assertEquals(4.775113569186536E-6, coordinate.getZ(),1e-4);
+        assertEquals(-0.19412419171553183, coordinate.getX()/AU,1e-4);
+        assertEquals( 0.9639457176122871, coordinate.getY()/AU,1e-4);
+        assertEquals(4.775113569186536E-6, coordinate.getZ()/AU,1e-4);
     }
 
     @Test
@@ -150,7 +152,7 @@ public class KeplerToCartesianTest {
         Planet planet = solarSystem.getPlanets().getEarth();
         for(int i = 1; i<=12; i++) {
             Vector3D HEEPos = planet.getHEEpos(date);
-            Vector3D OrbPos = planet.getRCoord(date);
+            Vector3D OrbPos = planet.getOrbitalPos(date);
             if(PRINT){
                 //printXYZ(planet.getName(), OrbPos, date);
                 printXYZ(planet.getName(), HEEPos, date);
@@ -167,7 +169,7 @@ public class KeplerToCartesianTest {
         SolarSystem solarSystem = new SolarSystem();
         Planet planet = solarSystem.getPlanets().getJupiter();
         Vector3D HEEPos = planet.getHEEpos(date);
-        Vector3D OrbPos = planet.getRCoord(date);
+        Vector3D OrbPos = planet.getOrbitalPos(date);
         if(PRINT){
             //printXYZ(planet.getName(), OrbPos, date);
             printXYZ(planet.getName(), HEEPos, date);

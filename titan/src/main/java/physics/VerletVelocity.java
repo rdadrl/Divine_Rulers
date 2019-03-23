@@ -10,7 +10,9 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * A class which uses a verlet velocity algorithm the locate the location of the
+ * planets.
+ * https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2011/06/MA221-6.1.pdf
  *
  */
 public class VerletVelocity {
@@ -38,11 +40,9 @@ public class VerletVelocity {
                           Date date) {
         this.currentDate = date;
         this.bodies = bodies;
-        System.out.println(bodies.size());
-
         initializeCartesianCoordinates(date);
         for(CelestialObject planet: bodies){
-            printXYZ(planet.getName(), planet.getHEEpos(), date);
+            printXYZ(planet.getName(), planet.getHEEpos().substract(bodies.get(4).getHEEpos()), date);
             printXYZ(planet.getName(), planet.getHEEvel(), date);
             System.out.println();
         }
@@ -55,7 +55,6 @@ public class VerletVelocity {
     }
     private void initializeCartesianCoordinates(Date date){
         for (CelestialObject body: bodies) {
-            System.out.println(body);
             body.initializeCartesianCoordinates(date);
         }
         /*
@@ -142,11 +141,6 @@ public class VerletVelocity {
             body.setHEEvel(halfVel.add(velChange));
         }
     }
-
-
-
-
-
 
 
     /**

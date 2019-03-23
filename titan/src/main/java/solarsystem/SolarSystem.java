@@ -56,7 +56,6 @@ public class SolarSystem {
         for(Planet planet: getPlanets().getAll()){
             planet.initializeCartesianCoordinates(date);
         }
-
     }
 
 

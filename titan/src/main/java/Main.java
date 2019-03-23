@@ -1,13 +1,30 @@
-import java.io.IOException;
 
-import gui.Controller;
-import gui.View;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import solarsysf.MainMenu;
 
-public class Main {
+/**
+ *
+ *  TODO: NEXT PHASE
+ *  - HIT TITAN!
+ *  - TRY RUNGE KUTTA: 4TH ORDER
+ *  - LANDING OF ROCKET
+ *  - EXPERIMENTS?
+ *  - GENECTIC ALGORITHM TO TEST VARIATIONS ON THE ROCKET PARAMETERS
+ *
+ *  Launcher of the game. Only run this file to launch the file
+ */
+public class Main extends Application {
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-    public static void main(String[] args) throws IOException {
-
-    	View view = new View();
-    	new Controller(view);
+    @Override
+    public void start(Stage primaryStage){
+        MainMenu solarSystemGUI = new MainMenu();
+        solarSystemGUI.start( primaryStage);
     }
 }
+
+
+

@@ -1,8 +1,5 @@
 package gui;
 
-import gui.Orbiter;
-import utils.Constant;
-
 public class Calculator {
 	
 	public static double force(Orbiter a, Orbiter b) {

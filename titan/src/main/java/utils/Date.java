@@ -10,9 +10,10 @@ import java.util.TimeZone;
  * 
  */
 public class Date extends GregorianCalendar {
+    /**
+     * the julian time for the 1 st of january 2000, at 12.00 hour
+     */
     public static final double J2000 = 2451545.0;
-    public Date() {
-    }
 
     public Date(TimeZone zone) {
         super(zone);
@@ -37,6 +38,11 @@ public class Date extends GregorianCalendar {
     public Date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
         super(year, month, dayOfMonth, hourOfDay, minute, second);
     }
+
+    /**
+     * clone a date object
+     * @param date date to be cloned
+     */
     public Date(Date date){
         this(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
                 date.get(Calendar.DAY_OF_MONTH) ,date.get(Calendar.HOUR_OF_DAY),
@@ -70,6 +76,11 @@ public class Date extends GregorianCalendar {
     	} 
     	return str;
     }
+    public String toDateString() {
+        return  this.get(Calendar.DAY_OF_MONTH) + "/" +
+                (this.get(Calendar.MONTH) + 1) + "/" +
+                this.get(Calendar.YEAR);
+    }
 
     @Override
     public String toString() {
@@ -81,11 +92,5 @@ public class Date extends GregorianCalendar {
                 this.get(Calendar.MINUTE) + ":" +
                 this.get(Calendar.SECOND) +
                 '}';
-    }
-
-    public String toDateString() {
-        return  this.get(Calendar.DAY_OF_MONTH) + "/" +
-                (this.get(Calendar.MONTH) + 1) + "/" +
-                this.get(Calendar.YEAR);
     }
 }

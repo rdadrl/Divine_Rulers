@@ -9,7 +9,6 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import utils.Constant;
 import utils.Vector3D;
 
 public class Controller {

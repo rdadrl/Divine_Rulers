@@ -1,16 +1,15 @@
 package solarsystem;
 
-import physics.MathUtil;
+import utils.MathUtil;
 import utils.Date;
 import utils.Vector3D;
 
 import java.util.ArrayList;
 
 /**
- *
- *
+ * A trial to see if we could implement the moon as well
  */
-public class Moon implements CelestialObject {
+public abstract class Moon implements CelestialObject {
     private String name;
     private double mass;
     private double radius;

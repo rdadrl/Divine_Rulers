@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import javax.swing.JPanel;
 
-import utils.Constant;
 import utils.Date;
 import utils.Vector2D;
 import utils.Vector3D;

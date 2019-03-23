@@ -8,10 +8,8 @@ import utils.*;
  *
  */
 public class KeplerToCartesian {
-
-
-
     /**
+     * calculate the mean kepler coordinates when you have the following arguments
      * source https://ssd.jpl.nasa.gov/txt/aprx_pos_planets.pdf
      * https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
      * @param a  semi-major axis
@@ -34,6 +32,18 @@ public class KeplerToCartesian {
         return calculateKepler(a, e, m, o, i, M, mu);
     }
 
+    /**
+     * calculate the kepler cartesian coordinates when you already have the
+     * mean anomaly calculation
+     * @param a semi major axis
+     * @param e eccentricty
+     * @param m argument of the perihelion/ periapsis
+     * @param o ascending mode
+     * @param i inclination
+     * @param M mean anomaly
+     * @param mu gravitational force of the central body
+     * @return
+     */
     public static Vector3D[] calculateKepler(double a, double e, double m, double o,
                                 double i, double M, double mu){
 
@@ -88,8 +98,8 @@ public class KeplerToCartesian {
         // Step 5
         // compute the coordinates in the J2000 ecliptic plane, with the x-axis
         // aligned toward the equinox:
-        centralPos = rotatePlane(m, o, i, orbitalPos);
-        centralVel = rotatePlane(m, o, i, orbitalVel);
+        centralPos = orbitalToEclipticPlane(m, o, i, orbitalPos);
+        centralVel = orbitalToEclipticPlane(m, o, i, orbitalVel);
         //centralVel = centralVel.scale(60*60*24);
 
         /*
@@ -123,7 +133,16 @@ public class KeplerToCartesian {
         return MathUtil.sinDegree(degree);
     }
 
-    public static Vector3D rotatePlane(double m, double o, double i,
+
+    /**
+     * switch from an orbtial to an ecliptic plane
+     * @param m argument of the periapsis
+     * @param o
+     * @param i
+     * @param obC
+     * @return
+     */
+    public static Vector3D orbitalToEclipticPlane(double m, double o, double i,
                                        Vector3D obC){
         Vector3D heeC = new Vector3D();
         heeC.setX((cosD(m) * cosD(o) - sinD(m) * sinD(o) * cosD(i)) * obC.getX() +
@@ -137,4 +156,5 @@ public class KeplerToCartesian {
                 (cosD(i) * obC.getZ()));
         return heeC;
     }
+
 }

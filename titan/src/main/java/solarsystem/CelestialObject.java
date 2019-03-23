@@ -6,8 +6,7 @@ import utils.Vector3D;
 import java.util.ArrayList;
 
 /**
- *
- *
+ * An interface for any celestial object which have to move through space
  */
 public interface CelestialObject {
     String getName();

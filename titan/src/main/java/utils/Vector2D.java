@@ -1,6 +1,8 @@
 package utils;
 
-public class Vector2D implements Vector<Integer> {
+import java.awt.geom.Point2D;
+
+public class Vector2D implements Vector<Point2D> {
 	private double x;
 	private double y;
 	public static double epsilon = 1e-10;
@@ -11,7 +13,7 @@ public class Vector2D implements Vector<Integer> {
 	public Vector2D(Vector3D v) {
 		this(v.getX(), v.getY());
 	}
-	public Vector2D add(Vector<Integer> _other) {
+	public Vector2D add(Vector<Point2D> _other) {
 		Vector2D other = (Vector2D)(_other);
 		return new Vector2D(this.x + other.x, this.y + other.y);
 	}
@@ -19,7 +21,7 @@ public class Vector2D implements Vector<Integer> {
 	/*
 	 * substract two vectors
 	 */
-	public Vector2D substract(Vector<Integer> _other) {
+	public Vector2D substract(Vector<Point2D> _other) {
 		Vector2D other = (Vector2D)(_other);
 		return new Vector2D(x - other.x, y - other.y);
 	}
@@ -29,7 +31,7 @@ public class Vector2D implements Vector<Integer> {
 	public Vector2D scale(double c) {
 		return new Vector2D(c * x, c * y);
 	}
-	public double dot(Vector<Integer> _other) {
+	public double dot(Vector<Point2D> _other) {
 		Vector2D other = (Vector2D)(_other);
 		return this.x * other.x + this.y; 
 	}
@@ -52,7 +54,7 @@ public class Vector2D implements Vector<Integer> {
 		this.y = y;
 	}
 	
-	public double dist(Vector<Integer> _other) {
+	public double dist(Vector<Point2D> _other) {
 		Vector2D other = (Vector2D)_other;
 		return this.substract(other).length();
 	}
@@ -61,7 +63,7 @@ public class Vector2D implements Vector<Integer> {
 		return scale(1/norm());
 	}
 
-	public boolean isOrthogonal(Vector<Integer> _other) {
+	public boolean isOrthogonal(Vector<Point2D> _other) {
 		Vector2D other = (Vector2D)_other;
 		return Math.abs(dot(other)) < epsilon;
 	}
@@ -74,9 +76,6 @@ public class Vector2D implements Vector<Integer> {
 		Vector2D v2 = v.add(new Vector2D(2,3));
 		System.out.println(v2);
 	}
-
-
-	
 }
 
 
