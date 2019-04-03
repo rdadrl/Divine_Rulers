@@ -16,13 +16,13 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
-import utils.MathUtil;
 import physics.VerletVelocity;
 import solarsystem.CannonBall;
 import solarsystem.CelestialObject;
 import solarsystem.Planet;
 import solarsystem.SolarSystem;
 import utils.Date;
+import utils.MathUtil;
 import utils.Vector3D;
 
 import java.io.IOException;
@@ -32,28 +32,29 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainMenuE8 extends Application {
+public class MainMenuE10 extends Application {
     // runing variables
     private final boolean RUNFRAMEFORFRAME = false;
     private final boolean Rocket = true;
 
     // Timing variables
-    private Date date = new Date(2002, 9, 18, 12, 0, 0);
+    private Date date = new Date(2002, 9, 10, 12, 0, 0);
     private final long dt = 6;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
 
 
+    /*
     private double cannonballMin = 95.24313;
     private double cannonballMax = 95.24318;
     private double inclinationMin = 38.74850;
     private double inclinationMax = 38.74855;
-
-    /*
-    private double cannonballMin = 95.3;
-    private double cannonballMax = 95.1;
-    private double inclinationMin = 38.74;
-    private double inclinationMax = 38.75;
     */
+
+    private double cannonballMin = 94.4;
+    private double cannonballMax = 94.9;
+    private double inclinationMin = 36.59;
+    private double inclinationMax = 36.71;
+
     // gui variables
     private Scene mainScene;
     private Group root;
@@ -65,7 +66,7 @@ public class MainMenuE8 extends Application {
     private HashMap<Sphere, CelestialObject> spaceObjectsList = new HashMap<>();
     private SolarSystem solarSystem;
     private final int DistanceMultiplier = 40;
-    private final int plntRadFact = 100000000;
+    private final int plntRadFact = 10000000;
     private double AU = MathUtil.AU;
 
     @Override
