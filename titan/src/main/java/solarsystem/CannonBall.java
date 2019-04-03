@@ -20,9 +20,9 @@ public class CannonBall implements CelestialObject {
     private String name;
     private double mass;
     private double radius;
-    private Vector3D HEEpos; // Coordinate central body reference frame
-    private Vector3D oldHEEpos;
-    private Vector3D HEEvel; // Velocity central body reference frame
+    private Vector3D centralPos; // Coordinate central body reference frame
+    private Vector3D oldcentralPos;
+    private Vector3D centralVel; // Velocity central body reference frame
     private Vector3D forces;
     private Planet fromPlanet;
     private Planet toPlanet;
@@ -49,7 +49,7 @@ public class CannonBall implements CelestialObject {
         this.inclination = Math.toRadians(inclination);
         this.velocity = velocity * 1000;
 
-        //this.velocity = fromPlanet.getHEEvel(date).length();
+        //this.velocity = fromPlanet.getCentralVel(date).length();
     }
 
     public CannonBall(double mass, double radius, Planet fromPlanet,
@@ -78,26 +78,29 @@ public class CannonBall implements CelestialObject {
     }
 
     @Override
-    public Vector3D getHEEpos() {
-        return HEEpos;
+    public Vector3D getCentralPos() {
+        return centralPos;
     }
 
     @Override
-    public void setHEEpos(Vector3D newHEEpos) {
-        cleckClosestDistance(newHEEpos, toPlanet, velocity, inclination, startVelVec);
+    public void setCentralPos(Vector3D newcentralPos, Date date) {
+        this.date = new Date(date);
+        cleckClosestDistance(newcentralPos, toPlanet, velocity, inclination, startVelVec);
+
+        // TODO check crashes after whole update.
         if(!crashed){
-            checkCrash(fromPlanet, newHEEpos);
-            checkCrash(toPlanet, newHEEpos);
-            checkCrash(toPlanet.getCentralBody(), newHEEpos);
-            oldHEEpos = HEEpos;
-            HEEpos = newHEEpos;
+            checkCrash(fromPlanet, newcentralPos);
+            checkCrash(toPlanet, newcentralPos);
+            checkCrash(toPlanet.getCentralBody(), newcentralPos);
+            oldcentralPos = centralPos;
+            centralPos = newcentralPos;
         }else{
-            HEEpos = crashedPlanet.getHEEpos();
+            centralPos = crashedPlanet.getCentralPos();
         }
     }
-    private void checkCrash(Planet planet, Vector3D newHEEpos){
-        Point3D[] crash = MathUtil.collisionDetector(HEEpos, newHEEpos,
-                planet.getHEEpos(),
+    private void checkCrash(Planet planet, Vector3D newcentralPos){
+        Point3D[] crash = MathUtil.collisionDetector(centralPos, newcentralPos,
+                planet.getCentralPos(),
                 planet.getRadius()*1000);
 
         if(crash != null){
@@ -106,20 +109,21 @@ public class CannonBall implements CelestialObject {
             System.out.println(velocity);
             System.out.println(inclination);
 
-            this.HEEpos = planet.getHEEpos();
+            this.centralPos = planet.getCentralPos();
             this.crashedPlanet = planet;
             crashed = true;
         }
     }
 
     @Override
-    public Vector3D getHEEvel() {
-        return HEEvel;
+    public Vector3D getCentralVel() {
+        return centralVel;
     }
 
     @Override
-    public void setHEEvel(Vector3D HEEvel) {
-        this.HEEvel = HEEvel;
+    public void setCentralVel(Vector3D centralVel, Date date) {
+        this.date = new Date(date);
+        this.centralVel = centralVel;
     }
 
     @Override
@@ -135,45 +139,43 @@ public class CannonBall implements CelestialObject {
     @Override
     public void initializeCartesianCoordinates(Date date) {
         //Make our cannon leave from the outside of the planet.
-        HEEpos = fromPlanet.getHEEpos(date);
-        Vector3D addRadX = fromPlanet.getHEEpos(date).unit().scale((fromPlanet.getRadius() * 1000));
-        Vector3D addRadY = fromPlanet.getHEEvel(date).unit().scale((fromPlanet.getRadius() * 1000));
+        centralPos = fromPlanet.getcentralPos(date);
+        Vector3D addRadX = fromPlanet.getcentralPos(date).unit().scale((fromPlanet.getRadius() * 1000));
+        Vector3D addRadY = fromPlanet.getcentralVel(date).unit().scale((fromPlanet.getRadius() * 1000));
         //addRad = addRad.add(new Vector3D(10,10,10000));
-        HEEpos = HEEpos.add(addRadX);
-        HEEpos = HEEpos.add(addRadY);
-        //System.out.println(HEEpos.substract(fromPlanet.getHEEpos()).length()/1000);
+        centralPos = centralPos.add(addRadX);
+        centralPos = centralPos.add(addRadY);
+        //System.out.println(centralPos.substract(fromPlanet.getCentralPos()).length()/1000);
         //System.out.println(fromPlanet.getRadius());
         /*
-        double dist = HEEpos.substract(fromPlanet.getHEEpos()).length();
-        Vector3D test = HEEpos.substract(fromPlanet.getHEEpos());
-        //HEEpos = fromPlanet.getHEEpos(date);
+        double dist = centralPos.substract(fromPlanet.getCentralPos()).length();
+        Vector3D test = centralPos.substract(fromPlanet.getCentralPos());
+        //centralPos = fromPlanet.getCentralPos(date);
         */
 
-        //HEEvel = toPlanet.getHEEpos().substract(fromPlanet.getHEEpos()).unit().scale(velocity);
+        //centralVel = toPlanet.getCentralPos().substract(fromPlanet.getCentralPos()).unit().scale(velocity);
         if (startVelVec == null) {
-            getStartVelocity();
+            getStartVelocity(date);
         }
-        HEEvel = startVelVec;
+        centralVel = startVelVec;
     }
 
-    private void getStartVelocity(){
-        Vector3D relEartV =
-                fromPlanet.getOrbitalVel(date).rotateAntiClockWise(inclination).unit().scale(velocity);
-        double w = fromPlanet.getPeriapsis();
-        double o = fromPlanet.getAscendingNode();
-        double i = fromPlanet.getInclination();
-        startVelVec = KeplerToCartesian.orbitalToEclipticPlane(w, o, i, relEartV);
-        //System.out.println(KeplerToCartesian.orbitalToEclipticPlane(w, o, i,fromPlanet.getOrbitalVel()));
-        //System.out.println(fromPlanet.getHEEvel());
+    private void getStartVelocity(Date date){
+        Vector3D relEarthV = fromPlanet.initializeOrbitalVel(date).rotateAntiClockWise(inclination).unit().scale(velocity);
+        OrbitalProperties orbitalPropertiesFromPlanet = fromPlanet.getOrbitalProperties();
+
+        double w_a = orbitalPropertiesFromPlanet.getPeriphelonArgument(date);
+        double o = orbitalPropertiesFromPlanet.getAscendingNode(date);
+        double i = orbitalPropertiesFromPlanet.getInclination(date);
+        startVelVec = KeplerToCartesian.orbitalToEclipticPlane(w_a, o, i, relEarthV);
+        //System.out.println(KeplerToCartesian.orbitalToEclipticPlane(w, o, i,fromPlanet.initializeOrbitalVel()));
+        //System.out.println(fromPlanet.getCentralVel());
     }
 
-    private static void cleckClosestDistance(Vector3D newHEEpos, Planet toPlanet, double velocity
+    private static void cleckClosestDistance(Vector3D newcentralPos, Planet toPlanet, double velocity
             , double inclination, Vector3D startVelVec){
-        double temp = closestDistance;
-        Vector3D diff = newHEEpos.substract(toPlanet.getHEEpos());
+        Vector3D diff = newcentralPos.substract(toPlanet.getCentralPos());
         double distance = diff.length();
-
-        double tempw = distance;
         if(distance < closestDistance){
             closestDistance = distance;
             System.out.println("Dist: " + closestDistance + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);

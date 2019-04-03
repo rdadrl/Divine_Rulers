@@ -21,7 +21,7 @@ public class CannonBall2 implements CelestialObject {
             double observedAngle = 0;
             CannonBall2 cannonBall = new CannonBall2(1, 1000, departurePlanet, arrivalPlanet, transferOrbit.getInitialImpulse());
             while (!didFindDate) {
-                observedAngle = cannonBall.getProjectedAngle(departurePlanet.getHEEpos(), arrivalPlanet.getHEEpos());
+                observedAngle = cannonBall.getProjectedAngle(departurePlanet.getCentralPos(), arrivalPlanet.getCentralPos());
                 if (observedAngle == phaseAngle) didFindDate = true;
                 else date.add(Calendar.DAY_OF_YEAR, 7);
             }
@@ -29,7 +29,7 @@ public class CannonBall2 implements CelestialObject {
 
             // Compute the force vector
             double length = cannonBall.getLaunchForce();
-            cannonBall.setLaunchVector(departurePlanet.getHEEpos().rotateZDeg(90));
+            cannonBall.setLaunchVector(departurePlanet.getCentralPos().rotateZDeg(90));
         } catch (IOException exception) {
             System.out.println(exception);
         }
@@ -37,8 +37,8 @@ public class CannonBall2 implements CelestialObject {
 
     private double mass;
     private double radius;
-    private Vector3D HEEpos; // Coordinate central body reference frame
-    private Vector3D HEEvel; // Velocity central body reference frame
+    private Vector3D centralPos; // Coordinate central body reference frame
+    private Vector3D centralVel; // Velocity central body reference frame
     private Vector3D forces;
     private CelestialObject fromPlanet;
     private CelestialObject toPlanet;
@@ -83,23 +83,23 @@ public class CannonBall2 implements CelestialObject {
     }
 
     @Override
-    public Vector3D getHEEpos() {
-        return HEEpos;
+    public Vector3D getCentralPos() {
+        return centralPos;
     }
 
     @Override
-    public void setHEEpos(Vector3D HEEpos) {
-        this.HEEpos = HEEpos;
+    public void setCentralPos(Vector3D centralPos) {
+        this.centralPos = centralPos;
     }
 
     @Override
-    public Vector3D getHEEvel() {
-        return HEEvel;
+    public Vector3D getCentralVel() {
+        return centralVel;
     }
 
     @Override
-    public void setHEEvel(Vector3D HEEvel) {
-        this.HEEvel = HEEvel;
+    public void setCentralVel(Vector3D centralVel) {
+        this.centralVel = centralVel;
     }
 
     @Override

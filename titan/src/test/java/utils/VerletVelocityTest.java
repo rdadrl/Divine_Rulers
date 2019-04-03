@@ -27,8 +27,8 @@ public class VerletVelocityTest {
         for(int i = 0; i < 365*10; i++){
             {
                 System.out.print(date);
-                System.out.print("\t\t" + plan.getHEEpos());
-                System.out.print("\t\t" + plan.getHEEvel() + "\n");
+                System.out.print("\t\t" + plan.getCentralPos());
+                System.out.print("\t\t" + plan.getCentralVel() + "\n");
             }
             verletVelocity.updateLocation(1, TimeUnit.DAYS);
         }
@@ -41,18 +41,19 @@ public class VerletVelocityTest {
 
     @Test
     public void verletTest2() throws IOException {
+        Date date = new Date(2000, 0, 1, 12, 0);
         SolarSystem solarSystem = new SolarSystem();
         Planet tit = solarSystem.getPlanets().getTitan();
         Planet sat = solarSystem.getPlanets().getSaturn();
-        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll());
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getPlanets().getAll(), date);
         System.out.println(tit.getName());
         for(int i = 0; i < 365*7; i++){
             {
                 System.out.println(verletVelocity.getCurrentDate());
-                System.out.println("Tp: \t\t" + tit.getHEEpos());
-                System.out.println("Sp: \t\t" + sat.getHEEpos());
-                System.out.println("Tp: \t\t" + tit.getHEEvel());
-                System.out.println("Sp: \t\t" + sat.getHEEvel());
+                System.out.println("Tp: \t\t" + tit.getCentralPos());
+                System.out.println("Sp: \t\t" + sat.getCentralPos());
+                System.out.println("Tp: \t\t" + tit.getCentralVel());
+                System.out.println("Sp: \t\t" + sat.getCentralVel());
 
             }
             verletVelocity.updateLocation(1, TimeUnit.DAYS);
@@ -71,10 +72,10 @@ public class VerletVelocityTest {
         for(int i = 0; i < 365*7; i++){
             {
                 System.out.println(verletVelocity.getCurrentDate());
-                System.out.println("Tp: \t\t" + tit.getHEEpos());
-                System.out.println("Sp: \t\t" + sat.getHEEpos());
-                System.out.println("Tp: \t\t" + tit.getHEEvel());
-                System.out.println("Sp: \t\t" + sat.getHEEvel());
+                System.out.println("Tp: \t\t" + tit.getCentralPos());
+                System.out.println("Sp: \t\t" + sat.getCentralPos());
+                System.out.println("Tp: \t\t" + tit.getCentralVel());
+                System.out.println("Sp: \t\t" + sat.getCentralVel());
 
             }
             verletVelocity.updateLocation(1, TimeUnit.DAYS);

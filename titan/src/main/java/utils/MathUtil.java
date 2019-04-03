@@ -69,7 +69,7 @@ public class MathUtil {
                 continue;
             }
             // get the relative position to the reference object
-            Vector3D r = o.getHEEpos().substract(refOb.getHEEpos());
+            Vector3D r = o.getCentralPos().substract(refOb.getCentralPos());
             //l ength of distance
             double dist = r.length();
             // F(m1<-m2) = (G * m1 * m2) / r^2

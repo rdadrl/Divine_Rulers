@@ -122,7 +122,7 @@ public class MainMenuE8 extends Application {
         sun.setOnMouseEntered(new EventHandler<MouseEvent> () {
             @Override
             public void handle(MouseEvent t) {
-                Vector3D coordinate = sunObj.getHEEpos();
+                Vector3D coordinate = sunObj.getCentralPos();
                 //limit decimals to 3 points
                 float sX = ((int) (coordinate.getX() * 1000)) / 1000F;
                 float sY = ((int) (coordinate.getY() * 1000)) / 1000F;
@@ -144,7 +144,7 @@ public class MainMenuE8 extends Application {
         earth.setOnMouseEntered(new EventHandler<MouseEvent> () {
             @Override
             public void handle(MouseEvent t) {
-                Vector3D coordinate = earthObj.getHEEpos();
+                Vector3D coordinate = earthObj.getCentralPos();
                 //limit decimals to 3 points
                 float sX = ((int) (coordinate.getX() * 1000)) / 1000F;
                 float sY = ((int) (coordinate.getY() * 1000)) / 1000F;
@@ -237,7 +237,7 @@ public class MainMenuE8 extends Application {
                         solarSystem.getPlanets().getEarth(),
                         solarSystem.getPlanets().getTitan(), date,
                         inclination, velocity);
-                        //titanObj.getHEEpos().substract(earthObj.getHEEpos()).unit().scale
+                        //titanObj.getCentralPos().substract(earthObj.getCentralPos()).unit().scale
                 // (velocity));
                 spaceObjectsList.put(createGUIobject(cannonballObj), cannonballObj);
             }
@@ -346,63 +346,63 @@ public class MainMenuE8 extends Application {
 
                     Vector3D coordinate;
 
-                    coordinate = sunObj.getHEEpos();
+                    coordinate = sunObj.getCentralPos();
                     sun.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     sun.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     sun.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     sun.setRotate(sun.getRotate() + 2);
                     //System.out.println("Sun:\nX: " + coordinate.getX() + "\nY: " + coordinate// .getY() + "\nZ: " + coordinate.getZ());
 
-                    coordinate = earthObj.getHEEpos();
+                    coordinate = earthObj.getCentralPos();
                     earth.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     earth.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     earth.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     earth.setRotate(earth.getRotate() + 20);
 
-                    coordinate = mercuryObj.getHEEpos();
+                    coordinate = mercuryObj.getCentralPos();
                     mercury.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     mercury.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     mercury.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     mercury.setRotate(mercury.getRotate() + 20);
 
-                    coordinate = marsObj.getHEEpos();
+                    coordinate = marsObj.getCentralPos();
                     mars.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     mars.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     mars.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     mars.setRotate(mars.getRotate() + 20);
 
-                    coordinate = jupiterObj.getHEEpos();
+                    coordinate = jupiterObj.getCentralPos();
                     jupiter.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     jupiter.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     jupiter.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     jupiter.setRotate(jupiter.getRotate() + 2);
 
-                    coordinate = saturnObj.getHEEpos();
+                    coordinate = saturnObj.getCentralPos();
                     saturn.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     saturn.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     saturn.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     saturn.setRotate(saturn.getRotate() + 2);
 
                     //Titan Update
-                    coordinate = titanObj.getHEEpos();
+                    coordinate = titanObj.getCentralPos();
                     titan.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     titan.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     titan.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     titan.setRotate(titan.getRotate() + 20);
 
-                    coordinate = urAnusObj.getHEEpos();
+                    coordinate = urAnusObj.getCentralPos();
                     uranus.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     uranus.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     uranus.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     uranus.setRotate(uranus.getRotate() + 20);
 
-                    coordinate = neptuneObj.getHEEpos();
+                    coordinate = neptuneObj.getCentralPos();
                     neptune.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     neptune.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     neptune.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     neptune.setRotate(neptune.getRotate() + 20);
 
-                    coordinate = venusObj.getHEEpos();
+                    coordinate = venusObj.getCentralPos();
                     venus.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     venus.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     venus.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
@@ -415,15 +415,15 @@ public class MainMenuE8 extends Application {
 
                     /*
                     //Cannonball Update
-                    coordinate = cannonballObj.getHEEpos();
+                    coordinate = cannonballObj.getCentralPos();
                     cannonball.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     cannonball.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     cannonball.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     cannonballLabel.setText("Cannonball:\nX: " + coordinate.getX() + "\nY: " + coordinate.getY() + "\nZ: " + coordinate.getZ());
                     */
 
-                    //System.out.println(date + "\tCb_pos: " + cannonballObj.getHEEpos() + "\t" +
-                    // cannonballObj.getHEEvel());
+                    //System.out.println(date + "\tCb_pos: " + cannonballObj.getCentralPos() + "\t" +
+                    // cannonballObj.getCentralVel());
                     if(RUNFRAMEFORFRAME) pauseStatus = true;
                 }
                 //Move the camera
@@ -450,7 +450,7 @@ public class MainMenuE8 extends Application {
     }
 
     private void updateGUIobject(Sphere guiObject, CelestialObject cObject){
-        Vector3D coordinate = cObject.getHEEpos();
+        Vector3D coordinate = cObject.getCentralPos();
         guiObject.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
         guiObject.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
         guiObject.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);

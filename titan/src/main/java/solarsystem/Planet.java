@@ -1,6 +1,7 @@
 package solarsystem;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import physics.KeplerToCartesian;
@@ -11,10 +12,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- * Celestial object
+ * A planet or moon object
  */
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@id")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Planet implements CelestialObject {
     @JsonProperty("central_body")
     private Planet centralBody;
@@ -28,6 +30,9 @@ public class Planet implements CelestialObject {
     private double radius;      // in km
     @JsonProperty("period")
     private double period;      // in days
+    @JsonProperty("orbital_properties")
+    private OrbitalProperties orbitalProperties;
+    /*
     @JsonProperty("a")
     private double a0;          // Mean semi-major axis (AU) at J2000
     @JsonProperty("a_Cnt")
@@ -63,27 +68,17 @@ public class Planet implements CelestialObject {
     private double l; // longitude
     private double w; // periphelon
     private double o; // change of ascending node
+    */
     // century
 
-    private Date dateStart;   // Date of the current
-    private Date currentDate;
+    private Date date;   // Date of the current
     private Vector3D orbitalPos; // Coordinate in the orbital plane AU
     private Vector3D orbitalVel; // Velocity vector in the orbital plane AU/day
-    @JsonProperty("sPos")
-    private Vector3D HEEpos; // Coordinate central body reference
-    // frame AU
-    @JsonProperty("sVel")
-    private Vector3D HEEvel; // Velocity central body reference frame
-    // AU/day
+    private Vector3D centralPos; // Coordinate with the sun as a center.
+    private Vector3D centralVel; // Velocity vector with sun in the center
 
     private Vector3D forces;
 
-    //@JsonProperty("locationVars")
-    //private KeplerToCartesian locationVars;
-
-
-    public Planet() {
-    }
 
     /**
      * get the cartesian coordinates of a planet
@@ -91,18 +86,17 @@ public class Planet implements CelestialObject {
      */
     public void initializeCartesianCoordinates(Date date) {
         if(centralBody == null) return;
-        if(dateStart != null && date.compareTo(dateStart) == 0){return;}//check
-        // whether current values are already stored for these date.
-        dateStart = new Date(date);
+        //check whether current values are already stored for these date.
+        if(this.date != null && date.compareTo(this.date) == 0){return;}
+        else{this.date = new Date(date);}
 
-        // step 1
-        // compute the value of each of that planet's six elements
-        double JT = date.dateToJulian(); // in centuries
-        double T = (JT - Date.J2000)/36525.0;
+        Vector3D[] cartesian = KeplerToCartesian.getCartesianCoordinates(this, date);
+        orbitalPos = cartesian[0];
+        orbitalVel = cartesian[1];
+        centralPos = cartesian[2];
+        centralVel = cartesian[3];
 
-        Vector3D[] cartesian;
-        // as we don't have all the exact details for Titan we need to
-        // approximate it.
+       /*
         if(name.equals("titan")){
             double Mass = (centralBody.getMass() );
             double mu = Mass * MathUtil.G; // get mu m/s^2
@@ -112,8 +106,10 @@ public class Planet implements CelestialObject {
             cartesian = KeplerToCartesian.calculateKepler(a0 * MathUtil.AU, e0, w_peri, o0, i0, M,
                     mu);
         }else{
-            double Mass = centralBody.getMass();
-            double mu = Mass * MathUtil.G; // get mu AU^3/s^2
+
+        double Mass = centralBody.getMass();
+        double mu = Mass * MathUtil.G; // get mu AU^3/s^2
+
 
             a = (a0 + aCnt * T) * MathUtil.AU; // convert to meters
             e = e0 + eCnt * T;
@@ -129,6 +125,7 @@ public class Planet implements CelestialObject {
                     i, l, w, o, mu);
         }
 
+
         if(name.equals("Titan")){
             centralBody.initializeCartesianCoordinates(date);
             double omC = centralBody.w - centralBody.o;
@@ -137,18 +134,19 @@ public class Planet implements CelestialObject {
             Vector3D SatPlanePos = cartesian[2];
             Vector3D SatPlaneVel = cartesian[3];
 
-            HEEpos = KeplerToCartesian.orbitalToEclipticPlane(omC, centralBody.o,
+            centralPos = KeplerToCartesian.orbitalToEclipticPlane(omC, centralBody.o,
                     centralBody.i, SatPlanePos);
-            HEEpos = HEEpos.add(centralBody.getHEEpos());
-            HEEvel = KeplerToCartesian.orbitalToEclipticPlane(omC, centralBody.o,centralBody.i, SatPlaneVel);
-            HEEvel = HEEvel.add(centralBody.getHEEvel());
+            centralPos = centralPos.add(centralBody.getcentralPos(date));
+            centralVel = KeplerToCartesian.orbitalToEclipticPlane(omC, centralBody.o,centralBody.i, SatPlaneVel);
+            centralVel = centralVel.add(centralBody.getCentralVel());
         }else{
-            HEEpos = cartesian[2];
-            HEEvel = cartesian[3];
+            centralPos = cartesian[2];
+            centralVel = cartesian[3];
         }
 
         orbitalPos = cartesian[0];
         orbitalVel = cartesian[1];
+        */
     }
 
     /**
@@ -164,27 +162,6 @@ public class Planet implements CelestialObject {
      */
     public Planet getCentralBody() {
         return centralBody;
-    }
-
-    /**
-     * @param orbitingCelestialPlanet the object of which the celestial object is orbiting around
-     */
-    public void setCentralBody(Planet orbitingCelestialPlanet) {
-        this.centralBody = orbitingCelestialPlanet;
-    }
-
-    /**
-     * @return celestial objects which are orbiting around the celestial object
-     */
-    public HashSet<Planet> getOrbitingChildren() {
-        return orbitingChildren;
-    }
-
-    /**
-     * @param orbitingChildren celestial objects which are orbiting around the celestial object
-     */
-    public void setOrbitingChildren(HashSet<Planet> orbitingChildren) {
-        this.orbitingChildren = orbitingChildren;
     }
 
     /**
@@ -209,51 +186,62 @@ public class Planet implements CelestialObject {
     }
 
     /**
-     * @return semi-major axis
+     * @return orbital properties of planet
      */
-    public double getSemiMajorAxisJ2000() {
-        return a0;
+    public OrbitalProperties getOrbitalProperties() {
+        return orbitalProperties;
     }
 
-    public Vector3D getHEEpos(Date date){
+    /**
+     * @return semi-major axis at J2000
+     */
+    public double getSemiMajorAxisJ2000() {
+        return orbitalProperties.getSemiMajorAxisJ2000();
+    }
+
+    public Vector3D getcentralPos(Date date){
         initializeCartesianCoordinates(date);
-        return HEEpos;
+        return centralPos;
     }
 
     /**
      * @return get coordinates based upon HEE coordinates
      */
-    public Vector3D getHEEpos(){
-        return HEEpos;
+    public Vector3D getCentralPos(){
+        return centralPos;
     }
 
-    public void setHEEpos(Vector3D pos){
-        HEEpos = pos;
-    }
 
-    public Vector3D getHEEvel(Date date){
+
+    public Vector3D getcentralVel(Date date){
         initializeCartesianCoordinates(date);
-        return HEEvel;
+        return centralVel;
     }
-    public Vector3D getHEEvel(){
-        return HEEvel;
-    }
-
-    public void setHEEvel(Vector3D centralVel){
-        this.HEEvel = centralVel;
+    public Vector3D getCentralVel(){
+        return centralVel;
     }
 
-    public Vector3D getOrbitalPos(Date date){
+    public void setCentralPos(Vector3D pos, Date date){
+        this.date = new Date(date);
+        centralPos = pos;
+    }
+
+    public void setCentralVel(Vector3D centralVel, Date date){
+        this.date = new Date(date);
+        this.centralVel = centralVel;
+    }
+
+    public Vector3D initializeOrbitalPos(Date date){
         initializeCartesianCoordinates(date);
         return orbitalPos;
     }
 
-    public Vector3D getOrbitalVel(Date date){
+    public Vector3D initializeOrbitalVel(Date date){
         initializeCartesianCoordinates(date);
         return orbitalVel;
     }
 
-    public Vector3D getOrbitalVel(){
+    public Vector3D initializeOrbitalVel(){
         return orbitalVel;
     }
 
@@ -296,7 +284,7 @@ public class Planet implements CelestialObject {
         }
         return centralBody;
     }
-
+    /*
     public double getPeriapsis() {
         return w_peri;
     }
@@ -306,14 +294,15 @@ public class Planet implements CelestialObject {
     public double getAscendingNode(){
         return o;
     }
+    */
 
 
     @Override
     public String toString() {
         return "Planet{" +
                 "name=" + name +
-                ", HEEpos=" + HEEpos +
-                ", HEEvel=" + HEEvel +
+                ", centralPos=" + centralPos +
+                ", centralVel=" + centralVel +
                 '}';
     }
 }

@@ -14,6 +14,7 @@ public class Date extends GregorianCalendar {
      * the julian time for the 1 st of january 2000, at 12.00 hour
      */
     public static final double J2000 = 2451545.0;
+    public static Date J2000_date = new Date(2000,0,1,12, 0);
 
     public Date(TimeZone zone) {
         super(zone);

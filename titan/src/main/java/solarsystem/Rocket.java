@@ -15,8 +15,8 @@ public class Rocket implements CelestialObject {
     private String name;
     private double mass;
     private double radius;
-    private Vector3D HEEpos; // Coordinate central body reference frame
-    private Vector3D HEEvel; // Velocity central body reference frame
+    private Vector3D centralPos; // Coordinate central body reference frame
+    private Vector3D centralVel; // Velocity central body reference frame
     private Vector3D forces;
     private Planet fromPlanet;
     private Planet toPlanet;
@@ -54,41 +54,42 @@ public class Rocket implements CelestialObject {
     @Override
     public void setForces(ArrayList<? extends CelestialObject> objectsInSpace){
         Vector3D gravity = MathUtil.gravitationalForces(this, objectsInSpace);
-        Vector3D dir = toPlanet.getHEEpos().substract(HEEpos).unit().scale(velocity);
-        double dist = toPlanet.getHEEpos().substract(HEEpos).length();
+        Vector3D dir = toPlanet.getCentralPos().substract(centralPos).unit().scale(velocity);
+        double dist = toPlanet.getCentralPos().substract(centralPos).length();
         dir = dir.scale(Math.pow(dist, 2)/toPlanet.getMass());
         Vector3D thrust = dir.substract(gravity);
         forces = gravity.add(thrust);
     }
 
     @Override
-    public Vector3D getHEEpos() {
-        return HEEpos;
+    public Vector3D getCentralPos() {
+        return centralPos;
     }
 
     @Override
-    public void setHEEpos(Vector3D HEEpos) {
-        Vector3D test = HEEpos.substract(fromPlanet.getHEEpos());
-        double distF = HEEpos.substract(fromPlanet.getHEEpos()).length() - (fromPlanet.getRadius() * 1000);
+    public void setCentralPos(Vector3D centralPos, Date date) {
+        this.date = new Date(date);
+        double distF = centralPos.substract(fromPlanet.getCentralPos()).length() - (fromPlanet.getRadius() * 1000);
         if(distF < 0){
-            this.HEEpos = fromPlanet.getHEEpos();
+            this.centralPos = fromPlanet.getCentralPos();
         }
         double distT =
-                HEEpos.substract(toPlanet.getHEEpos()).length() - (toPlanet.getRadius() * 1000);
+                centralPos.substract(toPlanet.getCentralPos()).length() - (toPlanet.getRadius() * 1000);
         if(distT < 0){
-            this.HEEpos = toPlanet.getHEEpos();
+            this.centralPos = toPlanet.getCentralPos();
         }
-        this.HEEpos = HEEpos;
+        this.centralPos = centralPos;
     }
 
     @Override
-    public Vector3D getHEEvel() {
-        return HEEvel;
+    public Vector3D getCentralVel() {
+        return centralVel;
     }
 
     @Override
-    public void setHEEvel(Vector3D HEEvel) {
-        this.HEEvel = HEEvel;
+    public void setCentralVel(Vector3D centralVel, Date date) {
+        this.date = new Date(date);
+        this.centralVel = centralVel;
     }
 
     @Override
@@ -104,20 +105,20 @@ public class Rocket implements CelestialObject {
     @Override
     public void initializeCartesianCoordinates(Date date) {
         //Make our cannon leave from the outside of the planet.
-        HEEpos = fromPlanet.getHEEpos(date);
-        Vector3D addRad = HEEpos.unit().scale(fromPlanet.getRadius()*2000);
-        HEEpos = HEEpos.add(addRad);
+        centralPos = fromPlanet.getcentralPos(date);
+        Vector3D addRad = centralPos.unit().scale(fromPlanet.getRadius()*2000);
+        centralPos = centralPos.add(addRad);
         /*
-        double dist = HEEpos.substract(fromPlanet.getHEEpos()).length();
-        Vector3D test = HEEpos.substract(fromPlanet.getHEEpos());
-        //HEEpos = fromPlanet.getHEEpos(date);
+        double dist = centralPos.substract(fromPlanet.getCentralPos()).length();
+        Vector3D test = centralPos.substract(fromPlanet.getCentralPos());
+        //centralPos = fromPlanet.getCentralPos(date);
         */
 
-        //HEEvel = toPlanet.getHEEpos().substract(fromPlanet.getHEEpos()).unit().scale(velocity);
+        //centralVel = toPlanet.getCentralPos().substract(fromPlanet.getCentralPos()).unit().scale(velocity);
         if(startVelVec== null){
-            startVelVec = fromPlanet.getHEEvel().unit().scale(velocity);
+            startVelVec = fromPlanet.getCentralVel().unit().scale(velocity);
         }
-        HEEvel = startVelVec;
+        centralVel = startVelVec;
 
     }
 
