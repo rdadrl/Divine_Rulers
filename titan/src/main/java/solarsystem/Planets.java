@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 
 /**
- * Class including the planets of the solar system. The objects are created by
- * a json file to keep it organized
+ * Class including the planets of the solar system. This class is a placeholder object to keep
+ * the planets of the solarsystem organized an to decluter the solarsystem object
+ * The objects are created by a json file to keep it organized
  */
 public class Planets {
     @JsonProperty("Sun")

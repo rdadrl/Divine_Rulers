@@ -238,7 +238,7 @@ public class MainMenuE8 extends Application {
         /*Cannonball
         for(int i = 0; i < 1; i++){
             Random r = new Random();
-            CelestialObject rocketObj = new Rocket(1000, 1000,
+            CelestialObject rocketObj = new rocket(1000, 1000,
                     solarSystem.getPlanets().getEarth(),
                     solarSystem.getPlanets().getTitan(), date, r.nextDouble()*1);
             spaceObjectsList.put(createGUIobject(rocketObj), rocketObj);
