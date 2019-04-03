@@ -42,11 +42,18 @@ public class MainMenuE8 extends Application {
     private final long dt = 6;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
 
+
     private double cannonballMin = 95.24313;
     private double cannonballMax = 95.24318;
     private double inclinationMin = 38.74850;
     private double inclinationMax = 38.74855;
 
+    /*
+    private double cannonballMin = 95.3;
+    private double cannonballMax = 95.1;
+    private double inclinationMin = 38.74;
+    private double inclinationMax = 38.75;
+    */
     // gui variables
     private Scene mainScene;
     private Group root;
@@ -58,6 +65,7 @@ public class MainMenuE8 extends Application {
     private HashMap<Sphere, CelestialObject> spaceObjectsList = new HashMap<>();
     private SolarSystem solarSystem;
     private final int DistanceMultiplier = 40;
+    private final int plntRadFact = 100000000;
     private double AU = MathUtil.AU;
 
     @Override
@@ -104,7 +112,7 @@ public class MainMenuE8 extends Application {
             ambientLight = new AmbientLight();
         }
 
-        Rotate rxBox = new Rotate(85, 0, 0, 0, Rotate.X_AXIS);
+        Rotate rxBox = new Rotate(90, 0, 0, 0, Rotate.X_AXIS);
         // Sun
         Sphere sun  = new Sphere(sunObj.getRadius() / MathUtil.AU * 1000000); // sun is 100 times smaller
         PhongMaterial sunMaterial = new PhongMaterial();
@@ -126,7 +134,7 @@ public class MainMenuE8 extends Application {
         sun.setOnMouseExited(e -> identifierLabel.setText(""));
 
         //Earth
-        Sphere earth    = new Sphere(earthObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere earth    = new Sphere(earthObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial earthMaterial = new PhongMaterial();
         earthMaterial.setDiffuseMap(new Image("textures/earthmap.jpg"));
         earthMaterial.setBumpMap(new Image("textures/earthbump.jpg"));
@@ -151,7 +159,7 @@ public class MainMenuE8 extends Application {
 
 
         //Mercury
-        Sphere mercury = new Sphere(mercuryObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere mercury = new Sphere(mercuryObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial mercuryMaterial = new PhongMaterial();
         mercuryMaterial.setDiffuseMap(new Image("textures/mercurymap.jpg"));
         mercuryMaterial.setBumpMap(new Image("textures/mercurybump.jpg"));
@@ -159,7 +167,7 @@ public class MainMenuE8 extends Application {
         mercury.getTransforms().add(rxBox);
 
         //Mars
-        Sphere mars = new Sphere(marsObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere mars = new Sphere(marsObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial marsMaterial = new PhongMaterial();
         marsMaterial.setDiffuseMap(new Image("textures/marsmap.jpg"));
         marsMaterial.setBumpMap(new Image("textures/marsbump.jpg"));
@@ -167,14 +175,14 @@ public class MainMenuE8 extends Application {
         mars.getTransforms().add(rxBox);
 
         //Jupiter
-        Sphere jupiter = new Sphere(jupiterObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere jupiter = new Sphere(jupiterObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial jupiterMaterial = new PhongMaterial();
         jupiterMaterial.setDiffuseMap(new Image("textures/jupitermap.jpg"));
         jupiter.setMaterial(jupiterMaterial);
         jupiter.getTransforms().add(rxBox);
 
         //Saturn
-        Sphere saturn = new Sphere(saturnObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere saturn = new Sphere(saturnObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial saturnMaterial = new PhongMaterial();
         saturnMaterial.setDiffuseMap(new Image("textures/saturnmap.jpg"));
         saturn.setMaterial(saturnMaterial);
@@ -182,7 +190,7 @@ public class MainMenuE8 extends Application {
         saturn.getTransforms().addAll(rxBox);
 
         //Titan
-        Sphere titan = new Sphere(titanObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere titan = new Sphere(titanObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial titanMaterial = new PhongMaterial();
         titanMaterial.setDiffuseMap(new Image("textures/moonmap.jpg"));
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
@@ -190,21 +198,21 @@ public class MainMenuE8 extends Application {
         titan.getTransforms().add(rxBox);
 
         //Uranus
-        Sphere uranus = new Sphere(urAnusObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere uranus = new Sphere(urAnusObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial uranusMaterial = new PhongMaterial();
         uranusMaterial.setDiffuseMap(new Image("textures/uranusmap.jpg"));
         uranus.setMaterial(uranusMaterial);
         uranus.getTransforms().add(rxBox);
 
         //Neptune
-        Sphere neptune = new Sphere(neptuneObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere neptune = new Sphere(neptuneObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial neptuneMaterial = new PhongMaterial();
         neptuneMaterial.setDiffuseMap(new Image("textures/neptunemap.jpg"));
         neptune.setMaterial(neptuneMaterial);
         neptune.getTransforms().add(rxBox);
 
         //Venus
-        Sphere venus = new Sphere(venusObj.getRadius() / MathUtil.AU * 100000000);
+        Sphere venus = new Sphere(venusObj.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial venusMaterial = new PhongMaterial();
         venusMaterial.setDiffuseMap(new Image("textures/venusmap.jpg"));
         venusMaterial.setBumpMap(new Image("textures/venusbump.jpg"));
@@ -225,7 +233,7 @@ public class MainMenuE8 extends Application {
                 Double velocity = cannonballMin + (cannonballMax - cannonballMin) * r.nextDouble();
                 Double inclination = inclinationMin + (inclinationMax - inclinationMin) * r.nextDouble();
                 //Double inclination = ThreadLocalRandom.current().nextDouble(0, inclinationRange);
-                CelestialObject cannonballObj = new CannonBall(100, 1000,
+                CelestialObject cannonballObj = new CannonBall(100, 2000,
                         solarSystem.getPlanets().getEarth(),
                         solarSystem.getPlanets().getTitan(), date,
                         inclination, velocity);
@@ -238,7 +246,7 @@ public class MainMenuE8 extends Application {
         /*Cannonball
         for(int i = 0; i < 1; i++){
             Random r = new Random();
-            CelestialObject rocketObj = new Rocket(1000, 1000,
+            CelestialObject rocketObj = new rocket(1000, 1000,
                     solarSystem.getPlanets().getEarth(),
                     solarSystem.getPlanets().getTitan(), date, r.nextDouble()*1);
             spaceObjectsList.put(createGUIobject(rocketObj), rocketObj);
@@ -434,7 +442,7 @@ public class MainMenuE8 extends Application {
     }
 
     private Sphere createGUIobject(CelestialObject object){
-        Sphere guiOb = new Sphere(object.getRadius() / MathUtil.AU * 300000000);
+        Sphere guiOb = new Sphere(object.getRadius() / MathUtil.AU * plntRadFact);
         PhongMaterial guiMat = new PhongMaterial();
         guiMat.setDiffuseColor(Color.PURPLE);
         guiOb.setMaterial(guiMat);

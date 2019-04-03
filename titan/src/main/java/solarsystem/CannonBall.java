@@ -16,7 +16,7 @@ import java.util.Arrays;
  *
  */
 public class CannonBall implements CelestialObject {
-    static double closestDistance = 1E8;
+    static double closestDistance = Constant.BESTDISTANCERANGECANNONBALL;
     private String name;
     private double mass;
     private double radius;

@@ -6,7 +6,9 @@ import utils.Vector3D;
 import java.util.ArrayList;
 
 /**
- * An interface for any celestial object which have to move through space
+ * An interface for any celestial object which have to move through space. Any object such as a
+ * planet, rocket or cannonball upon which the forces of the universe apply need to inherit this
+ * class.
  */
 public interface CelestialObject {
     String getName();

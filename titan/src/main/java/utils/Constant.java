@@ -5,5 +5,5 @@ package utils;
  */
 public class Constant {
     // Constant parameters
-    public static double BESTDISTANCERANGECANNONBALL = 1E7;
+    public static double BESTDISTANCERANGECANNONBALL = 1E10;
 }
