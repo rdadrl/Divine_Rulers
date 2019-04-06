@@ -267,7 +267,7 @@ public class MainMenuE8 extends Application {
         ArrayList<CelestialObject> allObj =
                 new ArrayList<>(projectileList.values());
         allObj.addAll(solarSystem.getPlanets().getAll());
-        solarSystem.setAllObjects(allObj);
+        solarSystem.setAllCelestialObjects(allObj);
 
         VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllCelestialObjects(), date);
 

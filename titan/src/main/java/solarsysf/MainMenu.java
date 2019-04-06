@@ -277,7 +277,7 @@ public class MainMenu extends Application {
 
 
         mainScene = new Scene(globalRoot, 800, 600, true);
-        globalRoot.setStyle("-fx-background-image: url(\"textures/galaxy_starfield.png\");");
+        globalRoot.setStyle("-fx-background-image: url('textures/galaxy_starfield.png');");
         primaryStage.setTitle("SolarSysF - Solar Visualization From Scratch");
         primaryStage.setScene(mainScene);
 
@@ -285,7 +285,7 @@ public class MainMenu extends Application {
         ArrayList<CelestialObject> allObj =
                 new ArrayList<>(spaceObjectsList.values());
         allObj.addAll(solarSystem.getPlanets().getAll());
-        solarSystem.setAllObjects(allObj);
+        solarSystem.setAllCelestialObjects(allObj);
 
         VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllCelestialObjects(), date);
 

@@ -51,6 +51,10 @@ public class SolarSystem {
         return allCelestialObjects;
     }
 
+    public void setAllCelestialObjects(ArrayList<CelestialObject> allCelestialObjects) {
+        this.allCelestialObjects = allCelestialObjects;
+    }
+
     public void getStaticPositionsPlanets(Date date){
         currentDate = date;
         for(Planet planet: getPlanets().getAll()){
