@@ -15,17 +15,18 @@ import java.util.Arrays;
  *
  *
  */
-public class CannonBall implements CelestialObject {
-    static double closestDistance = Constant.BESTDISTANCERANGECANNONBALL;
+public class CannonBall implements Projectile  {
+    public static double minDistanceAll = Constant.BEST_DISTANCE_RANGE_CANNONBALL;
+    public static double minDistanceAllCurrentDT = Double.MAX_VALUE;
     private String name;
     private double mass;
     private double radius;
     private Vector3D centralPos; // Coordinate central body reference frame
-    private Vector3D oldcentralPos;
     private Vector3D centralVel; // Velocity central body reference frame
     private Vector3D forces;
     private Planet fromPlanet;
     private Planet toPlanet;
+    private double closestDistance = Double.MAX_VALUE;
 
     private boolean crashed;
     private Planet crashedPlanet;
@@ -62,6 +63,10 @@ public class CannonBall implements CelestialObject {
         this.startVelVec = velocity;
     }
 
+    public static double getMinDistanceAll() {
+        return minDistanceAll;
+    }
+
     @Override //TODO:change
     public String getName() {
         return "cannonball";
@@ -85,20 +90,33 @@ public class CannonBall implements CelestialObject {
     @Override
     public void setCentralPos(Vector3D newcentralPos, Date date) {
         this.date = new Date(date);
-        cleckClosestDistance(newcentralPos, toPlanet, velocity, inclination, startVelVec);
-
         // TODO check crashes after whole update.
         if(!crashed){
-            checkCrash(fromPlanet, newcentralPos);
-            checkCrash(toPlanet, newcentralPos);
-            checkCrash(toPlanet.getCentralBody(), newcentralPos);
-            oldcentralPos = centralPos;
             centralPos = newcentralPos;
+            checkClosestDistance();
         }else{
             centralPos = crashedPlanet.getCentralPos();
         }
     }
-    private void checkCrash(Planet planet, Vector3D newcentralPos){
+
+    @Override
+    public void checkColisions() {
+        checkCollisionWithPlanet(fromPlanet, centralPos);
+        checkCollisionWithPlanet(toPlanet, centralPos);
+        checkCollisionWithPlanet(toPlanet.getCentralBody(), centralPos);
+    }
+
+    private void checkCollisionWithPlanet(Planet planet, Vector3D newcentralPos){
+        Vector3D diff = centralPos.substract(planet.getCentralPos());
+        double distance = diff.length();
+        if(distance < planet.getRadius()*1000){
+            System.out.println("should have crashed with: " + planet.getName());
+            System.out.println("Dist: " + minDistanceAll + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);
+            this.centralPos = planet.getCentralPos();
+            this.crashedPlanet = planet;
+            crashed = true;
+        }
+
         Point3D[] crash = MathUtil.collisionDetector(centralPos, newcentralPos,
                 planet.getCentralPos(),
                 planet.getRadius()*1000);
@@ -172,15 +190,29 @@ public class CannonBall implements CelestialObject {
         //System.out.println(fromPlanet.getCentralVel());
     }
 
-    private static void cleckClosestDistance(Vector3D newcentralPos, Planet toPlanet, double velocity
-            , double inclination, Vector3D startVelVec){
-        Vector3D diff = newcentralPos.substract(toPlanet.getCentralPos());
+    private void checkClosestDistance(){
+        Vector3D diff = centralPos.substract(toPlanet.getCentralPos());
         double distance = diff.length();
         if(distance < closestDistance){
             closestDistance = distance;
-            System.out.println("Dist: " + closestDistance + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);
+            checkClosestDistanceAll(centralPos,toPlanet, velocity, inclination, startVelVec);
+        }
+        if(distance < minDistanceAllCurrentDT){
+            minDistanceAllCurrentDT = distance;
         }
 
     }
+
+    private static void checkClosestDistanceAll(Vector3D newcentralPos, Planet toPlanet, double velocity
+            , double inclination, Vector3D startVelVec){
+        Vector3D diff = newcentralPos.substract(toPlanet.getCentralPos());
+        double distance = diff.length();
+        if(distance < minDistanceAll){
+            minDistanceAll = distance;
+            System.out.println("Dist: " + minDistanceAll + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);
+        }
+    }
+
+
 
 }

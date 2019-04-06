@@ -6,11 +6,11 @@ import solarsysf.MainMenu;
 /**
  *
  *  TODO: NEXT PHASE
- *  - HIT TITAN!
  *  - TRY RUNGE KUTTA: 4TH ORDER
  *  - LANDING OF ROCKET
  *  - EXPERIMENTS?
  *  - GENECTIC ALGORITHM TO TEST VARIATIONS ON THE ROCKET PARAMETERS
+ *  - CAMERA ROTATION
  *
  *  Launcher of the game. Only run this file to launch the file
  */

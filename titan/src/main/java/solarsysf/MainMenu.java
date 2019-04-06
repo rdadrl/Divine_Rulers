@@ -214,7 +214,7 @@ public class MainMenu extends Application {
 
         //Cannonball
         if(Rocket) {
-            for (int i = 0; i < 500; i++) {
+            for (int i = 0; i < 1; i++) {
                 Random r = new Random();
                 /*
                 double xv = -cannonballRange + (cannonballRange + cannonballRange) * r.nextDouble();
@@ -287,7 +287,7 @@ public class MainMenu extends Application {
         allObj.addAll(solarSystem.getPlanets().getAll());
         solarSystem.setAllObjects(allObj);
 
-        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllObjects(), date);
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllCelestialObjects(), date);
 
 
         mainScene.setOnScroll(new EventHandler<ScrollEvent>() {

@@ -1,12 +1,14 @@
 package solarsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import physics.VerletVelocity;
 import utils.Date;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -15,7 +17,9 @@ import java.util.ArrayList;
 public class SolarSystem {
     private Planets planets;
     private Date currentDate;
-    private ArrayList<? extends CelestialObject> allObjects;
+    private ArrayList<CelestialObject> allCelestialObjects;
+    private ArrayList<Projectile> projectiles;
+    private VerletVelocity verletVelocity;
 
     /**
      * Constructor of the solar system
@@ -43,21 +47,54 @@ public class SolarSystem {
         return planets;
     }
 
-    public ArrayList<? extends CelestialObject> getAllObjects() {
-        return allObjects;
+    public ArrayList<? extends CelestialObject> getAllCelestialObjects() {
+        return allCelestialObjects;
     }
 
-    public void setAllObjects(ArrayList<? extends CelestialObject> allObjects) {
-        this.allObjects = allObjects;
-    }
-
-    public void getStartingPositionsPlanets(Date date){
+    public void getStaticPositionsPlanets(Date date){
         currentDate = date;
         for(Planet planet: getPlanets().getAll()){
             planet.initializeCartesianCoordinates(date);
         }
     }
 
+    /**
+     * Initialize an animation with all the planets present
+     * @param date Date of initialization date
+     * @param projectiles Additional projectiles such as CannonBalls or Rockets that need to be
+     *                    part of the animation
+     */
+    public void initializeAnimation(Date date, ArrayList<Projectile> projectiles){
+        allCelestialObjects = new ArrayList<>(getPlanets().getAll());
+        allCelestialObjects.addAll(projectiles);
+        verletVelocity = new VerletVelocity(this.allCelestialObjects, date);
+    }
 
+    public void updateAnimation(long dt, TimeUnit timeUnit){
+        if(verletVelocity == null){
+            System.err.println("Cannot update animation without initializaton");
+            System.exit(-1);
+        }
+        verletVelocity.updateLocation(dt, timeUnit);
+    }
+
+    public void updateAnimationRelativeTimeStep(long standardDt, TimeUnit standardTimeUnit){
+        if(verletVelocity == null){
+            System.err.println("Cannot update animation without initializaton");
+            System.exit(-1);
+        }
+        if(CannonBall.minDistanceAllCurrentDT < 1.0E08) {
+            verletVelocity.updateLocation(10, TimeUnit.SECONDS);
+        }else if(CannonBall.minDistanceAllCurrentDT < 1.0E09){
+            verletVelocity.updateLocation(100, TimeUnit.SECONDS);
+        }else if(CannonBall.minDistanceAllCurrentDT < 1.0E10){
+            verletVelocity.updateLocation(1000, TimeUnit.SECONDS);
+        }else if(CannonBall.minDistanceAllCurrentDT < 1.0E11){
+            verletVelocity.updateLocation(10000, TimeUnit.SECONDS);
+        }else{
+            verletVelocity.updateLocation(standardDt, standardTimeUnit);
+        }
+
+    }
 
 }

@@ -1,5 +1,6 @@
 package physics;
 
+import solarsystem.CannonBall;
 import solarsystem.CelestialObject;
 import utils.Date;
 import utils.Vector3D;
@@ -23,17 +24,10 @@ public class VerletVelocity {
                           Date date) {
         this.currentDate = date;
         this.bodies = bodies;
-        initializeCartesianCoordinates(date);
-        //Initialize the beginning forces.
-        for (CelestialObject body: bodies) {
-            body.setForces(bodies);
-        }
-
-    }
-    private void initializeCartesianCoordinates(Date date){
         for (CelestialObject body: bodies) {
             body.initializeCartesianCoordinates(date);
         }
+        updateForce();
     }
 
     private void updateForce(){
@@ -64,6 +58,7 @@ public class VerletVelocity {
      */
 
     public void updateLocation(long time, TimeUnit unit){
+        CannonBall.minDistanceAllCurrentDT = Double.MAX_VALUE;
         time = TimeUnit.SECONDS.convert(time, unit); //convert to seconds
         currentDate.add(Calendar.SECOND, (int)time);
         double dt = time;
@@ -86,10 +81,6 @@ public class VerletVelocity {
 
             // step 2 x(t + dt) = x(t) + v(t + 0.5dt) * dt
             Vector3D posChange = halfVel.scale(dt);
-
-            Vector3D Earthpos = bodies.get(3).getCentralPos();
-
-            Vector3D centralPos = startPos.add(posChange).substract(bodies.get(3).getCentralPos());
             body.setCentralPos(startPos.add(posChange), currentDate);
         }
 
