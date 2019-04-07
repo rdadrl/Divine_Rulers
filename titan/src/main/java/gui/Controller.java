@@ -89,9 +89,9 @@ public class Controller {
 				System.out.println(ball.getVelocity());
 				System.out.println(cvs.earth.getVelocity());
 //				System.out.println(cvs.ball.getPos());
-//				System.out.println(cvs.ball.getVelocity());
+//				System.out.println(cvs.ball.getDepartureVelocity());
 //				System.out.println(cvs.earth.getPos());
-//				System.out.println(cvs.earth.getVelocity());
+//				System.out.println(cvs.earth.getDepartureVelocity());
 				t.start();
 			}
 			

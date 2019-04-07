@@ -8,9 +8,9 @@ import utils.Vector3D;
 import java.util.ArrayList;
 
 /**
- * A class which will be a place holder for the orbital properties of a planet
+ * A class which will be a place holder for the keplerian orbital properties of a planet
  */
-public class OrbitalProperties {
+public class PlanetOrbitalProperties {
     @JsonProperty("planet")
     private Planet planet;      // Planet of which the orbital properties belong to.
     @JsonProperty("a_J2000")
@@ -24,7 +24,7 @@ public class OrbitalProperties {
     @JsonProperty("i_J2000")
     private double i_J2000;     // Inclination of orbit at J2000
     @JsonProperty("i_Cnt")
-    private double i_Cnt;       // Change of inclination of orbit per century
+    private double i_Cnt;       // Change of departureInclination of orbit per century
     @JsonProperty("l_J2000")
     private double l_J2000;     // Mean longitude at J2000
     @JsonProperty("l_Cnt")
@@ -42,7 +42,7 @@ public class OrbitalProperties {
 
     private double a = a_J2000;           // semi major axis;
     private double e = e_J2000;           // eccentricity
-    private double i = i_J2000;           // inclination
+    private double i = i_J2000;           // departureInclination
     private double l = l_J2000;           // longitude
     private double w = w_J2000;           // periphelon
     private double o = o_J2000;           // change of ascending node
@@ -76,7 +76,7 @@ public class OrbitalProperties {
     /**
      * @param date date
      * @return array of orbital properties. In the order of semi-major axis (a), eccentricity (e)
-     * , inclination (i), longitude (l), periapsis (w), ascending node (o), and gravetational
+     * , departureInclination (i), longitude (l), periapsis (w), ascending node (o), and gravetational
      * parementer (mu)
      */
     public double[] getOrbitalProperties(Date date){
@@ -111,7 +111,7 @@ public class OrbitalProperties {
 
     /**
      * @param date date
-     * @return inclination on date
+     * @return departureInclination on date
      */
     public double getInclination(Date date) {
         setOrbitalProperties(date);

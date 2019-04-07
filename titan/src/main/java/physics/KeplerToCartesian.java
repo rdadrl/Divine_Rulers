@@ -1,12 +1,13 @@
 package physics;
 
-import solarsystem.OrbitalProperties;
+import solarsystem.PlanetOrbitalProperties;
 import solarsystem.Planet;
 import utils.*;
 
 
 /**
- *
+ * A class that uses Kepler constants (i.e., inclination, semi-major axis etc.) and returns
+ * cartesian coordinates (i.e., velocity and position vector)
  *
  */
 public class KeplerToCartesian {
@@ -21,20 +22,20 @@ public class KeplerToCartesian {
      */
     public static Vector3D[] getCartesianCoordinates(Planet planet,
                                                      Date date) {
-        OrbitalProperties orbitalProperties = planet.getOrbitalProperties();
+        PlanetOrbitalProperties planetOrbitalProperties = planet.getPlanetOrbitalProperties();
 
         // get the necessary orbital properties
-        double a = orbitalProperties.getSemiMajorAxis(date);
-        double e = orbitalProperties.getEccentricity(date);
-        double i = orbitalProperties.getInclination(date);
-        double l = orbitalProperties.getLongitude(date);
-        double w = orbitalProperties.getPeriphelon(date);
-        double o = orbitalProperties.getAscendingNode(date);
+        double a = planetOrbitalProperties.getSemiMajorAxis(date);
+        double e = planetOrbitalProperties.getEccentricity(date);
+        double i = planetOrbitalProperties.getInclination(date);
+        double l = planetOrbitalProperties.getLongitude(date);
+        double w = planetOrbitalProperties.getPeriphelon(date);
+        double o = planetOrbitalProperties.getAscendingNode(date);
         double mu = planet.getCentralBody().getMass() * MathUtil.G;
 
         // Step 2
         // compute the argument of perihelion, w_a, and the mean anomaly, M
-        double w_a = orbitalProperties.getPeriphelonArgument(date);
+        double w_a = planetOrbitalProperties.getPeriphelonArgument(date);
         double M = l - w;
 
         // Step 3
@@ -97,17 +98,17 @@ public class KeplerToCartesian {
         if(!planet.getCentralBody().getName().equals("Sun")) {
             Planet centralBody = planet.getCentralBody();
             centralBody.initializeCartesianCoordinates(date);
-            OrbitalProperties c_orbitalProperties = centralBody.getOrbitalProperties();
+            PlanetOrbitalProperties c_Planet_orbitalProperties = centralBody.getPlanetOrbitalProperties();
 
             // get orbital properties of the central body
-            double c_i = c_orbitalProperties.getInclination(date);
-            double c_w = c_orbitalProperties.getPeriphelon(date);
-            double c_o = c_orbitalProperties.getAscendingNode(date);
+            double c_i = c_Planet_orbitalProperties.getInclination(date);
+            double c_w = c_Planet_orbitalProperties.getPeriphelon(date);
+            double c_o = c_Planet_orbitalProperties.getAscendingNode(date);
             double c_wa = c_w - c_o;
 
             // revert properties to correct central positions with the sun as the center
             centralPos = KeplerToCartesian.orbitalToEclipticPlane(c_wa, c_o, c_i, centralPos);
-            centralPos = centralPos.add(centralBody.getcentralPos(date));
+            centralPos = centralPos.add(centralBody.getcentralPosAtDate(date));
             centralVel = KeplerToCartesian.orbitalToEclipticPlane(c_wa, c_o, c_i, centralVel);
             centralVel = centralVel.add(centralBody.getCentralVel());
         }

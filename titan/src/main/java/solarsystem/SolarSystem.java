@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class SolarSystem {
     private Planets planets;
     private Date currentDate;
-    private ArrayList<CelestialObject> allCelestialObjects;
+    private ArrayList<CelestialObject> allAnimatedObjects;
     private ArrayList<Projectile> projectiles;
     private VerletVelocity verletVelocity;
 
@@ -47,12 +47,12 @@ public class SolarSystem {
         return planets;
     }
 
-    public ArrayList<? extends CelestialObject> getAllCelestialObjects() {
-        return allCelestialObjects;
+    public ArrayList<? extends CelestialObject> getAllAnimatedObjects() {
+        return allAnimatedObjects;
     }
 
-    public void setAllCelestialObjects(ArrayList<CelestialObject> allCelestialObjects) {
-        this.allCelestialObjects = allCelestialObjects;
+    public void setAllAnimatedObjects(ArrayList<CelestialObject> allAnimatedObjects) {
+        this.allAnimatedObjects = allAnimatedObjects;
     }
 
     public void getStaticPositionsPlanets(Date date){
@@ -69,9 +69,10 @@ public class SolarSystem {
      *                    part of the animation
      */
     public void initializeAnimation(Date date, ArrayList<Projectile> projectiles){
-        allCelestialObjects = new ArrayList<>(getPlanets().getAll());
-        allCelestialObjects.addAll(projectiles);
-        verletVelocity = new VerletVelocity(this.allCelestialObjects, date);
+        allAnimatedObjects = new ArrayList<>(getPlanets().getAll());
+        allAnimatedObjects.addAll(projectiles);
+        this.projectiles = projectiles;
+        verletVelocity = new VerletVelocity(this.allAnimatedObjects, date);
     }
 
     public void updateAnimation(long dt, TimeUnit timeUnit){

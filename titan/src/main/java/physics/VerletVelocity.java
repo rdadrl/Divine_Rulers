@@ -2,6 +2,8 @@ package physics;
 
 import solarsystem.CannonBall;
 import solarsystem.CelestialObject;
+import solarsystem.Planet;
+import solarsystem.Projectile;
 import utils.Date;
 import utils.Vector3D;
 
@@ -11,12 +13,14 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A class which uses a verlet velocity algorithm the locate the location of the
- * planets.
+ * planets. This is an 2nd order ODE solver.
  * https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2011/06/MA221-6.1.pdf
  *
  */
 public class VerletVelocity {
     private ArrayList<? extends CelestialObject> bodies;
+    private ArrayList<Projectile> projectiles;
+    private ArrayList<Planet> planets;
     private Date currentDate;
 
 
@@ -24,15 +28,21 @@ public class VerletVelocity {
                           Date date) {
         this.currentDate = date;
         this.bodies = bodies;
+        projectiles = new ArrayList<>();
+        planets = new ArrayList<>();
         for (CelestialObject body: bodies) {
             body.initializeCartesianCoordinates(date);
+            if (body instanceof Projectile) projectiles.add((Projectile) body);
+            if (body instanceof Planet) planets.add((Planet) body);
+            System.out.println(body);
         }
         updateForce();
     }
 
     private void updateForce(){
+        //Don't let the cannonballs put force on each other.
         for (CelestialObject body: bodies) {
-            body.setForces(bodies);
+            body.setForces(planets);
         }
     }
 
@@ -96,6 +106,10 @@ public class VerletVelocity {
             // step 4 v(t + dt) = v(t + 0.5dt) + 0.5 a(t + dt) * dt
             Vector3D velChange = endAcceleration.scale((dt) / 2.0);
             body.setCentralVel(halfVel.add(velChange), currentDate);
+        }
+
+        for (Projectile projectile : projectiles){
+            projectile.checkColisions();
         }
     }
 

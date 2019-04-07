@@ -1,39 +1,16 @@
 package solarsystem;
 
-import javafx.geometry.Point3D;
 import physics.KeplerToCartesian;
-import utils.Constant;
 import utils.Date;
-import utils.MathUtil;
 import utils.Vector3D;
 
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
- *
- *
+ * A cannonball class which extends the projectile class which in turn extends the celestial
+ * object class. ! A lot of the important methods are in the projectile class so make sure to
+ * check it out.
  */
-public class CannonBall implements Projectile  {
-    public static double minDistanceAll = Constant.BEST_DISTANCE_RANGE_CANNONBALL;
-    public static double minDistanceAllCurrentDT = Double.MAX_VALUE;
-    private String name;
-    private double mass;
-    private double radius;
-    private Vector3D centralPos; // Coordinate central body reference frame
-    private Vector3D centralVel; // Velocity central body reference frame
-    private Vector3D forces;
-    private Planet fromPlanet;
-    private Planet toPlanet;
-    private double closestDistance = Double.MAX_VALUE;
-
-    private boolean crashed;
-    private Planet crashedPlanet;
-    private Date date;
-    private double inclination;
-    private double velocity;
-    private Vector3D startVelVec;
+public class CannonBall extends Projectile  {
+    private static int counter = 1;
 
 
     /**
@@ -42,177 +19,79 @@ public class CannonBall implements Projectile  {
      */
     public CannonBall(double mass, double radius, Planet fromPlanet,
                       Planet toPlanet, Date date, double inclination, double velocity){
+        this.name = "Cannonball " + counter++;
         this.mass = mass;
         this.radius = radius;
+        this.date = date;
+
         this.toPlanet = toPlanet;
         this.fromPlanet = fromPlanet;
-        this.date = date;
-        this.inclination = Math.toRadians(inclination);
-        this.velocity = velocity * 1000;
 
-        //this.velocity = fromPlanet.getCentralVel(date).length();
+        this.departureInclination = Math.toRadians(inclination);
+        this.departureVelocity = velocity * 1000;
     }
 
     public CannonBall(double mass, double radius, Planet fromPlanet,
                       Planet toPlanet, Date date, Vector3D velocity){
-        this.mass = mass;
-        this.radius = radius;
-        this.toPlanet = toPlanet;
-        this.fromPlanet = fromPlanet;
-        this.date = date;
+        this(mass, radius, fromPlanet, toPlanet, date, 0, 0);
         this.startVelVec = velocity;
     }
 
-    public static double getMinDistanceAll() {
-        return minDistanceAll;
-    }
-
-    @Override //TODO:change
-    public String getName() {
-        return "cannonball";
-    }
-
-    @Override
-    public Vector3D getForces() {
-        return forces;
-    }
-
-    @Override
-    public void setForces(ArrayList<? extends CelestialObject> objectsInSpace){
-        forces = MathUtil.gravitationalForces(this, objectsInSpace);
-    }
-
-    @Override
-    public Vector3D getCentralPos() {
-        return centralPos;
-    }
-
-    @Override
-    public void setCentralPos(Vector3D newcentralPos, Date date) {
-        this.date = new Date(date);
-        // TODO check crashes after whole update.
-        if(!crashed){
-            centralPos = newcentralPos;
-            checkClosestDistance();
-        }else{
-            centralPos = crashedPlanet.getCentralPos();
-        }
-    }
-
-    @Override
-    public void checkColisions() {
-        checkCollisionWithPlanet(fromPlanet, centralPos);
-        checkCollisionWithPlanet(toPlanet, centralPos);
-        checkCollisionWithPlanet(toPlanet.getCentralBody(), centralPos);
-    }
-
-    private void checkCollisionWithPlanet(Planet planet, Vector3D newcentralPos){
-        Vector3D diff = centralPos.substract(planet.getCentralPos());
-        double distance = diff.length();
-        if(distance < planet.getRadius()*1000){
-            System.out.println("should have crashed with: " + planet.getName());
-            System.out.println("Dist: " + minDistanceAll + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);
-            this.centralPos = planet.getCentralPos();
-            this.crashedPlanet = planet;
-            crashed = true;
-        }
-
-        Point3D[] crash = MathUtil.collisionDetector(centralPos, newcentralPos,
-                planet.getCentralPos(),
-                planet.getRadius()*1000);
-
-        if(crash != null){
-            System.out.println("collision with: " + planet.getName());
-            System.out.println(Arrays.toString(crash));
-            System.out.println(velocity);
-            System.out.println(inclination);
-
-            this.centralPos = planet.getCentralPos();
-            this.crashedPlanet = planet;
-            crashed = true;
-        }
-    }
-
-    @Override
-    public Vector3D getCentralVel() {
-        return centralVel;
-    }
-
-    @Override
-    public void setCentralVel(Vector3D centralVel, Date date) {
-        this.date = new Date(date);
-        this.centralVel = centralVel;
-    }
-
-    @Override
-    public double getMass() {
-        return mass;
-    }
-
-    @Override
-    public double getRadius() {
-        return radius;
-    }
-
+    /**
+     * initialize the cartesian coordinates at a specific date
+     * @param date date for the coordinates to be initialized
+     */
     @Override
     public void initializeCartesianCoordinates(Date date) {
         //Make our cannon leave from the outside of the planet.
-        centralPos = fromPlanet.getcentralPos(date);
-        Vector3D addRadX = fromPlanet.getcentralPos(date).unit().scale((fromPlanet.getRadius() * 1000));
-        Vector3D addRadY = fromPlanet.getcentralVel(date).unit().scale((fromPlanet.getRadius() * 1000));
-        //addRad = addRad.add(new Vector3D(10,10,10000));
+        centralPos = fromPlanet.getcentralPosAtDate(date);
+        // add the radius vector and put it outside the sphere of influence
+        Vector3D addRadX = fromPlanet.getcentralPosAtDate(date).unit().scale((fromPlanet.getRadius() * 1000) * 145.0);
+        // add the departureVelocity vector so that we don't crash immediately with the planet.
+        //Vector3D addRadY = fromPlanet.getCentralVelAtDate(date).unit().scale((fromPlanet
+        // .getRadius() * 1000));
         centralPos = centralPos.add(addRadX);
-        centralPos = centralPos.add(addRadY);
-        //System.out.println(centralPos.substract(fromPlanet.getCentralPos()).length()/1000);
-        //System.out.println(fromPlanet.getRadius());
-        /*
-        double dist = centralPos.substract(fromPlanet.getCentralPos()).length();
-        Vector3D test = centralPos.substract(fromPlanet.getCentralPos());
-        //centralPos = fromPlanet.getCentralPos(date);
-        */
-
-        //centralVel = toPlanet.getCentralPos().substract(fromPlanet.getCentralPos()).unit().scale(velocity);
+        //centralPos = centralPos.add(addRadY);
+        // if we initialized the departureVelocity as an array it won't be based upon the inlcination and
+        // departureVelocity property.
         if (startVelVec == null) {
-            getStartVelocity(date);
+            getStartVelocityVector(date);
         }
         centralVel = startVelVec;
     }
 
-    private void getStartVelocity(Date date){
-        Vector3D relEarthV = fromPlanet.initializeOrbitalVel(date).rotateAntiClockWise(inclination).unit().scale(velocity);
-        OrbitalProperties orbitalPropertiesFromPlanet = fromPlanet.getOrbitalProperties();
+    /**
+     * initialize a starting departureVelocity if this hasn't been passed in the constructor. The departureVelocity
+     * is dependent on the starting departureInclination and starting departureVelocity
+     * @param date Date for which the starting departureVelocity needs to be initialized
+     */
+    private void getStartVelocityVector(Date date){
+        // We will get the departureVelocity vector from the earth on the orbital plane
+        // as a starting position. We then rotate it anticlockwise by the departureInclination, take the
+        // unit vector from it and them scale it with the departureVelocity vector
+        Vector3D VelOrbitalFromPlan = fromPlanet.getOrbitalVelAtDate(date).rotateAntiClockWise(departureInclination).unit().scale(departureVelocity);
 
-        double w_a = orbitalPropertiesFromPlanet.getPeriphelonArgument(date);
-        double o = orbitalPropertiesFromPlanet.getAscendingNode(date);
-        double i = orbitalPropertiesFromPlanet.getInclination(date);
-        startVelVec = KeplerToCartesian.orbitalToEclipticPlane(w_a, o, i, relEarthV);
-        //System.out.println(KeplerToCartesian.orbitalToEclipticPlane(w, o, i,fromPlanet.initializeOrbitalVel()));
-        //System.out.println(fromPlanet.getCentralVel());
+        // Now we have to translate the departureVelocity vector the the central coordinate system. For
+        // this we need the orbital properties from the departure planet.
+        PlanetOrbitalProperties planetOrbitalPropertiesFromPlanet = fromPlanet.getPlanetOrbitalProperties();
+
+        // Get the necessary orbital properties from the departure planet
+        double w_a = planetOrbitalPropertiesFromPlanet.getPeriphelonArgument(date);
+        double o = planetOrbitalPropertiesFromPlanet.getAscendingNode(date);
+        double i = planetOrbitalPropertiesFromPlanet.getInclination(date);
+
+        // Attain the starting vector.
+        startVelVec = KeplerToCartesian.orbitalToEclipticPlane(w_a, o, i, VelOrbitalFromPlan);
     }
 
-    private void checkClosestDistance(){
-        Vector3D diff = centralPos.substract(toPlanet.getCentralPos());
-        double distance = diff.length();
-        if(distance < closestDistance){
-            closestDistance = distance;
-            checkClosestDistanceAll(centralPos,toPlanet, velocity, inclination, startVelVec);
-        }
-        if(distance < minDistanceAllCurrentDT){
-            minDistanceAllCurrentDT = distance;
-        }
-
+    @Override
+    public String toString() {
+        return "CannonBall{" +
+                "name=" + getName() +
+                ", centralPos=" + centralPos +
+                ", centralVel=" + centralVel +
+                ", startVel=" + departureVelocity +
+                ", startInc=" + departureInclination +
+                '}';
     }
-
-    private static void checkClosestDistanceAll(Vector3D newcentralPos, Planet toPlanet, double velocity
-            , double inclination, Vector3D startVelVec){
-        Vector3D diff = newcentralPos.substract(toPlanet.getCentralPos());
-        double distance = diff.length();
-        if(distance < minDistanceAll){
-            minDistanceAll = distance;
-            System.out.println("Dist: " + minDistanceAll + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);
-        }
-    }
-
-
-
 }

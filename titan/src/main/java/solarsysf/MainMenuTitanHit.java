@@ -16,6 +16,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import solarsystem.Projectile;
 import utils.MathUtil;
 import physics.VerletVelocity;
 import solarsystem.CannonBall;
@@ -31,9 +32,16 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainMenuE8 extends Application {
+/**
+ * This is a version of the simulator for which we hit titan. For debugging purpuses I added some
+ * functionality. For example you can change the planet size by pressing + and -. You can
+ * change planetary perspectives etc. Arda you can check whether you want to integrate any of
+ * these functionalities.
+ */
+public class MainMenuTitanHit extends Application {
     // runing variables
-    private final boolean RUNFRAMEFORFRAME = false;
+    private final boolean RUNFRAMEFORFRAME = true;
+    private boolean pauseStatus = false;
     private final boolean CANNON_BALL = true;
 
     // Timing variables
@@ -42,7 +50,8 @@ public class MainMenuE8 extends Application {
     private final TimeUnit timeUnit = TimeUnit.HOURS;
 
 
-    private final int CANNONBALL_AMOUNT = 500;
+    // Constants for the cannonball
+    private final int CANNONBALL_AMOUNT = 1;
     private final double CANNONBALL_MIN = 95.2441141057166;
     private final double CANNONBALL_MAX = 95.2441141057167;
     private final double INCLINATION_MIN = 38.744689463330;
@@ -53,15 +62,17 @@ public class MainMenuE8 extends Application {
     private Scene mainScene;
     private Group root;
     private boolean goNorth, goSouth, goEast, goWest;
-    private boolean pauseStatus = false;
     private final boolean USELIGHTS = true;
 
 
-    private HashMap<Sphere, CelestialObject> projectileList = new HashMap<>();
+    private HashMap<Sphere, Projectile> projectileList = new HashMap<>();
     private SolarSystem solarSystem;
     private CelestialObject followObject;
-    private int DistanceMultiplier = 40;
-    private double plntRadFact = (1.0/6371.0);
+
+    private int DistanceMultiplier = 1;
+    private double plntRadFact = 1000.0/MathUtil.AU;
+   // private int DistanceMultiplier = 40;
+   // private double plntRadFact = (2.0/6371.0);
     private double AU = MathUtil.AU;
 
     @Override
@@ -263,15 +274,6 @@ public class MainMenuE8 extends Application {
         primaryStage.setTitle("SolarSysF - Solar Visualization From Scratch");
         primaryStage.setScene(mainScene);
 
-
-        ArrayList<CelestialObject> allObj =
-                new ArrayList<>(projectileList.values());
-        allObj.addAll(solarSystem.getPlanets().getAll());
-        solarSystem.setAllCelestialObjects(allObj);
-
-        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllCelestialObjects(), date);
-
-
         mainScene.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override public void handle(ScrollEvent event) {
                 event.consume();
@@ -308,19 +310,26 @@ public class MainMenuE8 extends Application {
                     case MINUS: plntRadFact = plntRadFact * 0.9; break;
                     case DIGIT0: camera.setTranslateX(0); camera.setTranslateY(0); break;
 
-                    case S: followObject = sunObj; break;
-                    case E: followObject = earthObj; break;
-                    case R: followObject = saturnObj; break;
-                    case T: followObject = titanObj; break;
+                    case S: followObject = sunObj; camera.setTranslateX(0); camera.setTranslateY(0); break;
+                    case E: followObject = earthObj; camera.setTranslateX(0); camera.setTranslateY(0);break;
+                    case R: followObject = saturnObj; camera.setTranslateX(0); camera.setTranslateY(0);break;
+                    case T: followObject = titanObj; camera.setTranslateX(0); camera.setTranslateY(0);break;
 
                     case DIGIT1: DistanceMultiplier = 40; plntRadFact = (1.0/6371.0); camera.setTranslateZ(-100); break;
                     case DIGIT2: DistanceMultiplier = 1; plntRadFact = (1000.0/MathUtil.AU); camera.setTranslateZ(-0.02); break;
 
-
-
                 }
             }
         });
+
+        ArrayList<CelestialObject> allObj =
+                new ArrayList<>(projectileList.values());
+        allObj.addAll(solarSystem.getPlanets().getAll());
+        solarSystem.setAllAnimatedObjects(allObj);
+
+        ArrayList<Projectile> projectileInstances = new ArrayList<>(projectileList.values());
+
+        solarSystem.initializeAnimation(date, projectileInstances);
 
         final long startNanoTime = System.nanoTime();
         new AnimationTimer()
@@ -329,31 +338,15 @@ public class MainMenuE8 extends Application {
             {
                 if (!pauseStatus) {
                     dateLabel.setText(date.toDateString());
-
-                    if(CannonBall.minDistanceAllCurrentDT < 1.0E08) {
-                        verletVelocity.updateLocation(10, TimeUnit.SECONDS);
-                    }else if(CannonBall.minDistanceAllCurrentDT < 1.0E09){
-                        verletVelocity.updateLocation(100, TimeUnit.SECONDS);
-                    }else if(CannonBall.minDistanceAllCurrentDT < 1.0E10){
-                        verletVelocity.updateLocation(1000, TimeUnit.SECONDS);
-                    }else if(CannonBall.minDistanceAllCurrentDT < 1.0E11){
-                        verletVelocity.updateLocation(10000, TimeUnit.SECONDS);
-                    }else{
-                        verletVelocity.updateLocation(dt, timeUnit);
-                    }
-
-                    //verletVelocity.updateLocation(dt, timeUnit);
-
                     Vector3D coordinate;
 
                     coordinate = sunObj.getCentralPos();
                     coordinate = coordinate.substract(followObject.getCentralPos());
-                    sun.setRadius(sunObj.getRadius() * plntRadFact/100.0);
+                    sun.setRadius(sunObj.getRadius() * plntRadFact/50.0);
                     sun.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                     sun.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                     sun.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
                     sun.setRotate(sun.getRotate() + 2);
-                    //System.out.println("Sun:\nX: " + coordinate.getX() + "\nY: " + coordinate// .getY() + "\nZ: " + coordinate.getZ());
 
                     coordinate = earthObj.getCentralPos();
                     coordinate = coordinate.substract(followObject.getCentralPos());
@@ -432,7 +425,9 @@ public class MainMenuE8 extends Application {
                     for(Sphere guiObject: projectileList.keySet()){
                         updateGUIobject(guiObject, projectileList.get(guiObject));
                     }
+
                     if(RUNFRAMEFORFRAME) pauseStatus = true;
+                    solarSystem.updateAnimationRelativeTimeStep(dt, timeUnit);
                 }
                 //Move the camera
                 if (goNorth) camera.setTranslateY(camera.getTranslateY() - 1);
@@ -455,7 +450,7 @@ public class MainMenuE8 extends Application {
             Double velocity = CANNONBALL_MIN + (CANNONBALL_MAX - CANNONBALL_MIN) * r.nextDouble();
             Double inclination = INCLINATION_MIN + (INCLINATION_MAX - INCLINATION_MIN) * r.nextDouble();
             //Double inclination = ThreadLocalRandom.current().nextDouble(0, inclinationRange);
-            CelestialObject cannonballObj = new CannonBall(100, 2000,
+            Projectile cannonballObj = new CannonBall(100, 2000,
                     solarSystem.getPlanets().getEarth(),
                     solarSystem.getPlanets().getTitan(), date,
                     inclination, velocity);
@@ -464,6 +459,8 @@ public class MainMenuE8 extends Application {
             projectileList.put(createGUIobject(cannonballObj), cannonballObj);
         }
     }
+
+
 
 
     private Sphere createGUIobject(CelestialObject object){

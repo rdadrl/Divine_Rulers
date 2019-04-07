@@ -65,7 +65,7 @@ public class MathUtil {
         // itterate over all the objects in space
         for (CelestialObject o : objectsInSpace) {
             //skip the ref object itself and for now also cannonballs and rockets
-            if (o == refOb || o instanceof CannonBall || o instanceof Rocket) {
+            if (o == refOb) {
                 continue;
             }
             // get the relative position to the reference object

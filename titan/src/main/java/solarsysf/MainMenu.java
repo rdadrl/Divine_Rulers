@@ -33,6 +33,9 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Main running class for the simulator
+ */
 public class MainMenu extends Application {
     // runing variables
     private final boolean RUNFRAMEFORFRAME = false;
@@ -285,9 +288,9 @@ public class MainMenu extends Application {
         ArrayList<CelestialObject> allObj =
                 new ArrayList<>(spaceObjectsList.values());
         allObj.addAll(solarSystem.getPlanets().getAll());
-        solarSystem.setAllCelestialObjects(allObj);
+        solarSystem.setAllAnimatedObjects(allObj);
 
-        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllCelestialObjects(), date);
+        VerletVelocity verletVelocity = new VerletVelocity(solarSystem.getAllAnimatedObjects(), date);
 
 
         mainScene.setOnScroll(new EventHandler<ScrollEvent>() {
