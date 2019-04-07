@@ -46,12 +46,11 @@ public class CannonBall extends Projectile  {
         //Make our cannon leave from the outside of the planet.
         centralPos = fromPlanet.getcentralPosAtDate(date);
         // add the radius vector and put it outside the sphere of influence
-        Vector3D addRadX = fromPlanet.getcentralPosAtDate(date).unit().scale((fromPlanet.getRadius() * 1000) * 145.0);
+        Vector3D addRadX = fromPlanet.getcentralPosAtDate(date).unit().scale((fromPlanet.getRadius() * 1000));
         // add the departureVelocity vector so that we don't crash immediately with the planet.
-        //Vector3D addRadY = fromPlanet.getCentralVelAtDate(date).unit().scale((fromPlanet
-        // .getRadius() * 1000));
+        Vector3D addRadY = fromPlanet.getCentralVelAtDate(date).unit().scale((fromPlanet.getRadius() * 1000));
         centralPos = centralPos.add(addRadX);
-        //centralPos = centralPos.add(addRadY);
+        centralPos = centralPos.add(addRadY);
         // if we initialized the departureVelocity as an array it won't be based upon the inlcination and
         // departureVelocity property.
         if (startVelVec == null) {

@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class MainMenuTitanHit extends Application {
     // runing variables
-    private final boolean RUNFRAMEFORFRAME = true;
+    private final boolean RUNFRAMEFORFRAME = false;
     private boolean pauseStatus = false;
     private final boolean CANNON_BALL = true;
 
@@ -69,10 +69,10 @@ public class MainMenuTitanHit extends Application {
     private SolarSystem solarSystem;
     private CelestialObject followObject;
 
-    private int DistanceMultiplier = 1;
-    private double plntRadFact = 1000.0/MathUtil.AU;
-   // private int DistanceMultiplier = 40;
-   // private double plntRadFact = (2.0/6371.0);
+    //private int DistanceMultiplier = 1;
+    //private double plntRadFact = 1000.0/MathUtil.AU;
+    private int DistanceMultiplier = 40;
+    private double plntRadFact = (2.0/6371.0);
     private double AU = MathUtil.AU;
 
     @Override
@@ -94,7 +94,7 @@ public class MainMenuTitanHit extends Application {
         CelestialObject neptuneObj = solarSystem.getPlanets().getNeptune();
         CelestialObject venusObj = solarSystem.getPlanets().getVenus();
 
-        followObject = earthObj;
+        followObject = sunObj;
 
         //Planet Name Label
         Label identifierLabel = new Label();
