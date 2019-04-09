@@ -22,3 +22,7 @@ please add any literature you used throught the project with their page numbers 
 ## Good stuff to Read
 
 - :)
+
+## Trello website
+
+- https://trello.com/b/03S5MxWy/divine-rulers-kanban
