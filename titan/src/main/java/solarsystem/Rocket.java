@@ -60,7 +60,7 @@ public class Rocket extends Projectile{
     @Override
     public void initializeCartesianCoordinates(Date date) {
         //Make our cannon leave from the outside of the planet.
-        centralPos = fromPlanet.getcentralPosAtDate(date);
+        centralPos = fromPlanet.getCentralPosAtDate(date);
         Vector3D addRad = centralPos.unit().scale(fromPlanet.getRadius()*2000);
         centralPos = centralPos.add(addRad);
         if(startVelVec== null){

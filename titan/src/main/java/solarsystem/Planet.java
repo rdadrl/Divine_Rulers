@@ -26,7 +26,7 @@ public class Planet extends CelestialObject {
     @JsonProperty("orbital_properties")
     private PlanetOrbitalProperties planetOrbitalProperties;
 
-    private Date date;   // Date of the current
+    private double sphereOfInfluence = -1;
     private Vector3D orbitalPos = new Vector3D(); // Coordinate in the orbital plane AU
     private Vector3D orbitalVel = new Vector3D(); // Velocity vector in the orbital plane AU/day
 
@@ -79,25 +79,26 @@ public class Planet extends CelestialObject {
         return planetOrbitalProperties.getSemiMajorAxisJ2000();
     }
 
-    public Vector3D getcentralPosAtDate(Date date){
-        initializeCartesianCoordinates(date);
+    public Vector3D getCentralPosAtDate(Date date){
+        if(!super.getDate().equals(date)){
+            initializeCartesianCoordinates(date);
+        }
         return centralPos;
     }
 
-
-
     public Vector3D getCentralVelAtDate(Date date){
-        initializeCartesianCoordinates(date);
+        if(!super.getDate().equals(date)){
+            initializeCartesianCoordinates(date);
+        }
         return centralVel;
     }
 
-
-
     public Vector3D getOrbitalPosAtDate(Date date){
-        initializeCartesianCoordinates(date);
+        if(!super.getDate().equals(date)){
+            initializeCartesianCoordinates(date);
+        }
         return orbitalPos;
     }
-
 
     public Vector3D OrbitalVel(){
         return orbitalVel;
@@ -108,7 +109,9 @@ public class Planet extends CelestialObject {
      * @return departureVelocity vector
      */
     public Vector3D getOrbitalVelAtDate(Date date){
-        initializeCartesianCoordinates(date);
+        if(!super.getDate().equals(date)){
+            initializeCartesianCoordinates(date);
+        }
         return orbitalVel;
     }
 
@@ -123,6 +126,22 @@ public class Planet extends CelestialObject {
             ref = ref.centralBody;
         }
         return centralBody;
+    }
+
+    /**
+     * Calculate Lagrange sphere of influence: 𝑅(𝑚𝑀)^(2/5)
+     * https://space.stackexchange.com/questions/3015/how-large-is-the-earths-gravitational-sphere-of-influence-and-how-can-it-be-cal
+     * @return sphere of influence
+     */
+    public double getSphereOfInfluence(){
+        // Sphere of influence not defined yet. 
+        if(sphereOfInfluence == -1) {
+            double a = planetOrbitalProperties.getSemiMajorAxisJ2000();
+            double M = centralBody.getMass();
+            double m = mass;
+            sphereOfInfluence = a * Math.pow(M*m, (2.0/5.0));
+        }
+        return sphereOfInfluence;
     }
 
     @Override

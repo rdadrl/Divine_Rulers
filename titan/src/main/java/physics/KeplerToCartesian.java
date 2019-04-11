@@ -108,7 +108,7 @@ public class KeplerToCartesian {
 
             // revert properties to correct central positions with the sun as the center
             centralPos = KeplerToCartesian.orbitalToEclipticPlane(c_wa, c_o, c_i, centralPos);
-            centralPos = centralPos.add(centralBody.getcentralPosAtDate(date));
+            centralPos = centralPos.add(centralBody.getCentralPosAtDate(date));
             centralVel = KeplerToCartesian.orbitalToEclipticPlane(c_wa, c_o, c_i, centralVel);
             centralVel = centralVel.add(centralBody.getCentralVel());
         }

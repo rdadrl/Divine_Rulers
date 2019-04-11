@@ -52,6 +52,18 @@ public class Vector3D implements Vector<Point3D> {
 		return new Vector3D(c * x, c * y, c * z);
 	}
 
+    /**
+     * @param _other vector to cross product with
+     * @return cross product between this vector and another vector.
+     */
+	public Vector3D cross(Vector3D _other){
+	    Vector3D out = new Vector3D();
+        out.setX((this.y * _other.z) - (this.z * _other.y));
+        out.setY((this.z * _other.x) - (this.x * _other.z));
+        out.setZ((this.x * _other.y) - (this.y * _other.x));
+        return out;
+    }
+
 	/*
 	 * calculate the dot product of two vectors
 	 */
@@ -59,6 +71,7 @@ public class Vector3D implements Vector<Point3D> {
 		Vector3D other = (Vector3D)_other;
 		return x * other.x + y * other.y + z * other.z;
 	}
+
 	/*
 	 * calculate the norm of the vector
 	 */
@@ -71,6 +84,8 @@ public class Vector3D implements Vector<Point3D> {
 	public double length() {
 		return norm();
 	}
+
+
 	/*
 	 * calculate the unit vector
 	 * @return the unit vector to return
@@ -207,6 +222,17 @@ public class Vector3D implements Vector<Point3D> {
 		return new Vector2D(this.scale(Constant.scale))
 				.add(new Vector2D(Constant.CANVASCENTERX, Constant.CANVACENTERY));
 	}
+
+    /**
+     * cross product between vector v1 and v2
+     * @param v1 vector 1
+     * @param v2 vector 2
+     * @return cross product between vector v1 and v2
+     */
+	public static Vector3D crossProduct(Vector3D v1, Vector3D v2){
+	    return v1.cross(v2);
+    }
+
 
 	public static Vector3D randomVector(double rangeMin, double rangeMax){
         Random r = new Random();

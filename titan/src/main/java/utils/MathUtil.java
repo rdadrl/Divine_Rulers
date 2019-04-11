@@ -36,6 +36,18 @@ public class MathUtil {
     }
 
     /**
+     * https://forgetcode.com/Java/1747-acosh-Return-the-hyperbolic-Cosine-of-value-as-a-Argument
+     * @param x
+     * @return acosh of x
+     */
+    public static double acosh(double x) {
+        return Math.log(x + Math.sqrt(x * x - 1.0));
+    }
+
+    public static double asinh(double x) {
+        return Math.log(x + Math.sqrt(x*x + 1.0));
+    }
+    /**
      * ABC formula solver
      * @param A A constant
      * @param B B constant
