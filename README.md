@@ -20,7 +20,10 @@ please add any literature you used throught the project with their page numbers 
 
 
 ## Good stuff to Read
-
+Euler rotation and the problem of gimbal lock: https://www.youtube.com/watch?v=zc8b2Jo7mno
+Quaternions:
+https://www.youtube.com/watch?v=d4EgbgTm0Bg&t=256s
+https://www.youtube.com/watch?v=zjMuIxRvygQ
 - :)
 
 ## Trello website
