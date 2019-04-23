@@ -14,5 +14,6 @@ public class Constant {
 	public static final int CANVASHEIGHT = 900;
 	public static final int CANVASCENTERX = CANVASWIDTH/2;
 	public static final int CANVACENTERY = CANVASHEIGHT/2;
+	protected static final int INTERVAL = 20;
 	public static int cnt = 0;
 }

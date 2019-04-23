@@ -3,6 +3,7 @@ package gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JSpinner;
 import javax.swing.Timer;
@@ -13,19 +14,24 @@ import utils.Vector3D;
 
 public class Controller {
 	
+	int day = 0;
 	public Controller(View view) {
 		Canvas cvs = view.cvs;
 		ControlPanel cp = view.cp;
 		JSpinner s1 = view.cp.sSpeed1;
 		JSpinner s2 = view.cp.sSpeed2;
 		Planet[] planets = view.cvs.planets;
+		utils.Date startDate = cvs.date; 
+		int dayToGameTime = 24 * 60 * 60/ (360 * 100);
 		Vector3D initialV = new Vector3D(Constant.escapeV *1e3, Constant.escapeV*1e3, 0);
 		ActionListener lst = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for(int i = 0; i < planets.length; i++) {
-					if(planets[i]!=null)
-						planets[i].interact(planets);
+				for(int j = 0; j < 100; j++) {
+					for(int i = 0; i < planets.length; i++) {
+						if(planets[i]!=null)
+							planets[i].interact(planets);
+					}					
 				}
 //				if(cvs.ball!=null) {
 //					cvs.ball.interact(planets);
@@ -39,7 +45,11 @@ public class Controller {
 //						planets[i].update();
 //				}
 				cvs.cnt++;
-				cvs.date.add(Calendar.DATE, 1);
+				cvs.day = (int)(cvs.cnt * dayToGameTime);
+//				if(day != _day) {
+//					cvs.date.add(Calendar.DATE, 1);
+//					day = _day;
+//				}
 				cvs.repaint();
 			}
 		};
@@ -61,7 +71,7 @@ public class Controller {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				double val = (Double)s2.getValue();
-				cvs.arrowY = val;
+				cvs.arrowY = -val;
 				initialV.setY(val*1e3);
 				cvs.repaint();
 			}
@@ -80,10 +90,11 @@ public class Controller {
 		view.cp.bLaunch.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				Timer t = new Timer(50, lst);
+				Timer t = new Timer(Constant.INTERVAL, lst);
+				cvs.running = true;
 				Planet earth = cvs.earth;
 				
-				Planet ball = new Planet(earth.getPos().add(new Vector3D(6.371e6,6.371e6,0)), initialV, 10000, "cannon");
+				Planet ball = new Planet(earth.getPos().add(new Vector3D(6.371e6,6.371e6,0)), initialV, 1000, "cannon");
 				for(int i = 0; i <cvs.planets.length;i++) {
 					if(cvs.planets[i] == null) {
 						cvs.planets[i] = ball;
