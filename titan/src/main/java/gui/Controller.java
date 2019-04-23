@@ -31,10 +31,13 @@ public class Controller {
 //					cvs.ball.interact(planets);
 //					cvs.ball.update();					
 //				}
-				for(int i = 0; i < planets.length; i++) {
-					if(planets[i]!=null)
-						planets[i].update();
-				}
+				/*
+				 * update
+				 */
+//				for(int i = 0; i < planets.length; i++) {
+//					if(planets[i]!=null)
+//						planets[i].update();
+//				}
 				cvs.cnt++;
 				cvs.date.add(Calendar.DATE, 1);
 				cvs.repaint();

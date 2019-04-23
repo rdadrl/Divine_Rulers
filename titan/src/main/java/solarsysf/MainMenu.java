@@ -154,7 +154,8 @@ public class MainMenu extends Application {
 
 
         //Mercury
-        Sphere mercury = new Sphere(mercuryObj.getRadius() / MathUtil.AU * 100000000);
+        @SuppressWarnings("restriction")
+		Sphere mercury = new Sphere(mercuryObj.getRadius() / MathUtil.AU * 100000000);
         PhongMaterial mercuryMaterial = new PhongMaterial();
         mercuryMaterial.setDiffuseMap(new Image("textures/mercurymap.jpg"));
         mercuryMaterial.setBumpMap(new Image("textures/mercurybump.jpg"));

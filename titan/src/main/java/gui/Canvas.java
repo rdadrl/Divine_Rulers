@@ -61,9 +61,14 @@ public class Canvas extends JPanel {
 		
 				 
 		
-		planets = new Planet[]{sun, earth, mars, saturn, moon, jupiter, ball};
+		planets = new Planet[]{sun, earth, 
+//				mars, saturn, moon, jupiter, 
+				ball
+				};
 		
 	}
+	
+	
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;

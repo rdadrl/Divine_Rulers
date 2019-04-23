@@ -91,7 +91,7 @@ public class Vector3D implements Vector<Point3D> {
 	 * @return the unit vector to return
 	 */
 	public Vector3D unit() {
-		return scale(1/norm());
+		return scale(1.0/norm());
 	}
 	
 	/*
