@@ -32,6 +32,8 @@ public class Canvas extends JPanel {
 	Planet ball;
 	Date date;
 	int cnt = 0;
+	int day = 0;
+	boolean running = false;
 	public Canvas() throws IOException {
 
 		setPreferredSize(new Dimension(Constant.CANVASWIDTH, Constant.CANVASHEIGHT));
@@ -61,9 +63,22 @@ public class Canvas extends JPanel {
 		
 				 
 		
-		planets = new Planet[]{sun, earth, mars, saturn, moon, jupiter, ball};
+		planets = new Planet[]{sun, earth, 
+				mars, saturn, moon, jupiter, 
+				ball
+				};
+		
+//		for(int i = 0; i < planets.length; i++) {
+//			Planet p = planets[i];
+//			if(p!=null) {
+//	//			 m/h
+//				p.velocity = p.velocity.scale(3600);				
+//			}
+//		}
 		
 	}
+	
+	
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
@@ -72,7 +87,7 @@ public class Canvas extends JPanel {
 		g2.fillRect(0, 0, _WIDTH, _HEIGHT);
 		g2.setColor(Color.white);
 		g2.drawString(date.getDateString(), 20, 20);
-		g2.drawString("days: " + cnt, 20, 40);
+		g2.drawString("days: " + day, 20, 40);
 //		if(ball != null) {
 //			Vector2D v = ball.getPos().toScreen();
 ////			System.out.println(ball.getPos());
@@ -89,7 +104,7 @@ public class Canvas extends JPanel {
 			 g2.fill(obj);
 			 g2.setColor(Color.white);
 			 g2.drawString(planets[i].getName(), (int)v.getX(), (int)v.getY());
-			 if(planets[i].equals(earth)) {
+			 if(planets[i].equals(earth) && !running) {
 				 Point from = new Point((int)v.getX()+5, (int)v.getY() + 5);
 				 Point to = new Point((int)(from.getX() + arrowX), (int)from.getY());
 				 Point to1 = new Point((int)from.x, (int)(from.y-arrowY));
