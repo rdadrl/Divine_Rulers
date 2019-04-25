@@ -28,7 +28,7 @@ public class CannonBall2 implements CelestialObject {
 
 
             // Compute the force vector
-            double length = cannonBall.getLaunchForce();
+            double radius = cannonBall.getLaunchForce();
             cannonBall.setLaunchVector(departurePlanet.getCentralPos().rotateZDeg(90));
         } catch (IOException exception) {
             System.out.println(exception);
@@ -39,7 +39,7 @@ public class CannonBall2 implements CelestialObject {
     private double radius;
     private Vector3D centralPos; // Coordinate central body reference frame
     private Vector3D centralVel; // Velocity central body reference frame
-    private Vector3D forces;
+    private Vector3D acceleration;
     private CelestialObject fromPlanet;
     private CelestialObject toPlanet;
     private double launchForce;
@@ -58,8 +58,8 @@ public class CannonBall2 implements CelestialObject {
         Vector2D arrivalPosition2D = new Vector2D(arrivalPosition3D.getX(), arrivalPosition3D.getY());
 
         // Get angle between the projected vectors
-        double departureAngle = Math.acos(departurePosition2D.getX() / departurePosition2D.length());
-        double arrivalAngle = Math.acos(arrivalPosition2D.getX() / arrivalPosition2D.length());
+        double departureAngle = Math.acos(departurePosition2D.getX() / departurePosition2D.radius());
+        double arrivalAngle = Math.acos(arrivalPosition2D.getX() / arrivalPosition2D.radius());
         return arrivalAngle - departureAngle;
     }
 
@@ -69,13 +69,13 @@ public class CannonBall2 implements CelestialObject {
     }
 
     @Override
-    public Vector3D getForces() {
-        return forces;
+    public Vector3D getAcceleration() {
+        return acceleration;
     }
 
     @Override
-    public void setForces(ArrayList<? extends CelestialObject> objectsInSpace){
-        forces = MathUtil.gravitationalForces(this, objectsInSpace);
+    public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace){
+        acceleration = MathUtil.gravitationalForces(this, objectsInSpace);
     }
 
     public void setLaunchVector(Vector3D vector) {

@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
@@ -8,6 +9,7 @@ import javax.swing.JSpinner;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.Style;
 
 import utils.Vector3D;
 
@@ -86,6 +88,8 @@ public class Controller {
 						cvs.planets[i] = ball;
 					}
 				}
+
+
 				System.out.println(ball.getVelocity());
 				System.out.println(cvs.earth.getVelocity());
 //				System.out.println(cvs.ball.getPos());

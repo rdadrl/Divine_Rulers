@@ -1,4 +1,4 @@
-package Rocket;
+package rocket;
 import utils.Vector3D;
 
 public class Rocket {
@@ -6,6 +6,7 @@ public class Rocket {
     private Vector3D position;
 
     public Vector3D computeThrust() {
+        return null;
 
     }
 }

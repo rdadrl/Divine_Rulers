@@ -17,6 +17,7 @@ public abstract class Projectile extends CelestialObject{
     public static double minDistanceAll = Constant.BEST_DISTANCE_RANGE_CANNONBALL;
     public static double minDistanceAllCurrentDT = Double.MAX_VALUE;
     private double closestDistanceThisProjectile = Double.MAX_VALUE;
+    private double currentDistance = Double.MAX_VALUE;
 
     double departureInclination;
     double departureVelocity;
@@ -46,7 +47,6 @@ public abstract class Projectile extends CelestialObject{
         return startVelVec;
     }
 
-
     /**
      * @return departure planet
      */
@@ -61,6 +61,11 @@ public abstract class Projectile extends CelestialObject{
     public Planet getToPlanet() {
         return toPlanet;
     }
+
+    /**
+     * @return current distance to the destination planet
+     */
+    public double getCurrentDistance() {return currentDistance; }
 
     /**
      * @return whether planet has crashed
@@ -82,17 +87,17 @@ public abstract class Projectile extends CelestialObject{
      * @param date position at date.
      */
     @Override
-    public void setCentralPos(Vector3D newCentralPos, Date date) {
+    public void setCentralPos(Vector3D newCentralPos) {
         oldCentralPos = centralPos;
         centralPos = newCentralPos;
         if(!crashed){
             // if the projectile hasn't crashed yet we will update the location as normal
-            super.setCentralPos(newCentralPos, date);
+            super.setCentralPos(newCentralPos);
             checkClosestDistance();
         }else{
             // if the projectile crashe the location of the projectile whould be that of the crashed
             // planet.
-            super.setCentralPos(crashedPlanet.getCentralPos(), date);
+            super.setCentralPos(crashedPlanet.getCentralPos());
         }
     }
 
@@ -101,15 +106,15 @@ public abstract class Projectile extends CelestialObject{
      */
     private void checkClosestDistance() {
         Vector3D diff = centralPos.substract(toPlanet.getCentralPos());
-        double distance = diff.length();
-        // if the distance is less than the current closest distance of all the projectiles update
-        if (distance < closestDistanceThisProjectile) {
-            closestDistanceThisProjectile = distance;
+        currentDistance = diff.length();
+        // if the currentDistance is less than the current closest currentDistance of all the projectiles update
+        if (currentDistance < closestDistanceThisProjectile) {
+            closestDistanceThisProjectile = currentDistance;
             checkClosestDistanceAll(centralPos, toPlanet, departureVelocity, departureInclination, startVelVec);
         }
-        // if the distances is closer than its current closest distance update.
-        if (distance < minDistanceAllCurrentDT) {
-            minDistanceAllCurrentDT = distance;
+        // if the distances is closer than its current closest currentDistance update.
+        if (currentDistance < minDistanceAllCurrentDT) {
+            minDistanceAllCurrentDT = currentDistance;
         }
     }
 

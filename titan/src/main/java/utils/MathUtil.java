@@ -62,39 +62,6 @@ public class MathUtil {
         return new double[]{D, s1,s2};
     }
 
-    /**
-     * TODO: discuss whether we want to ignore the gravitational force the
-     * cannonballs have on each other
-     *
-     * Calculate the gravitational forces upon an object
-     * @param refOb object upon which the gravitation forces are calculated
-     * @param objectsInSpace all the objects that creates the gravitational forces
-     * @return a vector of the gravitational force
-     */
-    public static Vector3D gravitationalForces(CelestialObject refOb, ArrayList<?
-            extends CelestialObject> objectsInSpace) {
-        Vector3D gForces = new Vector3D(); // reset the forces
-        // itterate over all the objects in space
-        for (CelestialObject o : objectsInSpace) {
-            //skip the ref object itself and for now also cannonballs and rockets
-            if (o == refOb) {
-                continue;
-            }
-            // get the relative position to the reference object
-            Vector3D r = o.getCentralPos().substract(refOb.getCentralPos());
-            //l ength of distance
-            double dist = r.length();
-            // F(m1<-m2) = (G * m1 * m2) / r^2
-            double netForce = (MathUtil.G * o.getMass() * refOb.getMass()) /
-                    Math.pow(dist, 2);
-            // create the force vector of between the two objects. It is in the direction of
-            // the relative position of the object and the magnitude of the net force
-            Vector3D thisForce = r.unit().scale(netForce);
-            // add force to total forces
-            gForces = gForces.add(thisForce);
-        }
-        return gForces;
-    }
 
     //TODO: rewrite
 
