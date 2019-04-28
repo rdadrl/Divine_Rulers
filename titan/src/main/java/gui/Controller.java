@@ -21,17 +21,38 @@ public class Controller {
 		JSpinner s1 = view.cp.sSpeed1;
 		JSpinner s2 = view.cp.sSpeed2;
 		Planet[] planets = view.cvs.planets;
-		utils.Date startDate = cvs.date; 
+		utils.Date startDate = cvs.date;
+		
 		int dayToGameTime = 24 * 60 * 60/ (360 * 100);
+		int fr = Constant.INTERVAL;
+		double tf = 60 * 60 * 24; //24h
+		//number of time step
+		double dt = 60 * 60; //step size: 1h
+		int n = (int)(tf/dt); //number of steps
+		
 		Vector3D initialV = new Vector3D(Constant.escapeV *1e3, Constant.escapeV*1e3, 0);
+		Vector3D[][] kav = new Vector3D[planets.length][2]; 
 		ActionListener lst = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for(int j = 0; j < 100; j++) {
+				for(int j = 0; j < n; j++) {
 					for(int i = 0; i < planets.length; i++) {
-						if(planets[i]!=null)
-							planets[i].interact(planets);
-					}					
+						
+						if(planets[i]!=null) {
+							Planet planet = planets[i];
+							Vector3D acc = Calculator.totalAcceleration(planet.pos, planet, planets);
+							Vector3D[] ret = Calculator.rk4(planet.pos, planet.velocity, acc, dt, planet, planets);
+							kav[i][0] = ret[0];
+							kav[i][1] = ret[1];
+						}
+					}
+					for(int i = 0; i < planets.length; i++) {
+						if(planets[i] != null) {
+							Planet planet = planets[i];
+							planet.pos = planet.pos.add(kav[i][1].scale(dt));
+							planet.velocity = planet.velocity.add(kav[i][0].scale(dt));
+						}
+					}
 				}
 //				if(cvs.ball!=null) {
 //					cvs.ball.interact(planets);
