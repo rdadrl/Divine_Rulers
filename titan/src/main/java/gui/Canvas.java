@@ -7,10 +7,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
 import java.io.IOException;
-
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import javax.swing.JPanel;
 
-import utils.Date;
 import utils.Vector2D;
 import utils.Vector3D;
 
@@ -30,16 +31,19 @@ public class Canvas extends JPanel {
 	Planet jupiter;
 	Planet[] planets;
 	Planet ball;
-	Date date;
+	Calendar date;
 	int cnt = 0;
-	int day = 0;
+	long passing = 0;
+	long days = 0;
 	boolean running = false;
 	public Canvas() throws IOException {
 
 		setPreferredSize(new Dimension(Constant.CANVASWIDTH, Constant.CANVASHEIGHT));
 		
-		
-		date = new Date(2019, 3, 14); 
+		date = Calendar.getInstance();
+		date.set(Calendar.YEAR, 2019);
+		date.set(Calendar.MONTH, 3);
+		date.set(Calendar.DAY_OF_MONTH, 14);
 		
 		earth = new Planet(
 				new Vector3D(-1.471633868509571E+11, 2.104852097662997E+10, -2.126817645682022E+05),//pos m
@@ -67,27 +71,37 @@ public class Canvas extends JPanel {
 				mars, saturn, moon, jupiter, 
 				ball
 				};
-		
-//		for(int i = 0; i < planets.length; i++) {
-//			Planet p = planets[i];
-//			if(p!=null) {
-//	//			 m/h
-//				p.velocity = p.velocity.scale(3600);				
-//			}
-//		}
-		
+	
+	
+	}
+	
+	public String formatDate(Calendar d) {
+		return pad(d.get(Calendar.DATE)) + "/" + pad(d.get(Calendar.MONTH)) + "/" + d.get(Calendar.YEAR); 
+	}
+	
+	public String pad(int n) {
+		if(n < 10)
+			return "0" + n;
+		return ""+ n;
 	}
 	
 	
-
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		
 		g2.setColor(Color.blue);
 		g2.fillRect(0, 0, _WIDTH, _HEIGHT);
 		g2.setColor(Color.white);
-		g2.drawString(date.getDateString(), 20, 20);
-		g2.drawString("days: " + day, 20, 40);
+		
+		
+		long days = passing/Constant.ONEDAY;
+//		System.out.println(date);
+		long dt = date.getTimeInMillis()+ passing * 1000;
+		Calendar d = Calendar.getInstance();
+		d.setTimeInMillis(dt);
+		
+		g2.drawString(formatDate(d), 20, 20);
+		g2.drawString("days: " + days, 20, 40);
 //		if(ball != null) {
 //			Vector2D v = ball.getPos().toScreen();
 ////			System.out.println(ball.getPos());
@@ -118,6 +132,8 @@ public class Canvas extends JPanel {
 		}
 	}
 
+	
+	
 	private void drawArrowLine(Graphics g, int x1, int y1, int x2, int y2, int d, int h) {
 	    int dx = x2 - x1, dy = y2 - y1;
 	    double D = Math.sqrt(dx*dx + dy*dy);
