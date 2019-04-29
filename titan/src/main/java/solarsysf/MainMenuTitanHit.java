@@ -1,5 +1,8 @@
 package solarsysf;
 
+import jGntx.Evolutionary;
+import jGntx.Individual;
+import jGntx.Population;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -18,7 +21,6 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import solarsystem.Projectile;
 import utils.MathUtil;
-import physics.VerletVelocity;
 import solarsystem.CannonBall;
 import solarsystem.CelestialObject;
 import solarsystem.SolarSystem;
@@ -43,20 +45,21 @@ public class MainMenuTitanHit extends Application {
     private final boolean RUNFRAMEFORFRAME = false;
     private boolean pauseStatus = false;
     private final boolean CANNON_BALL = true;
-
+    private final boolean INSTANT_LAUNCH_LANDING_PHASE = true;
     // Timing variables
     private Date date = new Date(2002, 9, 18, 12, 0, 0);
     private final long dt = 6;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
 
+    // Genetic Alghoritm Variables
+    private final double MAX_MUTATION_MULTIPLIER = 10;
 
     // Constants for the cannonball
-    private final int CANNONBALL_AMOUNT = 1;
+    private final int CANNONBALL_AMOUNT = 1; //11 best performing crossovers to generate 10 children that will replace the remaining worse performing 10.
     private final double CANNONBALL_MIN = 95.2441141057166;
     private final double CANNONBALL_MAX = 95.2441141057167;
     private final double INCLINATION_MIN = 38.744689463330;
     private final double INCLINATION_MAX = 38.744689463339;
-
 
     // gui variables
     private Scene mainScene;
@@ -109,6 +112,11 @@ public class MainMenuTitanHit extends Application {
         pausePlayButton.setTextFill(Color.WHITE);
         pausePlayButton.setBorder(null);
         pausePlayButton.setOnAction(e -> pauseStatus = !pauseStatus );
+
+        //Gntx button
+        Hyperlink gntxButton = new Hyperlink("❚GntX Cycle❚");//("❚❚");
+        gntxButton.setTextFill(Color.WHITE);
+        gntxButton.setBorder(null);
 
         //Light fx
         PointLight pointLight = null;
@@ -230,10 +238,11 @@ public class MainMenuTitanHit extends Application {
         venus.setMaterial(venusMaterial);
         venus.getTransforms().add(rotate);
 
-
+        Evolutionary betterBalls;
         //Cannonball
         if(CANNON_BALL) {
-            createCannonBalls();
+            betterBalls = createCannonBalls();
+            gntxButton.setOnAction(e -> betterBalls.triggerCycleOver() );
         }
 
         //Date Label
@@ -255,7 +264,7 @@ public class MainMenuTitanHit extends Application {
 
 
         AnchorPane globalRoot = new AnchorPane();
-        globalRoot.getChildren().addAll(dateLabel, identifierLabel, pausePlayButton, cannonballLabel);
+        globalRoot.getChildren().addAll(dateLabel, identifierLabel, pausePlayButton, gntxButton, cannonballLabel);
         //Anchor the dateLabel
         globalRoot.setBottomAnchor(dateLabel, 10D);
         globalRoot.setRightAnchor(dateLabel, 10D);
@@ -337,6 +346,7 @@ public class MainMenuTitanHit extends Application {
             public void handle(long currentNanoTime)
             {
                 if (!pauseStatus) {
+                    betterBalls.getPopulation().updateFitnessValues();
                     dateLabel.setText(date.toDateString());
                     Vector3D coordinate;
 
@@ -424,10 +434,20 @@ public class MainMenuTitanHit extends Application {
 
                     for(Sphere guiObject: projectileList.keySet()){
                         updateGUIobject(guiObject, projectileList.get(guiObject));
+                        if (projectileList.get(guiObject).getClosestDistanceThisProjectile() <= 1.0171236527952513E8 * 1.1 || INSTANT_LAUNCH_LANDING_PHASE) { //i love to play with this variable, and you will too.
+                            System.out.println("Initiate the landing phase capt'!");
+                            this.stop();
+                            try {
+                                Application landingPhaseApp = new LandingPhase(projectileList.get(guiObject));
+                                landingPhaseApp.start(new Stage());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
 
                     if(RUNFRAMEFORFRAME) pauseStatus = true;
-                    solarSystem.updateAnimationRelativeTimeStep(dt, timeUnit);
+                    solarSystem.updateAnimation(dt, timeUnit);
                 }
                 //Move the camera
                 if (goNorth) camera.setTranslateY(camera.getTranslateY() - 1);
@@ -444,7 +464,9 @@ public class MainMenuTitanHit extends Application {
         launch(args);
     }
 
-    private void createCannonBalls() {
+    private Evolutionary createCannonBalls() {
+        //create the individual list
+        Individual<Projectile>[] indList = (Individual<Projectile>[]) new Individual[CANNONBALL_AMOUNT];
         for (int i = 0; i < CANNONBALL_AMOUNT; i++) {
             Random r = new Random();
             Double velocity = CANNONBALL_MIN + (CANNONBALL_MAX - CANNONBALL_MIN) * r.nextDouble();
@@ -457,7 +479,57 @@ public class MainMenuTitanHit extends Application {
             //titanObj.getCentralPos().substract(earthObj.getCentralPos()).unit().scale
             // (velocity));
             projectileList.put(createGUIobject(cannonballObj), cannonballObj);
+            indList[i] = new Individual<Projectile>(cannonballObj) {
+                @Override
+                public Projectile mutate(Projectile source) {
+                    return new CannonBall(100, 2000,
+                            solarSystem.getPlanets().getEarth(),
+                            solarSystem.getPlanets().getTitan(), date,
+                            Math.toDegrees(source.getDepartureInclination()) * r.nextDouble() * MAX_MUTATION_MULTIPLIER, source.getDepartureVelocity() * r.nextDouble() * MAX_MUTATION_MULTIPLIER / 1000);
+                }
+            };
         }
+
+        Population<Projectile> cannonBalls = new Population(indList) {
+            @Override
+            public void updateFitnessValue(Individual ind) {
+                double newFitness = ((Projectile) ind.getChromosome()).getClosestDistanceThisProjectile();
+                if (ind.getFitness() < newFitness) ind.setFitness(newFitness);
+            }
+        };
+
+        return new Evolutionary(cannonBalls) {
+            @Override
+            public void onCycleOver() {
+                //Now, get those fitness values updated.
+                this.getPopulation().updateFitnessValues();
+                date = new Date(2002, 9, 18, 12, 0, 0);
+                solarSystem.initializeAnimation(date, new ArrayList<>(projectileList.values()));
+
+                //Awesome, we did reset the whole system! now let's cleanup old cannonballs and make them betterballs!
+                Individual[] pops = this.getPopulation().getPopulation();
+                for (Individual ind : pops) {
+                    ind.mutate(ind.getChromosome());
+                }
+                this.crossOver();
+            }
+
+            @Override
+            public void crossOver() {
+                Population localPop = this.getPopulation();
+                Individual<Projectile>[] indList = localPop.getPopulation();
+
+                for (int i = 0; i < 10; i++) {
+                    double newDepInc = (Math.toDegrees(indList[i].getChromosome().getDepartureInclination()) + Math.toDegrees(indList[i + 1].getChromosome().getDepartureInclination())) / 2;
+                    double newDepVel = (indList[i].getChromosome().getDepartureVelocity() + indList[i + 1].getChromosome().getDepartureVelocity()) / 2000;
+
+                    indList[indList.length - 1 - i].setChromosome(new CannonBall(100, 2000,
+                            solarSystem.getPlanets().getEarth(),
+                            solarSystem.getPlanets().getTitan(), date,
+                            newDepInc, newDepVel));
+                }
+            }
+        };
     }
 
 
