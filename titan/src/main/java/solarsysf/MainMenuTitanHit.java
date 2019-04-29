@@ -532,9 +532,6 @@ public class MainMenuTitanHit extends Application {
         };
     }
 
-
-
-
     private Sphere createGUIobject(CelestialObject object){
         Sphere guiOb = new Sphere(object.getRadius() * plntRadFact);
         PhongMaterial guiMat = new PhongMaterial();
