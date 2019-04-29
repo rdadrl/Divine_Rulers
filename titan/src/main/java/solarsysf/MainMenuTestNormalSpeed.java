@@ -234,7 +234,7 @@ public class MainMenuTestNormalSpeed extends Application {
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setTranslateZ(-100);
-        camera.setNearClip(0.0001);
+        camera.setNearClip(0.000000000001);
         camera.setFarClip(2000);
         camera.setFieldOfView(35);
 
@@ -465,16 +465,16 @@ public class MainMenuTestNormalSpeed extends Application {
                     float vX = ((int) (velocity.getX() * 1000)) / 1000F;
                     float vY = ((int) (velocity.getY() * 1000)) / 1000F;
                     float vZ = ((int) (velocity.getZ() * 1000)) / 1000F;
+                    float dist = ((int) (coordinate.substract(cannonballObj.getFromPlanet().getCentralPos()).length()))/1000F;
 
                     identifierLabel.setText(cannonballObj.getName()+ ":\npX: " + sX + "\npY: " + sY +
-                            "\npZ: " + sZ + "\nvX: " + vX + "\nvY: " + vY +
-                    "\nvZ: " + vZ);
+                            "\npZ: " + sZ + "\nvX: " + vX + "\nvY: " + vY + "\nvZ: " + vZ +
+                            "\nDist: " + dist);
                 }
             });
             cannonball.setOnMouseExited(e -> identifierLabel.setText(""));
         }
     }
-
 
     private Sphere createGUIobject(CelestialObject object){
         Sphere guiOb = new Sphere(object.getRadius() * plntRadFact);

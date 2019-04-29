@@ -136,10 +136,10 @@ public class Planet extends CelestialObject {
     public double getSphereOfInfluence(){
         // Sphere of influence not defined yet. 
         if(sphereOfInfluence == -1) {
-            double a = planetOrbitalProperties.getSemiMajorAxisJ2000();
+            double a = planetOrbitalProperties.getSemiMajorAxisJ2000() * MathUtil.AU;
             double M = centralBody.getMass();
             double m = mass;
-            sphereOfInfluence = a * Math.pow(M*m, (2.0/5.0));
+            sphereOfInfluence = a * Math.pow(m/M, (2.0/5.0));
         }
         return sphereOfInfluence;
     }

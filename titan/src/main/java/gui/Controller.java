@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
@@ -9,49 +10,34 @@ import javax.swing.JSpinner;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.Style;
 
 import utils.Vector3D;
 
 public class Controller {
 	
-	int day = 0;
 	public Controller(View view) {
 		Canvas cvs = view.cvs;
 		ControlPanel cp = view.cp;
 		JSpinner s1 = view.cp.sSpeed1;
 		JSpinner s2 = view.cp.sSpeed2;
 		Planet[] planets = view.cvs.planets;
-		utils.Date startDate = cvs.date; 
-		int dayToGameTime = 24 * 60 * 60/ (360 * 100);
+
 		Vector3D initialV = new Vector3D(Constant.escapeV *1e3, Constant.escapeV*1e3, 0);
+		Vector3D[][] kav = new Vector3D[planets.length][2]; 
 		ActionListener lst = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for(int j = 0; j < 100; j++) {
-					for(int i = 0; i < planets.length; i++) {
-						if(planets[i]!=null)
-							planets[i].interact(planets);
-					}					
+				
+					Calculator.rk4sim(planets, kav, Constant.dt, Constant.n);
+					cvs.passing += Constant.tf;
+					cvs.repaint();
 				}
+				
 //				if(cvs.ball!=null) {
 //					cvs.ball.interact(planets);
 //					cvs.ball.update();					
 //				}
-				/*
-				 * update
-				 */
-//				for(int i = 0; i < planets.length; i++) {
-//					if(planets[i]!=null)
-//						planets[i].update();
-//				}
-				cvs.cnt++;
-				cvs.day = (int)(cvs.cnt * dayToGameTime);
-//				if(day != _day) {
-//					cvs.date.add(Calendar.DATE, 1);
-//					day = _day;
-//				}
-				cvs.repaint();
-			}
 		};
 
 		
@@ -90,7 +76,7 @@ public class Controller {
 		view.cp.bLaunch.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				Timer t = new Timer(Constant.INTERVAL, lst);
+				Timer t = new Timer(Constant.FRAME, lst);
 				cvs.running = true;
 				Planet earth = cvs.earth;
 				
@@ -100,12 +86,11 @@ public class Controller {
 						cvs.planets[i] = ball;
 					}
 				}
+
+
 				System.out.println(ball.getVelocity());
 				System.out.println(cvs.earth.getVelocity());
-//				System.out.println(cvs.ball.getPos());
-//				System.out.println(cvs.ball.getDepartureVelocity());
-//				System.out.println(cvs.earth.getPos());
-//				System.out.println(cvs.earth.getDepartureVelocity());
+			
 				t.start();
 			}
 			
