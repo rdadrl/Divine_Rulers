@@ -58,7 +58,9 @@ public class MainMenuTitanHit extends Application {
     private final double CANNONBALL_MAX = 120;//95.2441141057167;
     private final double INCLINATION_MIN = 20;//38.744689463330;
     private final double INCLINATION_MAX = 50;//38.744689463339;
-
+    /* best after 7 iterations:
+    CannonBall{name=Cannonball 92, centralPos=Vector3D{x=-1.0570517163860454E11, y=2.2914777583720522E12, z=-4.6055303485114795E8}, centralVel=Vector3D{x=-9139.74286856186, y=80090.62247665382, z=-39.4550353777163}, startVel=90271.04152758735, startInc=0.41869017625824423}		}
+     */
     // gui variables
     private Scene mainScene;
     private Group root;
@@ -494,7 +496,7 @@ public class MainMenuTitanHit extends Application {
             public void updateFitnessValue(Individual ind) {
                 //System.out.println("Fitness update for " + ind.getId());
                 double newFitness = ((Projectile) ind.getChromosome()).getClosestDistanceThisProjectile();
-                if (ind.getFitness() < newFitness) {
+                if (ind.getFitness() > newFitness) {
                     //System.out.println("\tUpdating from " + ind.getFitness() + " to " + newFitness);
                     ind.setFitness(newFitness);
                 }
@@ -507,13 +509,12 @@ public class MainMenuTitanHit extends Application {
             public void onCycleOver() {
                 //Now, get those fitness values updated.
                 this.getPopulation().updateFitnessValues();
-
                 //Awesome, we did reset the whole system! now let's cleanup old cannonballs and make them betterballs!
-                Individual[] pops = this.getPopulation().getPopulation();
-                for (Individual ind : pops) {
-                    ind.setChromosome(ind.mutate(ind.getChromosome()));
-                }
                 this.crossOver();
+                Individual[] pops = this.getPopulation().getPopulation();
+                /*for (Individual ind : pops) {
+                    ind.setChromosome(ind.mutate(ind.getChromosome()));
+                }*/
 
                 Iterator projectileIterator = projectileList.entrySet().iterator();
                 int i = 0;
@@ -532,10 +533,18 @@ public class MainMenuTitanHit extends Application {
             public void crossOver() {
                 Population localPop = this.getPopulation();
                 Individual<Projectile>[] indList = localPop.getPopulation();
+                localPop.sortPopulationByFitness();
+                ArrayList<Individual<Projectile>> indArrayList = new ArrayList<>();
+                indArrayList.addAll(Arrays.asList(indList));
+
+                indArrayList.sort(Comparator.comparing((Individual<Projectile> p) -> p.getFitness()));
+
+                System.out.println("check if firsts fitness bigger than others: (prints if everything kalos");
+                if (indArrayList.get(0).getFitness() < indArrayList.get(indArrayList.size() - 1).getFitness()) System.out.println("ind0 has smaller fitness!!!!");
 
                 for (int i = 0; i < CANNONBALL_AMOUNT - 1; i++) {
-                    double newDepInc = (Math.toDegrees(indList[i].getChromosome().getDepartureInclination()) + Math.toDegrees(indList[i + 1].getChromosome().getDepartureInclination())) / 2;
-                    double newDepVel = (indList[i].getChromosome().getDepartureVelocity() + indList[i + 1].getChromosome().getDepartureVelocity()) / 2000;
+                    double newDepInc = (Math.toDegrees(indArrayList.get(i).getChromosome().getDepartureInclination()) + Math.toDegrees(indArrayList.get(i + 1).getChromosome().getDepartureInclination())) / 2;
+                    double newDepVel = (indArrayList.get(i).getChromosome().getDepartureVelocity() + indArrayList.get(i + 1).getChromosome().getDepartureVelocity()) / 2000;
 
                     indList[indList.length - 1 - i].setChromosome(new CannonBall(100, 2000,
                             solarSystem.getPlanets().getEarth(),
