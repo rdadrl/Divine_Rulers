@@ -1,14 +1,18 @@
 package jGntx;
 
 public abstract class Individual<T> {
-    private double fitness;
+    private double fitness = Double.MAX_VALUE;
     private T chromosome;
-
+    private int id;
+    private static int lastId = 1;
     public Individual(T data) {
         this.chromosome = data;
         this.fitness = 0;
+        this.id = lastId;
+        lastId++;
     }
 
+    public int getId() { return id; }
 
     public T getChromosome() {
         return chromosome;

@@ -30,8 +30,6 @@ public abstract class Projectile extends CelestialObject{
     private boolean crashed;
     private Planet crashedPlanet;
 
-
-
     public double getDepartureInclination() {
         return departureInclination;
     }

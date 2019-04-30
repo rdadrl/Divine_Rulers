@@ -18,15 +18,8 @@ public abstract class Evolutionary<T> {
 
     //Use this to trigger cycle over.
     public void triggerCycleOver() {
-        String cycleMsg = " - Cycle Iteration: " + cycleIterationCount + " -\n";
-        localPopulation.sortPopulationByFitness();
-        cycleMsg += "Best 3 individuals by their fitness values:\n";
-        Projectile currToP = (Projectile) localPopulation.getPopulation()[0].getChromosome();
-        cycleMsg += "1:\n\tInit. Inclination: " + currToP.getDepartureInclination() + "\n\tInit. Velocity: " + currToP.getDepartureVelocity() + "\n";
-        currToP = (Projectile) localPopulation.getPopulation()[1].getChromosome();
-        cycleMsg += "2:\n\tInit. Inclination: " + currToP.getDepartureInclination() + "\n\tInit. Velocity: " + currToP.getDepartureVelocity() + "\n";
-        currToP = (Projectile) localPopulation.getPopulation()[2].getChromosome();
-        cycleMsg += "3:\n\tInit. Inclination: " + currToP.getDepartureInclination() + "\n\tInit. Velocity: " + currToP.getDepartureVelocity() + "\n";
+        String cycleMsg = "";
+        cycleMsg += this.toString();
         cycleMsg += "\nRestarting cycle...";
         onCycleOver();
         cycleMsg += "\nSystem variables restarted. Mutations & CrossingOver done.";
@@ -37,4 +30,22 @@ public abstract class Evolutionary<T> {
 
 
     public abstract void crossOver ();
+
+
+    public String toString () {
+        String tmp = "";
+        tmp += "Evolutionary Tree: {\n" +
+                "\tCycle Count: " + cycleIterationCount + ",\n" +
+                "\tPopulation Count: " + this.getPopulation().getPopulation().length + ",\n" +
+                "\tIndividuals (Population): [\n";
+        for (int i = 0; i < localPopulation.population.length; i++) {
+            tmp += "\t\tIndividual #" + localPopulation.population[i].getId() + ": {\n";
+            tmp += "\t\t\tFitness: " + localPopulation.population[i].getFitness() + ",\n";
+            tmp += "\t\t\t" + localPopulation.population[i].getChromosome().toString();
+            tmp += "\t\t}\n";
+        }
+        tmp += "\t}\n}";
+
+        return tmp;
+    }
 }
