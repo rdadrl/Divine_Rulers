@@ -12,5 +12,5 @@ public abstract class Population<T> {
     public void sortPopulationByFitness () {
         quickSort.sort(population, 0, population.length - 1);
     }
-    public Individual[] getPopulation() { return population; }
+    public Individual<T>[] getPopulation() { return population; }
 }

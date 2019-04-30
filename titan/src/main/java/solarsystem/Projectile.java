@@ -14,7 +14,7 @@ import java.util.Arrays;
  *
  */
 public abstract class Projectile extends CelestialObject{
-    public static double minDistanceAll = Constant.BEST_DISTANCE_RANGE_CANNONBALL;
+    public static double minDistanceAll = Double.MAX_VALUE;
     public static double minDistanceAllCurrentDT = Double.MAX_VALUE;
     private double closestDistanceThisProjectile = Double.MAX_VALUE;
     private double currentDistance = Double.MAX_VALUE;
@@ -36,11 +36,19 @@ public abstract class Projectile extends CelestialObject{
         return departureInclination;
     }
 
+    public void setDepartureInclination(double departureInclination) {
+        this.departureInclination = departureInclination;
+    }
+
     /**
      * @return starting departureVelocity of the planet
      */
     public double getDepartureVelocity() {
         return departureVelocity;
+    }
+
+    public void setDepartureVelocity(double departureVelocity) {
+        this.departureVelocity = departureVelocity;
     }
 
     public Vector3D getStartVelVec() {
@@ -83,8 +91,7 @@ public abstract class Projectile extends CelestialObject{
 
     /**
      * Method to update the central position of the cannonball object.
-     * @param newCentralPos central position to be updated
-     * @param date position at date.
+     * @param newCentralPos central position to be update
      */
     @Override
     public void setCentralPos(Vector3D newCentralPos) {
@@ -99,6 +106,12 @@ public abstract class Projectile extends CelestialObject{
             // planet.
             super.setCentralPos(crashedPlanet.getCentralPos());
         }
+    }
+
+
+    public void resetClosestDistanceThisProjectile() {
+        closestDistanceThisProjectile = Double.MAX_VALUE;
+        currentDistance = Double.MAX_VALUE;
     }
 
     /**
@@ -139,6 +152,7 @@ public abstract class Projectile extends CelestialObject{
         double distance = diff.length();
         if(distance < minDistanceAll){
             minDistanceAll = distance;
+            if(distance<utils.Constant.BEST_DISTANCE_RANGE_CANNONBALL)
             System.out.println("Dist: " + minDistanceAll + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);
         }
     }
@@ -156,7 +170,6 @@ public abstract class Projectile extends CelestialObject{
     /**
      * Checks a collision with a particulair planet
      * @param planet planet to detect crash with
-     * @param centralPos location of the projectile
      */
     private void checkCollisionWithPlanet(Planet planet){
         if(crashed) return;
@@ -175,6 +188,7 @@ public abstract class Projectile extends CelestialObject{
             crashed = true;
         }
 
+
         /*
         // FIXME: DEBUG THE FOLLOWING SECTION
         Point3D[] crash = MathUtil.collisionDetector(oldCentralPos, centralPos,
@@ -192,5 +206,10 @@ public abstract class Projectile extends CelestialObject{
             crashed = true;
         }
         */
+    }
+    public static void resetDistances() {
+        minDistanceAll = Double.MAX_VALUE;
+        minDistanceAllCurrentDT = Double.MAX_VALUE;
+
     }
 }

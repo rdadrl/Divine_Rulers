@@ -5,11 +5,11 @@ import solarsystem.Projectile;
 import java.util.ArrayList;
 
 public abstract class Evolutionary<T> {
-    private Population localPopulation;
+    private Population<T> localPopulation;
     private int maxFitness;
     private int minFitness = 0; //By default, the minimum fitness value is 0. This depends on the application.
     private int cycleIterationCount = 1;
-    public Evolutionary (Population newPop) {
+    public Evolutionary (Population<T> newPop) {
         localPopulation = newPop;
     }
 
@@ -33,7 +33,7 @@ public abstract class Evolutionary<T> {
         System.out.println(cycleMsg);
         cycleIterationCount++;
     }
-    public Population getPopulation() { return localPopulation; }
+    public Population<T> getPopulation() { return localPopulation; }
 
 
     public abstract void crossOver ();
