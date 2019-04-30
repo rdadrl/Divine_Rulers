@@ -32,11 +32,8 @@ public class LandingPhase extends Application {
     private VerletVelocity verletVelocity;
 
     // rocket vars
-    private double altitude = 150000;
-    private double angle = 13;
-    private double remaining_fuel = 75.50;
-    private final double MAX_POSSIBLE_FUEL_AMOUNT = 150;
-    private Projectile rocketObj;
+    private double MAX_POSSIBLE_FUEL_AMOUNT;
+    private RocketLanderClosedLoop rocketObj;
 
 
     private final boolean DEBUG = true;
@@ -81,7 +78,7 @@ public class LandingPhase extends Application {
         max_level_bg.setLayoutY(fuel_icon.getLayoutY() - 150 + 10);
         //actual level display rectangle
         Rectangle curr_fuel_fg = new Rectangle();
-        curr_fuel_fg.setHeight((max_level_bg.getHeight() / MAX_POSSIBLE_FUEL_AMOUNT) * remaining_fuel);
+        curr_fuel_fg.setHeight((max_level_bg.getHeight() / MAX_POSSIBLE_FUEL_AMOUNT) * rocketObj.getFuelMass());
         curr_fuel_fg.setWidth(25);
         curr_fuel_fg.setFill(Color.MEDIUMVIOLETRED);
         curr_fuel_fg.setLayoutX(max_level_bg.getLayoutX() + 2);
@@ -101,8 +98,6 @@ public class LandingPhase extends Application {
             {
                 if (!pauseStatus) {
                     verletVelocity.updateLocation(100, TimeUnit.MILLISECONDS);
-                    altitude = rocketObj.getCentralPos().getY();
-
                     if (DEBUG) debugText.setText(constructDebugText());
                 }
 
@@ -115,15 +110,23 @@ public class LandingPhase extends Application {
         landingStage.show();
     }
 
-    public LandingPhase (Projectile rocketObj, Date date) throws Exception {
+    public LandingPhase (RocketLanderClosedLoop rocketObj, Date date) throws Exception {
         this.rocketObj = rocketObj;
-        ArrayList<Projectile> obj = new ArrayList<>();
+        this.MAX_POSSIBLE_FUEL_AMOUNT = rocketObj.getFuelMass();
+        ArrayList<RocketLanderClosedLoop> obj = new ArrayList<>();
         obj.add(rocketObj);
         this.verletVelocity = new VerletVelocity(obj, date);
+
         //push to start
     }
 
     public String constructDebugText () {
-        return "Altitude: " + altitude + "\n" + "Angle   : " + angle + "\n" + "Fuel    : " + remaining_fuel;
+        return  "y-pos: " + rocketObj.getCentralPos().getY() + "\n" +
+                "y-vel: " + rocketObj.getCentralVel().getY() + "\n" +
+                "x-pos: " + rocketObj.getCentralPos().getX() + "\n" +
+                "x-vel: " + rocketObj.getCentralVel().getX() + "\n" +
+                "t-pos: " + rocketObj.getCentralPos().getZ() + "\n" +
+                "t-vel: " + rocketObj.getCentralVel().getZ() + "\n" +
+                "Fuel    : " + rocketObj.getFuelMass();
     }
 }
