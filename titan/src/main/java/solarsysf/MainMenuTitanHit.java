@@ -28,9 +28,7 @@ import utils.Date;
 import utils.Vector3D;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -52,10 +50,10 @@ public class MainMenuTitanHit extends Application {
     private final TimeUnit timeUnit = TimeUnit.HOURS;
 
     // Genetic Alghoritm Variables
-    private final double MAX_MUTATION_MULTIPLIER = 1000;
+    private final double MAX_MUTATION_MULTIPLIER = 1.5;
 
     // Constants for the cannonball
-    private final int CANNONBALL_AMOUNT = 11; //11 best performing crossovers to generate 10 children that will replace the remaining worse performing 10.
+    private final int CANNONBALL_AMOUNT = 51; //11 best performing crossovers to generate 10 children that will replace the remaining worse performing 10.
     private final double CANNONBALL_MIN = 70;//95.2441141057166;
     private final double CANNONBALL_MAX = 120;//95.2441141057167;
     private final double INCLINATION_MIN = 20;//38.744689463330;
@@ -493,8 +491,13 @@ public class MainMenuTitanHit extends Application {
         Population<Projectile> cannonBalls = new Population(indList) {
             @Override
             public void updateFitnessValue(Individual ind) {
+                //System.out.println("Fitness update for " + ind.getId());
                 double newFitness = ((Projectile) ind.getChromosome()).getClosestDistanceThisProjectile();
-                if (ind.getFitness() < newFitness) ind.setFitness(newFitness);
+                if (ind.getFitness() < newFitness) {
+                    //System.out.println("\tUpdating from " + ind.getFitness() + " to " + newFitness);
+                    ind.setFitness(newFitness);
+                }
+                //else System.out.println("\tnot updated, from " + ind.getFitness() + " to " + newFitness);
             }
         };
 
@@ -507,11 +510,20 @@ public class MainMenuTitanHit extends Application {
                 //Awesome, we did reset the whole system! now let's cleanup old cannonballs and make them betterballs!
                 Individual[] pops = this.getPopulation().getPopulation();
                 for (Individual ind : pops) {
-                    ind.mutate(ind.getChromosome());
+                    ind.setChromosome(ind.mutate(ind.getChromosome()));
                 }
                 this.crossOver();
 
-                date = new Date(2002, 9, 18, 12, 0, 0);
+                Iterator projectileIterator = projectileList.entrySet().iterator();
+                int i = 0;
+                while (projectileIterator.hasNext()) {
+                    Map.Entry currProjectile = (Map.Entry) projectileIterator.next();
+                    currProjectile.setValue(pops[i].getChromosome());
+
+                    i++;
+                }
+
+                    date = new Date(2002, 9, 18, 12, 0, 0);
                 solarSystem.initializeAnimation(date, new ArrayList<>(projectileList.values()));
             }
 
@@ -520,7 +532,7 @@ public class MainMenuTitanHit extends Application {
                 Population localPop = this.getPopulation();
                 Individual<Projectile>[] indList = localPop.getPopulation();
 
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < CANNONBALL_AMOUNT - 1; i++) {
                     double newDepInc = (Math.toDegrees(indList[i].getChromosome().getDepartureInclination()) + Math.toDegrees(indList[i + 1].getChromosome().getDepartureInclination())) / 2;
                     double newDepVel = (indList[i].getChromosome().getDepartureVelocity() + indList[i + 1].getChromosome().getDepartureVelocity()) / 2000;
 
