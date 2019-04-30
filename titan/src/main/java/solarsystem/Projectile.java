@@ -102,6 +102,13 @@ public abstract class Projectile extends CelestialObject{
     }
 
     /**
+     * @return closest distance of the current projectile
+     */
+    public double getClosestDistanceThisProjectile() {
+        return closestDistanceThisProjectile;
+    }
+
+    /**
      * Keeps track of the closest a projectile will get to the arrival planet.
      */
     private void checkClosestDistance() {
