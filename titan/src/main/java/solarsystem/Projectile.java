@@ -129,6 +129,7 @@ public abstract class Projectile extends CelestialObject{
         if (currentDistance < closestDistanceThisProjectile) {
             closestDistanceThisProjectile = currentDistance;
             checkClosestDistanceAll(centralPos, toPlanet, departureVelocity, departureInclination, startVelVec);
+            //System.out.println(name + ": " + closestDistanceThisProjectile);
         }
         // if the distances is closer than its current closest currentDistance update.
         if (currentDistance < minDistanceAllCurrentDT) {

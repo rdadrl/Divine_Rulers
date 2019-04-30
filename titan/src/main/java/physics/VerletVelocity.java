@@ -69,9 +69,9 @@ public class VerletVelocity {
 
     public void updateLocation(long time, TimeUnit unit){
         CannonBall.minDistanceAllCurrentDT = Double.MAX_VALUE;
-        time = TimeUnit.SECONDS.convert(time, unit); //convert to seconds
-        currentDate.add(Calendar.SECOND, (int)time);
-        double dt = time;
+        time = TimeUnit.MILLISECONDS.convert(time, unit); //convert to seconds
+        currentDate.add(Calendar.MILLISECOND, (int)time);
+        double dt = time / 1000D;
 
         // Update positions and half-update velocities
         // set the change in position

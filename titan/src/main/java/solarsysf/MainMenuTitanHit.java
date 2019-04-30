@@ -436,7 +436,8 @@ public class MainMenuTitanHit extends Application {
                             System.out.println("Initiate the landing phase capt'!");
                             this.stop();
                             try {
-                                Application landingPhaseApp = new LandingPhase(projectileList.get(guiObject));
+                                Application landingPhaseApp =
+                                        new LandingPhase(projectileList.get(guiObject), date);
                                 landingPhaseApp.start(new Stage());
                             } catch (Exception e) {
                                 e.printStackTrace();

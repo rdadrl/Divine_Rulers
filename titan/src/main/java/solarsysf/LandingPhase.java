@@ -10,11 +10,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import physics.VerletVelocity;
 import solarsystem.Projectile;
+import solarsystem.RocketLanderClosedLoop;
+import utils.Date;
 import utils.MathUtil;
 import utils.Vector3D;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class LandingPhase extends Application {
     // gui variables
@@ -24,9 +29,10 @@ public class LandingPhase extends Application {
     private int scnH = 600;
     private boolean pauseStatus = false; //play/pause animations and gui updates
     private Label debugText;
+    private VerletVelocity verletVelocity;
 
     // rocket vars
-    private double altitude = 10000;
+    private double altitude = 150000;
     private double angle = 13;
     private double remaining_fuel = 75.50;
     private final double MAX_POSSIBLE_FUEL_AMOUNT = 150;
@@ -94,7 +100,8 @@ public class LandingPhase extends Application {
             public void handle(long currentNanoTime)
             {
                 if (!pauseStatus) {
-                    altitude -= rocketObj.getCentralVel().getZ();
+                    verletVelocity.updateLocation(100, TimeUnit.MILLISECONDS);
+                    altitude = rocketObj.getCentralPos().getY();
 
                     if (DEBUG) debugText.setText(constructDebugText());
                 }
@@ -108,8 +115,11 @@ public class LandingPhase extends Application {
         landingStage.show();
     }
 
-    public LandingPhase (Projectile rocketObj) throws Exception {
+    public LandingPhase (Projectile rocketObj, Date date) throws Exception {
         this.rocketObj = rocketObj;
+        ArrayList<Projectile> obj = new ArrayList<>();
+        obj.add(rocketObj);
+        this.verletVelocity = new VerletVelocity(obj, date);
         //push to start
     }
 
