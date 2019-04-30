@@ -45,21 +45,21 @@ public class MainMenuTitanHit extends Application {
     private final boolean RUNFRAMEFORFRAME = false;
     private boolean pauseStatus = false;
     private final boolean CANNON_BALL = true;
-    private final boolean INSTANT_LAUNCH_LANDING_PHASE = true;
+    private final boolean INSTANT_LAUNCH_LANDING_PHASE = false;
     // Timing variables
     private Date date = new Date(2002, 9, 18, 12, 0, 0);
     private final long dt = 6;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
 
     // Genetic Alghoritm Variables
-    private final double MAX_MUTATION_MULTIPLIER = 10;
+    private final double MAX_MUTATION_MULTIPLIER = 1000;
 
     // Constants for the cannonball
-    private final int CANNONBALL_AMOUNT = 1; //11 best performing crossovers to generate 10 children that will replace the remaining worse performing 10.
-    private final double CANNONBALL_MIN = 95.2441141057166;
-    private final double CANNONBALL_MAX = 95.2441141057167;
-    private final double INCLINATION_MIN = 38.744689463330;
-    private final double INCLINATION_MAX = 38.744689463339;
+    private final int CANNONBALL_AMOUNT = 11; //11 best performing crossovers to generate 10 children that will replace the remaining worse performing 10.
+    private final double CANNONBALL_MIN = 70;//95.2441141057166;
+    private final double CANNONBALL_MAX = 120;//95.2441141057167;
+    private final double INCLINATION_MIN = 20;//38.744689463330;
+    private final double INCLINATION_MAX = 50;//38.744689463339;
 
     // gui variables
     private Scene mainScene;
@@ -503,8 +503,6 @@ public class MainMenuTitanHit extends Application {
             public void onCycleOver() {
                 //Now, get those fitness values updated.
                 this.getPopulation().updateFitnessValues();
-                date = new Date(2002, 9, 18, 12, 0, 0);
-                solarSystem.initializeAnimation(date, new ArrayList<>(projectileList.values()));
 
                 //Awesome, we did reset the whole system! now let's cleanup old cannonballs and make them betterballs!
                 Individual[] pops = this.getPopulation().getPopulation();
@@ -512,6 +510,9 @@ public class MainMenuTitanHit extends Application {
                     ind.mutate(ind.getChromosome());
                 }
                 this.crossOver();
+
+                date = new Date(2002, 9, 18, 12, 0, 0);
+                solarSystem.initializeAnimation(date, new ArrayList<>(projectileList.values()));
             }
 
             @Override
