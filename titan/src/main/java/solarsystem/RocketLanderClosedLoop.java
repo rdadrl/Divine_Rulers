@@ -1,9 +1,10 @@
 package solarsystem;
 
+import physics.PIDcontroller;
 import utils.Date;
-import utils.Vector2D;
 import utils.Vector3D;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -23,9 +24,18 @@ public class RocketLanderClosedLoop extends Projectile{
     private double thrusterImpulse = 3000; // ns/kg;
     private double g = 1.352; // m / s^2
 
-    private long dt; // timestep in seconds
+    private PIDcontroller pidYdiff_far;
+    private double cutoffClose = 5000.0;
+    private PIDcontroller pidYdiff_close;
+    private PIDcontroller pidXdiff;
+    private PIDcontroller pidRot;
+
+    private BigDecimal totTime = new BigDecimal("0.0");
+    private BigDecimal increment = new BigDecimal("0.01");
+    private double dt; // timestep in seconds
     private double Fl; // force thrusters
     private double Ft; // force latereral thrusters
+    private int i = 0;
 
 
 
@@ -37,21 +47,34 @@ public class RocketLanderClosedLoop extends Projectile{
         this.date = date;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
+        pidYdiff_far = new PIDcontroller(-13.5, 0, -2350);
+        pidYdiff_close = new PIDcontroller(-32.7, 0, -1150);
+        pidXdiff = new PIDcontroller(0.001, 0, 0.02);
+        pidRot = new PIDcontroller(1000, 0,5000);
     }
 
     @Override
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date){
-        dt = differenceInSeconds(date); // get size of the time step
-        this.date = date;
+        //dt = differenceInSeconds(date); // get size of the time step
+        dt = 0.01;
+        this.date = new Date(date);
+        updateController();
 
-        /*
+        // IF WE WANT TO USE PID TO TRACK WE NEED TO CHECK WITH THE POSITION AT TIME T-1;
+
+
+
         Ft = Math.min(Ft, maxFtPropulsion);
-        Ft = Math.max(Ft, -maxFtPropulsion);
+        if(centralPos.getY() > cutoffClose){
+            Ft = Math.max(Ft, mass*g);
+        }else{
+            Ft = Math.max(Ft, 0);
+        }
         Fl = Math.min(Fl, maxFlPropulsion);
         Fl = Math.max(Fl, -maxFlPropulsion);
-        */
-        Ft = 44000;
-        Fl = 0;
+
+        //Ft = 0;
+        //Fl = 0;
 
         calculateMass();
 
@@ -61,15 +84,19 @@ public class RocketLanderClosedLoop extends Projectile{
         //page 2
 
         double xacc = ((Fl * Math.cos(theta) - Ft * Math.sin(theta))/mass);
-        System.out.println("xacc:" + xacc);
         double yacc = ((Fl * Math.sin(theta) + Ft * Math.cos(theta))/mass) - g;
-        System.out.println("yacc:" + yacc);
         double tacc = Fl*4/J;
-        System.out.println("tacc:" + tacc);
 
        acceleration.setX(xacc);
        acceleration.setY(yacc);
        acceleration.setZ(tacc);
+
+
+       if(i%1000==0){
+           printStatus();
+       }
+       i++;
+       totTime = totTime.add(increment);
     }
 
     //TODO: check for bugs
@@ -77,18 +104,42 @@ public class RocketLanderClosedLoop extends Projectile{
         double totalThrust = Math.abs(Ft) + Math.abs(Fl);
         double fuelMassLoss = (totalThrust/thrusterImpulse) * dt;
         fuelMass = fuelMass - fuelMassLoss;
-        if(fuelMass<0) System.out.println("Ran out of fuel!");
+        if(fuelMass<0){
+            //System.out.println("Ran out of fuel!");
+            fuelMass = 0;
+        }
         mass = dryMass + fuelMass;
     }
 
-    private long differenceInSeconds(Date date) {
-        return (date.getTimeInMillis()-this.date.getTimeInMillis())/1000;
+    private double differenceInSeconds(Date date) {
+        return (date.getTimeInMillis() - this.date.getTimeInMillis())/1000D;
+    }
+
+    private void updateController() {
+        double yError = centralPos.getY();
+        double xError = centralPos.getX();
+        double tError = centralPos.getZ();
+
+        double xImpulse = pidXdiff.calculateOutput(xError, dt);
+        double tImpulse = xImpulse-tError;
+        Fl = pidRot.calculateOutput(tImpulse, dt);
+        if(centralPos.getY() > cutoffClose){
+            Ft = pidYdiff_far.calculateOutput(yError, dt);
+        }else{
+            Ft = pidYdiff_close.calculateOutput(yError, dt);
+        }
+        Ft = Ft + mass*g;
     }
 
 
     @Override
     public void setCentralPos(Vector3D newCentralPos) {
         centralPos = newCentralPos;
+        if(newCentralPos.getY() < 0.01) {
+            printStatus();
+            System.out.println("Landed");
+            System.exit(-1);
+        }
     }
 
     @Override
@@ -103,7 +154,8 @@ public class RocketLanderClosedLoop extends Projectile{
     }
 
     @Override
-    public void checkColisions() { }
+    public void checkColisions() {
+    }
 
     /**
      * initializes the cartesian coordinates (i.e, position velocity vector) for the rocket
@@ -115,4 +167,22 @@ public class RocketLanderClosedLoop extends Projectile{
     public double getFuelMass() {
         return fuelMass;
     }
+
+    private void printStatus() {
+        System.out.println("time: " + totTime.toString() + "\n" +
+                "fuel: " + fuelMass + "\n" +
+                "Ft: " + Ft + "\n" +
+                "Fl: " + Fl + "\n" +
+                "y-pos: " + this.getCentralPos().getY() + "\n" +
+                "y-vel: " + this.getCentralVel().getY() + "\n" +
+                "x-pos: " + this.getCentralPos().getX() + "\n" +
+                "x-vel: " + this.getCentralVel().getX() + "\n" +
+                "t-pos: " + this.getCentralPos().getZ() + "\n" +
+                "t-vel: " + this.getCentralVel().getZ() + "\n\n");
+    }
+
+
+
+
+
 }

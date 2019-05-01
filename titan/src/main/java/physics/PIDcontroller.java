@@ -14,16 +14,17 @@ public class PIDcontroller {
     private double totalError;
     private double tolerance;
 
-    public PIDcontroller(double Kp, double Ki, double Kd) {
+
+    public PIDcontroller(double Kp, double Ki, double Kd, double goal, double tolerance) {
         this.Kp = Kp;
         this.Ki = Ki;
         this.Kd = Kd;
-    }
-
-    public PIDcontroller(double Kp, double Ki, double Kd, double goal, double tolerance) {
-        this(Kp, Ki, Kd);
         setTarget(goal);
         setTolerance(tolerance);
+    }
+
+    public PIDcontroller(double Kp, double Ki, double Kd) {
+        this(Kp, Ki, Kd, 0, 0);
     }
 
     public void setTolerance(double tolerance) {
@@ -38,12 +39,13 @@ public class PIDcontroller {
         return  Math.abs(error) < tolerance;
     }
 
-    public double calculateOutput(double input) {
-        error = target - input;
+    public double calculateOutput(double input, double dt) {
+        error = input - target;
         totalError += error;
-        double pError = Kp * error;
-        double dError = Kd * (error - oldError);
-        double iError = Ki * totalError;
+        double pError = Kp * error ;
+        double derivatator = (error - oldError)/dt;
+        double dError = Kd * derivatator;
+        double iError = Ki * totalError *dt;
 
         double output = pError + dError + iError;
         oldError = error;

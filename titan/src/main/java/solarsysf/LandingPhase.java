@@ -18,6 +18,7 @@ import utils.MathUtil;
 import utils.Vector3D;
 
 import java.io.FileInputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +30,8 @@ public class LandingPhase extends Application {
     private int scnH = 600;
     private boolean pauseStatus = false; //play/pause animations and gui updates
     private Label debugText;
+    private Date date;
+    private long startTime;
     private VerletVelocity verletVelocity;
 
     // rocket vars
@@ -97,7 +100,7 @@ public class LandingPhase extends Application {
             public void handle(long currentNanoTime)
             {
                 if (!pauseStatus) {
-                    verletVelocity.updateLocation(100, TimeUnit.MILLISECONDS);
+                    verletVelocity.updateLocation(10, TimeUnit.MILLISECONDS);
                     if (DEBUG) debugText.setText(constructDebugText());
                 }
 
@@ -111,8 +114,10 @@ public class LandingPhase extends Application {
     }
 
     public LandingPhase (RocketLanderClosedLoop rocketObj, Date date) throws Exception {
+        this.date = date;
         this.rocketObj = rocketObj;
         this.MAX_POSSIBLE_FUEL_AMOUNT = rocketObj.getFuelMass();
+        startTime = date.getTimeInMillis();
         ArrayList<RocketLanderClosedLoop> obj = new ArrayList<>();
         obj.add(rocketObj);
         this.verletVelocity = new VerletVelocity(obj, date);
@@ -121,12 +126,15 @@ public class LandingPhase extends Application {
     }
 
     public String constructDebugText () {
-        return  "y-pos: " + rocketObj.getCentralPos().getY() + "\n" +
-                "y-vel: " + rocketObj.getCentralVel().getY() + "\n" +
-                "x-pos: " + rocketObj.getCentralPos().getX() + "\n" +
-                "x-vel: " + rocketObj.getCentralVel().getX() + "\n" +
-                "t-pos: " + rocketObj.getCentralPos().getZ() + "\n" +
-                "t-vel: " + rocketObj.getCentralVel().getZ() + "\n" +
-                "Fuel    : " + rocketObj.getFuelMass();
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        return  "sec: " + df.format((date.getTimeInMillis()-startTime)/1000D) + "\n" +
+                "y-pos: " + df.format(rocketObj.getCentralPos().getY()) + "\n" +
+                "y-vel: " + df.format(rocketObj.getCentralVel().getY()) + "\n" +
+                "x-pos: " + df.format(rocketObj.getCentralPos().getX()) + "\n" +
+                "x-vel: " + df.format(rocketObj.getCentralVel().getX()) + "\n" +
+                "t-pos: " + df.format(rocketObj.getCentralPos().getZ()) + "\n" +
+                "t-vel: " + df.format(rocketObj.getCentralVel().getZ()) + "\n" +
+                "Fuel    : " + df.format(rocketObj.getFuelMass());
     }
 }
