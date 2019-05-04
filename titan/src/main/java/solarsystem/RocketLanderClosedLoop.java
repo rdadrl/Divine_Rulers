@@ -181,8 +181,11 @@ public class RocketLanderClosedLoop extends Projectile{
                 "t-vel: " + this.getCentralVel().getZ() + "\n\n");
     }
 
+    public double getSideThrusterForce() {
+        return Fl;
+    }
 
-
-
-
+    public double getMainThrusterForce() {
+        return Ft;
+    }
 }
