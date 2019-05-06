@@ -29,5 +29,4 @@ public class RocketLanderClosedLoopTest {
             verletVelocity.updateLocation(10, TimeUnit.MILLISECONDS);
         }
     }
-
 }

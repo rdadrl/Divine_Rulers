@@ -15,6 +15,9 @@ public class Date extends GregorianCalendar {
      */
     public static final double J2000 = 2451545.0;
 
+    public Date() {
+        super();
+    }
     public Date(TimeZone zone) {
         super(zone);
     }
@@ -44,9 +47,7 @@ public class Date extends GregorianCalendar {
      * @param date date to be cloned
      */
     public Date(Date date){
-        this(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
-                date.get(Calendar.DAY_OF_MONTH) ,date.get(Calendar.HOUR_OF_DAY),
-                date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
+        this.setTimeInMillis(date.getTimeInMillis());
     }
 
     /**

@@ -55,10 +55,9 @@ public class RocketLanderClosedLoop extends Projectile{
 
     @Override
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date){
-        //dt = differenceInSeconds(date); // get size of the time step
-        dt = 0.01;
+        dt = differenceInSeconds(date); // get size of the time step
         this.date = new Date(date);
-        updateController();
+        if(dt!= 0) updateController();
 
         // IF WE WANT TO USE PID TO TRACK WE NEED TO CHECK WITH THE POSITION AT TIME T-1;
 

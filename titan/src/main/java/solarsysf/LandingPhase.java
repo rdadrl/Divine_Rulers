@@ -33,6 +33,7 @@ public class LandingPhase extends Application {
     private Date date;
     private long startTime;
     private VerletVelocity verletVelocity;
+    private int updateVerletPerFrame = 10;
 
     // rocket vars
     private double MAX_POSSIBLE_FUEL_AMOUNT;
@@ -100,7 +101,8 @@ public class LandingPhase extends Application {
             public void handle(long currentNanoTime)
             {
                 if (!pauseStatus) {
-                    verletVelocity.updateLocation(10, TimeUnit.MILLISECONDS);
+                    for(int i = 0; i < updateVerletPerFrame; i++) verletVelocity.updateLocation(10,
+                            TimeUnit.MILLISECONDS);
                     if (DEBUG) debugText.setText(constructDebugText());
                 }
 
