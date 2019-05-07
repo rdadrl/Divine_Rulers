@@ -185,4 +185,7 @@ public class RocketLanderClosedLoop extends Projectile{
     public double getMainThrusterForce() {
         return Ft;
     }
+    public double getMainThrusterForceAsPercentage() {
+        return Ft/maxFtPropulsion;
+    }
 }
