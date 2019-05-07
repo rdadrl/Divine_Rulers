@@ -8,12 +8,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
- * Rocket lander closed loop. works in a 2D environment where a rocket tries to land on Titan.
+ * Rocket_temp lander closed loop. works in a 2D environment where a rocket tries to land on Titan.
  * Forces are still calculated as a 3D vector as we use the z component for the calculation of
  * the rotation vector.
  *
  */
-public class RocketLanderClosedLoop extends Projectile{
+public class RocketLanderClosedLoop extends Rocket{
     private static int counter = 0;
     private double dryMass = 5000; //kg
     private double fuelMass = 10000; // kg
@@ -41,7 +41,7 @@ public class RocketLanderClosedLoop extends Projectile{
 
     public RocketLanderClosedLoop(double length, Vector3D centralPos,
                                   Vector3D centralVel, Date date){
-        this.name = "Rocket: " + counter;
+        this.name = "Rocket_temp: " + counter;
         this.radius = length;
         this.mass = dryMass + fuelMass;
         this.date = date;

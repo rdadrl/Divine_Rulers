@@ -12,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import physics.VerletVelocity;
 import solarsystem.Projectile;
+import solarsystem.Rocket;
 import solarsystem.RocketLanderClosedLoop;
 import utils.Date;
 import utils.MathUtil;
@@ -33,11 +34,11 @@ public class LandingPhase extends Application {
     private Date date;
     private long startTime;
     private VerletVelocity verletVelocity;
-    private int updateVerletPerFrame = 100;
+    private int updateVerletPerFrame = 10;
 
     // rocket vars
     private double MAX_POSSIBLE_FUEL_AMOUNT;
-    private RocketLanderClosedLoop rocketObj;
+    private Rocket rocketObj;
 
 
     private final boolean DEBUG = true;
@@ -49,7 +50,7 @@ public class LandingPhase extends Application {
         root.setStyle("-fx-background-image: url('textures/galaxy_starfield.png');");
 
         //our code down below:
-        //Rocket:
+        //Rocket_temp:
         ImageView rocket = new ImageView(new Image(new FileInputStream("./src/main/resources/rocket.png")));
         rocket.setPreserveRatio(true);
         rocket.setFitWidth(100);
@@ -115,12 +116,12 @@ public class LandingPhase extends Application {
         landingStage.show();
     }
 
-    public LandingPhase (RocketLanderClosedLoop rocketObj, Date date) throws Exception {
+    public LandingPhase (Rocket rocketObj, Date date) throws Exception {
         this.date = date;
         this.rocketObj = rocketObj;
         this.MAX_POSSIBLE_FUEL_AMOUNT = rocketObj.getFuelMass();
         startTime = date.getTimeInMillis();
-        ArrayList<RocketLanderClosedLoop> obj = new ArrayList<>();
+        ArrayList<Rocket> obj = new ArrayList<>();
         obj.add(rocketObj);
         this.verletVelocity = new VerletVelocity(obj, date);
 

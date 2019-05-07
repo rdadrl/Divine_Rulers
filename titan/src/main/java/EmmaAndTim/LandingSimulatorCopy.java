@@ -62,7 +62,7 @@ public class LandingSimulatorCopy extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Team Rocket");
+        primaryStage.setTitle("Team Rocket_temp");
         Group root = new Group();
         Canvas canvas = new Canvas(this.windowWidth, this.windowHeight);
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();

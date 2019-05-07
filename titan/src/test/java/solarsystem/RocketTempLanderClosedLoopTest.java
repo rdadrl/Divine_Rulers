@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  *
  *
  */
-public class RocketLanderClosedLoopTest {
+public class RocketTempLanderClosedLoopTest {
     @Test
     public void landerTest() {
         Date date = new Date(2000,0,1,0,0,0);
