@@ -7,7 +7,7 @@ import utils.Vector3D;
 
 /**
  *
- * Solver of the lambert problem using Izzie algorithm.
+ * Solver of the lambert problem using Izzie algorithm. Not done yet!
  *
  * Sources:
  * https://github.com/poliastro/poliastro/blob/master/src/poliastro/core/iod.py
@@ -17,7 +17,7 @@ import utils.Vector3D;
  *
  *
  */
-public class LambertSolver {
+public abstract class LambertSolver {
     public LambertSolver(Vector3D r1, Vector3D r2, double t, double mu) {
         // check the requirements
         if(t <= 0) {
@@ -56,12 +56,6 @@ public class LambertSolver {
 
         double T = Math.sqrt((2.0 * mu) / s * s * s) * t;
 
-
-
-
-
-
-
     }
 
     private double[] findxy(double lambda, double T) {
@@ -78,13 +72,7 @@ public class LambertSolver {
             }
         }
 
-
-
         return null;
-
-
-
-
     }
 
     private double halley(double T_min, double x0, double lambda, double M_max, double eps,

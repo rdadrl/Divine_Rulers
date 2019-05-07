@@ -36,13 +36,13 @@ public class VerletVelocity {
             if (body instanceof Planet) planets.add((Planet) body);
             System.out.println(body);
         }
-        updateForce();
+        updateAcceleration();
     }
 
-    private void updateForce(){
+    private void updateAcceleration(){
         //Don't let the cannonballs put force on each other.
         for (CelestialObject body: bodies) {
-            body.setForces(planets);
+            body.setAcceleration(planets, currentDate);
         }
     }
 
@@ -69,9 +69,9 @@ public class VerletVelocity {
 
     public void updateLocation(long time, TimeUnit unit){
         CannonBall.minDistanceAllCurrentDT = Double.MAX_VALUE;
-        time = TimeUnit.SECONDS.convert(time, unit); //convert to seconds
-        currentDate.add(Calendar.SECOND, (int)time);
-        double dt = time;
+        time = TimeUnit.MILLISECONDS.convert(time, unit); //convert to seconds
+        currentDate.add(Calendar.MILLISECOND, (int)time);
+        double dt = time / 1000D;
 
         // Update positions and half-update velocities
         // set the change in position
@@ -80,32 +80,28 @@ public class VerletVelocity {
         for (CelestialObject body: bodies) {
             Vector3D startVel = body.getCentralVel();
             Vector3D startPos = body.getCentralPos();
-
-            Vector3D startForce = body.getForces();
-            Vector3D startAcceleration = startForce.scale(1D / body.getMass());
+            Vector3D startAcceleration = body.getAcceleration();
 
             // step 1 v(t + 0.5dt) = v(t) + 0.5 a(t) * dt
             Vector3D velChange = startAcceleration.scale((dt) / 2.0);
-            body.setCentralVel(startVel.add(velChange), currentDate); // set half vel
+            body.setCentralVel(startVel.add(velChange)); // set half vel
             Vector3D halfVel = body.getCentralVel();
 
             // step 2 x(t + dt) = x(t) + v(t + 0.5dt) * dt
             Vector3D posChange = halfVel.scale(dt);
-            body.setCentralPos(startPos.add(posChange), currentDate);
+            body.setCentralPos(startPos.add(posChange));
         }
 
         // step 3 update the forces halfway
-        updateForce();
+        updateAcceleration();
 
         for (CelestialObject body: bodies) {
             Vector3D halfVel = body.getCentralVel();
-
-            Vector3D endForce = body.getForces();
-            Vector3D endAcceleration = endForce.scale(1D / body.getMass());
+            Vector3D endAcceleration = body.getAcceleration();
 
             // step 4 v(t + dt) = v(t + 0.5dt) + 0.5 a(t + dt) * dt
             Vector3D velChange = endAcceleration.scale((dt) / 2.0);
-            body.setCentralVel(halfVel.add(velChange), currentDate);
+            body.setCentralVel(halfVel.add(velChange));
         }
 
         for (Projectile projectile : projectiles){

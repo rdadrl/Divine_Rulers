@@ -1,7 +1,6 @@
 package solarsystem;
 
 import utils.Date;
-import utils.MathUtil;
 import utils.Vector3D;
 
 
@@ -23,18 +22,18 @@ public class Rocket extends Projectile{
     }
 
     @Override
-    public void setForces(ArrayList<? extends CelestialObject> objectsInSpace){
-        Vector3D gravity = MathUtil.gravitationalForces(this, objectsInSpace);
+    public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date){
+        this.date = date;
+        Vector3D gravity = gravitationalForces(this, objectsInSpace);
         Vector3D dir = toPlanet.getCentralPos().substract(centralPos).unit().scale(departureVelocity);
         double dist = toPlanet.getCentralPos().substract(centralPos).length();
         dir = dir.scale(Math.pow(dist, 2)/toPlanet.getMass());
         Vector3D thrust = dir.substract(gravity);
-        forces = gravity.add(thrust);
+        acceleration = gravity.add(thrust);
     }
 
     @Override
-    public void setCentralPos(Vector3D newCentralPos, Date date) {
-        this.date = new Date(date);
+    public void setCentralPos(Vector3D newCentralPos) {
         double distF = newCentralPos.substract(fromPlanet.getCentralPos()).length() - (fromPlanet.getRadius() * 1000);
         if(distF < 0){
             this.centralPos = fromPlanet.getCentralPos();
@@ -48,8 +47,7 @@ public class Rocket extends Projectile{
     }
 
     @Override
-    public void setCentralVel(Vector3D centralVel, Date date) {
-        this.date = new Date(date);
+    public void setCentralVel(Vector3D centralVel) {
         this.centralVel = centralVel;
     }
 

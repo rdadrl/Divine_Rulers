@@ -14,9 +14,10 @@ import java.util.Arrays;
  *
  */
 public abstract class Projectile extends CelestialObject{
-    public static double minDistanceAll = Constant.BEST_DISTANCE_RANGE_CANNONBALL;
+    public static double minDistanceAll = Double.MAX_VALUE;
     public static double minDistanceAllCurrentDT = Double.MAX_VALUE;
     private double closestDistanceThisProjectile = Double.MAX_VALUE;
+    private double currentDistance = Double.MAX_VALUE;
 
     double departureInclination;
     double departureVelocity;
@@ -29,10 +30,12 @@ public abstract class Projectile extends CelestialObject{
     private boolean crashed;
     private Planet crashedPlanet;
 
-
-
     public double getDepartureInclination() {
         return departureInclination;
+    }
+
+    public void setDepartureInclination(double departureInclination) {
+        this.departureInclination = departureInclination;
     }
 
     /**
@@ -42,10 +45,13 @@ public abstract class Projectile extends CelestialObject{
         return departureVelocity;
     }
 
+    public void setDepartureVelocity(double departureVelocity) {
+        this.departureVelocity = departureVelocity;
+    }
+
     public Vector3D getStartVelVec() {
         return startVelVec;
     }
-
 
     /**
      * @return departure planet
@@ -63,6 +69,11 @@ public abstract class Projectile extends CelestialObject{
     }
 
     /**
+     * @return current distance to the destination planet
+     */
+    public double getCurrentDistance() {return currentDistance; }
+
+    /**
      * @return whether planet has crashed
      */
     public boolean isCrashed() {
@@ -78,22 +89,34 @@ public abstract class Projectile extends CelestialObject{
 
     /**
      * Method to update the central position of the cannonball object.
-     * @param newCentralPos central position to be updated
-     * @param date position at date.
+     * @param newCentralPos central position to be update
      */
     @Override
-    public void setCentralPos(Vector3D newCentralPos, Date date) {
+    public void setCentralPos(Vector3D newCentralPos) {
         oldCentralPos = centralPos;
         centralPos = newCentralPos;
         if(!crashed){
             // if the projectile hasn't crashed yet we will update the location as normal
-            super.setCentralPos(newCentralPos, date);
+            super.setCentralPos(newCentralPos);
             checkClosestDistance();
         }else{
             // if the projectile crashe the location of the projectile whould be that of the crashed
             // planet.
-            super.setCentralPos(crashedPlanet.getCentralPos(), date);
+            super.setCentralPos(crashedPlanet.getCentralPos());
         }
+    }
+
+
+    public void resetClosestDistanceThisProjectile() {
+        closestDistanceThisProjectile = Double.MAX_VALUE;
+        currentDistance = Double.MAX_VALUE;
+    }
+
+    /**
+     * @return closest distance of the current projectile
+     */
+    public double getClosestDistanceThisProjectile() {
+        return closestDistanceThisProjectile;
     }
 
     /**
@@ -101,15 +124,16 @@ public abstract class Projectile extends CelestialObject{
      */
     private void checkClosestDistance() {
         Vector3D diff = centralPos.substract(toPlanet.getCentralPos());
-        double distance = diff.length();
-        // if the distance is less than the current closest distance of all the projectiles update
-        if (distance < closestDistanceThisProjectile) {
-            closestDistanceThisProjectile = distance;
+        currentDistance = diff.length();
+        // if the currentDistance is less than the current closest currentDistance of all the projectiles update
+        if (currentDistance < closestDistanceThisProjectile) {
+            closestDistanceThisProjectile = currentDistance;
             checkClosestDistanceAll(centralPos, toPlanet, departureVelocity, departureInclination, startVelVec);
+            //System.out.println(name + ": " + closestDistanceThisProjectile);
         }
-        // if the distances is closer than its current closest distance update.
-        if (distance < minDistanceAllCurrentDT) {
-            minDistanceAllCurrentDT = distance;
+        // if the distances is closer than its current closest currentDistance update.
+        if (currentDistance < minDistanceAllCurrentDT) {
+            minDistanceAllCurrentDT = currentDistance;
         }
     }
 
@@ -127,6 +151,7 @@ public abstract class Projectile extends CelestialObject{
         double distance = diff.length();
         if(distance < minDistanceAll){
             minDistanceAll = distance;
+            if(distance<utils.Constant.BEST_DISTANCE_RANGE_CANNONBALL)
             System.out.println("Dist: " + minDistanceAll + "\tVel: " + velocity + "\tInc: " + Math.toDegrees(inclination) + "\tD_pos: " + diff);
         }
     }
@@ -144,7 +169,6 @@ public abstract class Projectile extends CelestialObject{
     /**
      * Checks a collision with a particulair planet
      * @param planet planet to detect crash with
-     * @param centralPos location of the projectile
      */
     private void checkCollisionWithPlanet(Planet planet){
         if(crashed) return;
@@ -163,6 +187,7 @@ public abstract class Projectile extends CelestialObject{
             crashed = true;
         }
 
+
         /*
         // FIXME: DEBUG THE FOLLOWING SECTION
         Point3D[] crash = MathUtil.collisionDetector(oldCentralPos, centralPos,
@@ -180,5 +205,10 @@ public abstract class Projectile extends CelestialObject{
             crashed = true;
         }
         */
+    }
+    public static void resetDistances() {
+        minDistanceAll = Double.MAX_VALUE;
+        minDistanceAllCurrentDT = Double.MAX_VALUE;
+
     }
 }
