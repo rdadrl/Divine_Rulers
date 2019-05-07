@@ -27,7 +27,11 @@ public class Controller {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-					Calculator.rk4sim(planets, kav, Constant.dt, Constant.n);
+//					Calculator.rk4sim(planets, kav, Constant.dt, Constant.n);
+					Calculator.eulerSim(planets, kav, Constant.dt,Constant.n);
+					if(cvs.ball != null)
+						cvs.collided = Calculator.checkCollision(cvs.ball, planets);
+					
 					cvs.passing += Constant.tf;
 					cvs.repaint();
 				}
@@ -78,7 +82,8 @@ public class Controller {
 				cvs.running = true;
 				Planet earth = cvs.earth;
 				
-				Planet ball = new Planet(earth.getPos().add(new Vector3D(6.371e6,6.371e6,0)), initialV, 1000, "cannon");
+				Planet ball = new Planet(earth.getPos().add(new Vector3D(6.371e6,6.371e6,6.371e6)), initialV, 1000, 100, "cannon");
+				cvs.ball = ball;
 				for(int i = 0; i <cvs.planets.length;i++) {
 					if(cvs.planets[i] == null) {
 						cvs.planets[i] = ball;

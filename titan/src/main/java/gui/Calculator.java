@@ -92,4 +92,42 @@ public class Calculator {
 		}
 	}
 	
+	public static void eulerSim(Planet[] planets, Vector3D[][] kav, double dt, int n) {
+		for(int j = 0; j < n; j++) {
+			for(int i = 0; i < planets.length; i++) {
+				if(planets[i] != null) {
+					Planet planet = planets[i];
+					Vector3D acc = Calculator.totalAcceleration(planet.pos, planet, planets);
+					kav[i][0] = acc;
+					kav[i][1] = planet.velocity;
+				}
+			}
+			for(int i = 0; i < planets.length; i++) {
+				if(planets[i] != null) {
+					Planet planet = planets[i];
+					planet.pos = planet.pos.add(kav[i][1].scale(dt));
+					planet.velocity = planet.velocity.add(kav[i][0].scale(dt));
+				}
+			}
+		}
+	}
+	
+	
+
+	public static boolean checkCollision(Planet ball, Planet[] planets) {
+		for(int i = 0; i < planets.length; i++) {
+			Planet p = planets[i];
+			
+			if(!p.equals(ball)) {
+				double dist = p.getPos().dist(ball.getPos());
+				System.out.println("dist to  " + p.name + " = " + dist);
+				if(dist < p.r) {
+					System.out.println("hit " + p.name);
+					return true;					
+				}
+			}
+		}
+		return false;
+	}
+	
 }

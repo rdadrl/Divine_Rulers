@@ -36,6 +36,7 @@ public class Canvas extends JPanel {
 	long passing = 0;
 	long days = 0;
 	boolean running = false;
+	boolean collided;
 	public Canvas() throws IOException {
 
 		setPreferredSize(new Dimension(Constant.CANVASWIDTH, Constant.CANVASHEIGHT));
@@ -49,21 +50,22 @@ public class Canvas extends JPanel {
 				new Vector3D(-1.471633868509571E+11, 2.104852097662997E+10, -2.126817645682022E+05),//pos m
 				new Vector3D(-4.692621973980529E+03, -2.960544243231639E+04, 6.108724178606195E-01),//velocity m/s
 				5.97219e24, 
+				6371.01e3,
 				"earth");//mass
 		
-		sun = new Planet(new Vector3D(0, 0, 0), new Vector3D(0, 0, 0), 1.989e30, "sun");
+		sun = new Planet(new Vector3D(0, 0, 0), new Vector3D(0, 0, 0), 1.989e30, 695700e3, "sun");
 		
 		mars = new Planet(new Vector3D(4.118375362597144E+10, 2.272780613990308E+11, 3.751746077609673E+09),
-				new Vector3D(-2.292571145415813E+04, 6.379431960955054E+03, 6.962003264745111E+02), 6.4171e24, "mars");
+				new Vector3D(-2.292571145415813E+04, 6.379431960955054E+03, 6.962003264745111E+02), 6.4171e24, 3389.92e3,"mars");
 		saturn = new Planet(new Vector3D(3.478584940740049E+11, -1.463678221158519E+12, 1.159733711534047E+10), 
 				new Vector3D(8.879609027903770E+03, 2.200312023010623E+03, -3.910344211873641E02),
-				5.6834e26, "saturn");
+				5.6834e26, 58232e3, "saturn");
 		moon = new Planet(new Vector3D(-1.469961550052274E+11, 2.139416217572848E+10, -2.665896077882964E+07), 
 				new Vector3D(-5.628284545172739E+03, -2.920876030457305E+04, 6.182609716986498E01), 
-				7.349e22, "moon");
+				7.349e22, 1737.53e3, "moon");
 		jupiter = new Planet(new Vector3D(-2.452456365019889E+3, -7.584121180836378E+11, 8.637457754131973E+09),
 				new Vector3D(1.228561476070495E+04, -3.406289621808893E+03, -2.607238800858853E2), 
-				1898.13e24, "jupiter");
+				1898.13e24, 69911e3, "jupiter");
 		
 				 
 		
@@ -93,9 +95,22 @@ public class Canvas extends JPanel {
 		g2.fillRect(0, 0, _WIDTH, _HEIGHT);
 		g2.setColor(Color.white);
 		
+		for(int i = 0; i < planets.length; i++) {
+			Planet p = planets[i];
+			if(p != null) {
+				if(p.equals(ball)) {
+					g2.drawString(p.name + ": " + p.getPos(), 100, 100+i*20);
+				}else {
+					g2.drawString(p.name + ": " + p.getPos(), 100, 100+i*20);					
+				}
+			}
+		}
+		
+		if(collided) {
+			g2.drawString("collided", 100, 100);
+		}
 		
 		long days = passing/Constant.ONEDAY;
-//		System.out.println(date);
 		long dt = date.getTimeInMillis()+ passing * 1000;
 		Calendar d = Calendar.getInstance();
 		d.setTimeInMillis(dt);
