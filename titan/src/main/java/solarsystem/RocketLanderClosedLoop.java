@@ -61,8 +61,6 @@ public class RocketLanderClosedLoop extends Projectile{
 
         // IF WE WANT TO USE PID TO TRACK WE NEED TO CHECK WITH THE POSITION AT TIME T-1;
 
-
-
         Ft = Math.min(Ft, maxFtPropulsion);
         if(centralPos.getY() > cutoffClose){
             Ft = Math.max(Ft, mass*g);

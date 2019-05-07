@@ -33,7 +33,7 @@ public class LandingPhase extends Application {
     private Date date;
     private long startTime;
     private VerletVelocity verletVelocity;
-    private int updateVerletPerFrame = 10;
+    private int updateVerletPerFrame = 100;
 
     // rocket vars
     private double MAX_POSSIBLE_FUEL_AMOUNT;

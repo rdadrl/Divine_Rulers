@@ -93,9 +93,9 @@ public class RocketLanderOpenLoop extends Projectile {
     }
 
     public void setXAccelerationPhase2(double theta){
-        double xRocket=this.getCentralPos().getX();
+        double xRocket=centralPos.getX();
         double x=xRocket-xLandingPad;
-        double x_dot=this.getCentralVel().getX();
+        double x_dot=centralVel.getX();
         double timeNeeded=2*x/x_dot;
         double t0=date.getTimeInMillis();
         double tnow=date.getTimeInMillis();
@@ -111,8 +111,8 @@ public class RocketLanderOpenLoop extends Projectile {
     }
 
     public void verticalLanding(){
-        double y_dot=this.getCentralVel().getY();
-        double yRocket=this.getCentralPos().getY();
+        double y_dot = centralVel.getY();
+        double yRocket= centralPos.getY();
         double tFreeFall=(-y_dot+Math.sqrt(Math.pow(y_dot,2)-4*g/2.0*(-1/4.0)*yRocket))/g;
         double y_doubledot=g;
         acceleration.setY(y_doubledot);
