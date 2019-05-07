@@ -17,9 +17,10 @@ public class RocketLanderOpenLoop extends Projectile {
 
     private BigDecimal totTime = new BigDecimal("0.0");
     private BigDecimal increment = new BigDecimal("0.01");
-    private double dt; // timestep in seconds
     private double Fl; // force thrusters
     private double Ft; // force latereral thrusters
+    private double dt=0.1; // timestep in seconds
+
 
     private double xLandingPad;
 
@@ -49,30 +50,19 @@ public class RocketLanderOpenLoop extends Projectile {
         double theta_doubledot=4*maxFlPropulsion/J;
         acceleration.setZ(theta_doubledot);
         double time_halfway = Math.sqrt(theta/theta_doubledot);
-        double t0=date.getTimeInMillis();
-        double tnow=date.getTimeInMillis();
-        double tnowstored;
-        while((tnow-t0) < time_halfway){
-            tnowstored=tnow;
-            tnow=date.getTimeInMillis();
-            dt=tnow-tnowstored;
+        for(double i=0;i<=time_halfway;i+=dt){
             calculateMass();
         }
         //when halftime reached
         theta_doubledot=4*-maxFlPropulsion/J;
         acceleration.setZ(theta_doubledot);
-        t0=date.getTimeInMillis();
-        tnow=date.getTimeInMillis();
-        while((tnow-t0)< time_halfway){
-            tnowstored=tnow;
-            tnow=date.getTimeInMillis();
-            dt=tnow-tnowstored;
+        for(double i=0;i<=time_halfway;i+=dt){
             calculateMass();
         }
         //when other halftime reached
+        Fl=0;
         theta_doubledot=0;
         acceleration.setZ(theta_doubledot);
-
 
         // speed formula : double theta_dot=theta_dot+theta_doubledot*t;
     }
@@ -80,14 +70,8 @@ public class RocketLanderOpenLoop extends Projectile {
     public void setXAccelerationPhase1(double t){
         double x_doubledot=-g;
         acceleration.setX(x_doubledot);
-        double t0=date.getTimeInMillis();
-        double tnow=date.getTimeInMillis();
-        double tnowstored;
-        while((tnow-t0)<t){
+        for(double i=0;i<=t;i+=dt){
             Ft=2/Math.sqrt(2)*mass*g;
-            tnowstored=tnow;
-            tnow=tnow-tnowstored;
-            dt=tnow-tnowstored;
             calculateMass();
         }
     }
@@ -97,15 +81,10 @@ public class RocketLanderOpenLoop extends Projectile {
         double x=xRocket-xLandingPad;
         double x_dot=this.getCentralVel().getX();
         double timeNeeded=2*x/x_dot;
-        double t0=date.getTimeInMillis();
-        double tnow=date.getTimeInMillis();
-        double tnowstored;
-        while ((tnow-t0)<timeNeeded){
+        for(double i=0;i<=timeNeeded;i+=dt){
             double x_doubledot=Math.pow(x_dot,2)/2*x;
+            acceleration.setX(x_doubledot);
             Ft=-mass*x_doubledot/Math.sin(theta);
-            tnowstored=tnow;
-            tnow=date.getTimeInMillis();
-            dt=tnow-tnowstored;
             calculateMass();
         }
     }
@@ -116,25 +95,15 @@ public class RocketLanderOpenLoop extends Projectile {
         double tFreeFall=(-y_dot+Math.sqrt(Math.pow(y_dot,2)-4*g/2.0*(-1/4.0)*yRocket))/g;
         double y_doubledot=g;
         acceleration.setY(y_doubledot);
-        double t0=date.getTimeInMillis();
-        double tnow=date.getTimeInMillis();
-        while ((tnow-t0)<tFreeFall){
-            tnow=date.getTimeInMillis();
+        for(double i=0;i<=tFreeFall;i+=dt){
         }
         double timeNeeded=-y_dot/y_doubledot;
         y_doubledot=Math.pow(y_dot,2)/2*yRocket;
         acceleration.setY(y_doubledot);
         Ft=y_doubledot+g;
-        t0=date.getTimeInMillis();
-        tnow=date.getTimeInMillis();
-        double tnowstored;
-        while ((tnow-t0)<timeNeeded){
-            tnowstored=tnow;
-            tnow=date.getTimeInMillis();
-            dt=tnow-tnowstored;
+        for(double i=0;i<=tFreeFall;i+=dt){
             calculateMass();
         }
-
     }
 
     private void calculateMass() {
