@@ -7,25 +7,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class RocketLanderOpenLoopCopy extends Rocket {
-    private double dryMass = 5000; //kg
-    private double fuelMass = 10000; // kg
-    private double mass;
-    private double J = 100000; //moment of inertia kg m^2
-    private double maxFtPropulsion = 44000; //newton
-    private double maxFlPropulsion = 500; //newton
-    private double thrusterImpulse = 3000; // ns/kg;
-    private double g = 1.352; // m / s^2
 
-    private BigDecimal totTime = new BigDecimal("0.0");
+
     private BigDecimal increment = new BigDecimal("0.01");
-    private double Fl; // force thrusters
-    private double Ft; // force latereral thrusters
-    private double dt=0.1; // timestep in seconds
 
     private double timeCurrentPhase;
     private double timeAtCurrentPhase =0;
     private double theta;
-
 
     private boolean init_rotB;
     private boolean rot1_init;
@@ -237,64 +225,20 @@ public class RocketLanderOpenLoopCopy extends Rocket {
         Ft=y_doubledot+g;
     }
 
-    private void calculateMass() {
-        double totalThrust = Math.abs(Ft) + Math.abs(Fl);
-        double fuelMassLoss = (totalThrust/thrusterImpulse) * dt;
-        fuelMass = fuelMass - fuelMassLoss;
-        if(fuelMass<0){
-            //System.out.println("Ran out of fuel!");
-            fuelMass = 0;
-        }
-        mass = dryMass + fuelMass;
-    }
 
-    @Override
-    public void setCentralPos(Vector3D newCentralPos) {
-        centralPos = newCentralPos;
-        if(newCentralPos.getY() < 0.01) {
-            printStatus();
-            System.out.println("Landed");
-            System.exit(-1);
-        }
-    }
 
-    @Override
-    public void setCentralVel(Vector3D newCentralVel) {
-        this.date = new Date(date);
-        this.centralVel = newCentralVel;
-    }
 
-    @Override
-    public Vector3D getAcceleration() {
-        return acceleration;
-    }
 
-    @Override
-    public void checkColisions() {
-    }
 
-    private double differenceInSeconds(Date date) {
-        return (date.getTimeInMillis() - this.date.getTimeInMillis())/1000D;
-    }
 
-    @Override
-    public void initializeCartesianCoordinates(Date date){}
 
-    public double getFuelMass() {
-        return fuelMass;
-    }
 
-    private void printStatus() {
-        System.out.println("time: " + totTime.toString() + "\n" +
-                "fuel: " + fuelMass + "\n" +
-                "Ft: " + Ft + "\n" +
-                "Fl: " + Fl + "\n" +
-                "y-pos: " + this.getCentralPos().getY() + "\n" +
-                "y-vel: " + this.getCentralVel().getY() + "\n" +
-                "x-pos: " + this.getCentralPos().getX() + "\n" +
-                "x-vel: " + this.getCentralVel().getX() + "\n" +
-                "t-pos: " + this.getCentralPos().getZ() + "\n" +
-                "t-vel: " + this.getCentralVel().getZ() + "\n\n");
-    }
+
+
+
+
+
+
+
 
 }

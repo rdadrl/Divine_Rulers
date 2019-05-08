@@ -48,16 +48,20 @@ public class Calculator {
 		
 		Vector3D temp = p0.add(kv1.scale(0.5*dt)); //temp holds the intermediate position 
 		Vector3D ka2 = totalAcceleration(temp, self, others);
+		System.out.println(ka2);
 		Vector3D kv2 = v0.add(ka1.scale(0.5*dt));
 		
 		temp = p0.add(kv2.scale(0.5*dt));
 		Vector3D ka3 = totalAcceleration(temp, self, others);
+		System.out.println(ka3);
 		Vector3D kv3 = v0.add(ka2.scale(0.5*dt));
 		
 		temp = p0.add(kv3.scale(dt));
 		Vector3D ka4 = totalAcceleration(temp, self, others);
+		System.out.println(ka4);
 		Vector3D kv4 = v0.add(ka3.scale(dt));
-		
+		System.out.println();
+
 		Vector3D ka = ka1.add(ka2.scale(2)).add(ka3.scale(2)).add(ka4).scale(1.0/6);
 		Vector3D kv = kv1.add(kv2.scale(2)).add(kv3.scale(2)).add(kv4).scale(1.0/6);
 		return new Vector3D[]{ka, kv};
@@ -91,5 +95,4 @@ public class Calculator {
 			}
 		}
 	}
-	
 }
