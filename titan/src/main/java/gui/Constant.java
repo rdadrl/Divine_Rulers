@@ -13,10 +13,12 @@ public class Constant {
 	public static final int CANVASHEIGHT = 900;
 	public static final int CANVASCENTERX = CANVASWIDTH/2;
 	public static final int CANVACENTERY = CANVASHEIGHT/2;
-	protected static final int FRAME = 20; //animation fps rate 
+	protected static final int FRAME = 10; //animation fps rate 
 	public static final int ONEDAY = 24 * 60 * 60; //one day in seconds
-	public static final int tf = 60 * 60 * 24; //final interpolation time: 24h in seconds
+	public static final int tf = 60 * 60 * 12; //final interpolation time: 12h in seconds
 	public static final double dt = 60 * 60; //step size: 1h in seconds
+	
 	public static final int n = (int)(Constant.tf/Constant.dt); //number of steps
 	public static int cnt = 0;
+	public static String mode = "RK4";
 }

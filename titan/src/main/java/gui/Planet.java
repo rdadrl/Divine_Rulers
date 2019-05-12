@@ -47,14 +47,3 @@ public class Planet implements Orbiter {
 	}
 	
 }
-
-
-//euler method
-//				Vector3D posB = other.getPos();
-//				Vector3D deltaS = posB.substract(this.pos);
-//				double r = deltaS.length();
-//				double r3 = r * r * r;
-//				acce = acce.add(deltaS.scale(Constant.G * other.getMass() / r3));			
-//				double inv_r3 = 1.0 / (r * r * r);
-//	pos = pos.add(velocity.scale(dt));
-//    velocity = velocity.add(acce.scale(dt));

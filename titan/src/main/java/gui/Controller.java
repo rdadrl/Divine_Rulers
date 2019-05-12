@@ -22,15 +22,19 @@ public class Controller {
 		JSpinner s1 = view.cp.sSpeed1;
 		JSpinner s2 = view.cp.sSpeed2;
 		Planet[] planets = view.cvs.planets;
-
+		
 		Vector3D initialV = new Vector3D(Constant.escapeV *1e3, Constant.escapeV*1e3, 0);
-		Vector3D[][] kav = new Vector3D[planets.length][2]; 
+		Vector3D[][] dfs = new Vector3D[planets.length][2]; 
 		ActionListener lst = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-//					Calculator.rk4sim(planets, kav, Constant.dt, Constant.n);
-					Calculator.eulerSim(planets, kav, Constant.dt,Constant.n);
+					switch (Constant.mode) {
+						case "euler":
+							Calculator.eulerSim(planets, dfs, Constant.dt,Constant.n);
+						case "RK4":
+							Calculator.rk4sim(planets, dfs, Constant.dt, Constant.n);					
+					}
+					
 					if(cvs.ball != null)
 						cvs.collided = Calculator.checkCollision(cvs.ball, planets);
 					
@@ -92,7 +96,7 @@ public class Controller {
 					}
 				}
 
-
+				
 				System.out.println(ball.getVelocity());
 				System.out.println(cvs.earth.getVelocity());
 			

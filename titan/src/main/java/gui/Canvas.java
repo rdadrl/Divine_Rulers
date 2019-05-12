@@ -29,6 +29,7 @@ public class Canvas extends JPanel {
 	Planet saturn;
 	Planet moon;
 	Planet jupiter;
+	Planet titan;
 	Planet[] planets;
 	Planet ball;
 	Calendar date;
@@ -67,10 +68,14 @@ public class Canvas extends JPanel {
 				new Vector3D(1.228561476070495E+04, -3.406289621808893E+03, -2.607238800858853E2), 
 				1898.13e24, 69911e3, "jupiter");
 		
+		
 				 
+		titan = new Planet(new Vector3D(3.495497728584247E+11, -1.462847255703676E+12, 1.114145158920693E+10),
+				new Vector3D(5.394334676804119E+03, 6.310953380051109E+03, -2.160704596739155E+03),
+				10^19, 2575.5e3, "titan");	 
 		
 		planets = new Planet[]{sun, earth, 
-				mars, saturn, moon, jupiter, 
+				mars, saturn, moon, jupiter, titan, 
 				ball
 				};
 	
@@ -95,16 +100,16 @@ public class Canvas extends JPanel {
 		g2.fillRect(0, 0, _WIDTH, _HEIGHT);
 		g2.setColor(Color.white);
 		
-		for(int i = 0; i < planets.length; i++) {
-			Planet p = planets[i];
-			if(p != null) {
-				if(p.equals(ball)) {
-					g2.drawString(p.name + ": " + p.getPos(), 100, 100+i*20);
-				}else {
-					g2.drawString(p.name + ": " + p.getPos(), 100, 100+i*20);					
-				}
-			}
-		}
+//		for(int i = 0; i < planets.length; i++) {
+//			Planet p = planets[i];
+//			if(p != null) {
+//				if(p.equals(ball)) {
+//					g2.drawString(p.name + ": " + p.getPos(), 100, 100+i*20);
+//				}else {
+//					g2.drawString(p.name + ": " + p.getPos(), 100, 100+i*20);					
+//				}
+//			}
+//		}
 		
 		if(collided) {
 			g2.drawString("collided", 100, 100);
