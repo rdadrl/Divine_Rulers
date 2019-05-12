@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import physics.VerletVelocity;
+import solarsystem.Rocket;
 import solarsystem.RocketLanderClosedLoop;
 import utils.Date;
 
@@ -34,7 +35,7 @@ public class LandingPhase extends Application {
     private int currentFPS;
     // rocket vars
     private double MAX_POSSIBLE_FUEL_AMOUNT;
-    private RocketLanderClosedLoop rocketObj;
+    private Rocket rocketObj;
     private FlameFxViewer mainThrusterIV;
     private final int MAX_MAIN_THRUSTER_WIDTH = 150;
     private final int FASTEST_MAIN_THRUSTER_ANIMATION = 40; //in ms
@@ -156,12 +157,12 @@ public class LandingPhase extends Application {
         landingStage.show();
     }
 
-    public LandingPhase (RocketLanderClosedLoop rocketObj, Date date) throws Exception {
+    public LandingPhase (Rocket rocketObj, Date date) throws Exception {
         this.date = date;
         this.rocketObj = rocketObj;
         this.MAX_POSSIBLE_FUEL_AMOUNT = rocketObj.getFuelMass();
         startTime = date.getTimeInMillis();
-        ArrayList<RocketLanderClosedLoop> obj = new ArrayList<>();
+        ArrayList<Rocket> obj = new ArrayList<>();
         obj.add(rocketObj);
         this.verletVelocity = new VerletVelocity(obj, date);
 

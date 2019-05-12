@@ -3,70 +3,91 @@ package solarsystem;
 import utils.Date;
 import utils.Vector3D;
 
+import java.math.BigDecimal;
 
-import java.util.ArrayList;
+/**
+ *
+ *
+ */
+public abstract class Rocket extends Projectile{
+    BigDecimal totTime = new BigDecimal("0.0");
+    double dryMass = 5000; //kg
+    double fuelMass = 10000; // kg
+    double mass;
+    double J = 100000; //moment of inertia kg m^2
+    double maxFtPropulsion = 44000; //newton
+    double maxFlPropulsion = 500; //newton
+    double thrusterImpulse = 3000; // ns/kg;
+    double g = 1.352; // m / s^2
+    double sidearea = 25.0; // m^2
+    double airDensity = 5.0; // kg/m^2
+
+    boolean stochasticWind;
+    double meanWindSpeed;
+    double currentWindSpeed;
+    double windAcc;
+    double dt; // timestep in seconds
+    double Fl; // force thrusters
+    double Ft; // force latereral thrusters
 
 
+    double differenceInSeconds(Date date) {
+        return (date.getTimeInMillis() - this.date.getTimeInMillis())/1000D;
+    }
 
-public class Rocket extends Projectile{
-    private static int counter = 0;
-    public Rocket(double mass, double radius, Planet fromPlanet,
-                      Planet toPlanet, Date date, double velocity){
-        this.name = "Rocket: " + counter;
-        this.mass = mass;
-        this.radius = radius;
-        this.toPlanet = toPlanet;
-        this.fromPlanet = fromPlanet;
-        this.date = date;
-        this.departureVelocity = velocity * 1000;
+    public double getFuelMass() {
+        return fuelMass;
+    }
+    public double getMainThrusterForceAsPercentage() {
+        return Ft/maxFtPropulsion;
     }
 
     @Override
-    public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date){
-        this.date = date;
-        Vector3D gravity = gravitationalForces(this, objectsInSpace);
-        Vector3D dir = toPlanet.getCentralPos().substract(centralPos).unit().scale(departureVelocity);
-        double dist = toPlanet.getCentralPos().substract(centralPos).length();
-        dir = dir.scale(Math.pow(dist, 2)/toPlanet.getMass());
-        Vector3D thrust = dir.substract(gravity);
-        acceleration = gravity.add(thrust);
+    public void checkColisions() {
+    }
+
+    @Override
+    public void setCentralVel(Vector3D newCentralVel) {
+        this.date = new Date(date);
+        this.centralVel = newCentralVel;
     }
 
     @Override
     public void setCentralPos(Vector3D newCentralPos) {
-        double distF = newCentralPos.substract(fromPlanet.getCentralPos()).length() - (fromPlanet.getRadius() * 1000);
-        if(distF < 0){
-            this.centralPos = fromPlanet.getCentralPos();
+        centralPos = newCentralPos;
+        if(newCentralPos.getY() < 0.01) {
+            printStatus();
+            System.out.println("Landed");
+            System.exit(-1);
         }
-        double distT =
-                newCentralPos.substract(toPlanet.getCentralPos()).length() - (toPlanet.getRadius() * 1000);
-        if(distT < 0){
-            this.centralPos = toPlanet.getCentralPos();
-        }
-        this.centralPos = newCentralPos;
     }
 
     @Override
-    public void setCentralVel(Vector3D centralVel) {
-        this.centralVel = centralVel;
-    }
+    public void initializeCartesianCoordinates(Date date){}
 
-    /**
-     * initializes the cartesian coordinates (i.e, position velocity vector) for the rocket
-     * @param date Date to be initialized
-     */
-    @Override
-    public void initializeCartesianCoordinates(Date date) {
-        //Make our cannon leave from the outside of the planet.
-        centralPos = fromPlanet.getCentralPosAtDate(date);
-        Vector3D addRad = centralPos.unit().scale(fromPlanet.getRadius()*2000);
-        centralPos = centralPos.add(addRad);
-        if(startVelVec== null){
-            startVelVec = fromPlanet.getCentralVel().unit().scale(departureVelocity);
+
+    public void calculateMass() {
+        double totalThrust = Math.abs(Ft) + Math.abs(Fl);
+        double fuelMassLoss = (totalThrust/thrusterImpulse) * dt;
+        fuelMass = fuelMass - fuelMassLoss;
+        if(fuelMass<0){
+            //System.out.println("Ran out of fuel!");
+            fuelMass = 0;
         }
-        centralVel = startVelVec;
-
+        mass = dryMass + fuelMass;
     }
 
+    private void printStatus() {
+        System.out.println("time: " + totTime.toString() + "\n" +
+                "fuel: " + fuelMass + "\n" +
+                "Ft: " + Ft + "\n" +
+                "Fl: " + Fl + "\n" +
+                "y-pos: " + this.getCentralPos().getY() + "\n" +
+                "y-vel: " + this.getCentralVel().getY() + "\n" +
+                "x-pos: " + this.getCentralPos().getX() + "\n" +
+                "x-vel: " + this.getCentralVel().getX() + "\n" +
+                "t-pos: " + this.getCentralPos().getZ() + "\n" +
+                "t-vel: " + this.getCentralVel().getZ() + "\n\n");
+    }
 
 }

@@ -1,11 +1,6 @@
 package utils;
 
 import javafx.geometry.Point3D;
-import solarsystem.CannonBall;
-import solarsystem.CelestialObject;
-import solarsystem.Rocket;
-
-import java.util.ArrayList;
 
 /**
  *
