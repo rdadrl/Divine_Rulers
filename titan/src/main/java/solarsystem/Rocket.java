@@ -30,6 +30,9 @@ public abstract class Rocket extends Projectile{
     double Fl; // force thrusters
     double Ft; // force latereral thrusters
 
+    boolean landed;
+    double landedAltitude = 0;
+
 
     double differenceInSeconds(Date date) {
         return (date.getTimeInMillis() - this.date.getTimeInMillis())/1000D;
@@ -55,10 +58,11 @@ public abstract class Rocket extends Projectile{
     @Override
     public void setCentralPos(Vector3D newCentralPos) {
         centralPos = newCentralPos;
-        if(newCentralPos.getY() < 0.01) {
+        if(newCentralPos.getY() < landedAltitude) {
             printStatus();
+            landed = true;
             System.out.println("Landed");
-            System.exit(-1);
+            //System.exit(-1);
         }
     }
 
@@ -71,7 +75,7 @@ public abstract class Rocket extends Projectile{
         double fuelMassLoss = (totalThrust/thrusterImpulse) * dt;
         fuelMass = fuelMass - fuelMassLoss;
         if(fuelMass<0){
-            //System.out.println("Ran out of fuel!");
+            System.out.println("Ran out of fuel!");
             fuelMass = 0;
         }
         mass = dryMass + fuelMass;
@@ -88,6 +92,10 @@ public abstract class Rocket extends Projectile{
                 "x-vel: " + this.getCentralVel().getX() + "\n" +
                 "t-pos: " + this.getCentralPos().getZ() + "\n" +
                 "t-vel: " + this.getCentralVel().getZ() + "\n\n");
+    }
+
+    public boolean getLanded() {
+        return landed;
     }
 
 }

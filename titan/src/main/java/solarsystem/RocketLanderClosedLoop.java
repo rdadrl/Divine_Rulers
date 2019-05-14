@@ -17,21 +17,26 @@ public class RocketLanderClosedLoop extends Rocket{
     private static int counter = 0;
 
     private PIDcontroller pidYdiff_far;
-    private double cutoffClose = 5000.0;
+    private double cutoffClose = 10000.0;
+    private double cutoffFinal = 3.5;
     private PIDcontroller pidYdiff_close;
     private PIDcontroller pidXdiff_close;
     private PIDcontroller pidXdiff_far;
-    private PIDcontroller pidRot;
+    private PIDcontroller pidRot_far;
+    private PIDcontroller pidRot_close;
 
     private BigDecimal totTime = new BigDecimal("0.0");
     private BigDecimal increment = new BigDecimal("0.01");
 
+    private boolean phase3;
+
+
     private int i = 0;
 
-
-
     public RocketLanderClosedLoop(double length, Vector3D centralPos,
-                                  Vector3D centralVel, Date date, boolean stochasticWind){
+                                  Vector3D centralVel, Date date, boolean stochasticWind, double meanWindSpeed){
+        super.landedAltitude = 0.01;
+
         this.name = "Rocket_temp: " + counter;
         this.radius = length;
         this.mass = dryMass + fuelMass;
@@ -39,18 +44,33 @@ public class RocketLanderClosedLoop extends Rocket{
         this.centralPos = centralPos;
         this.centralVel = centralVel;
         this.stochasticWind = stochasticWind;
-        pidYdiff_far = new PIDcontroller(-11.5, 0, -2350);
-        pidYdiff_close = new PIDcontroller(-25.7, 0, -1150);
-        pidXdiff_far = new PIDcontroller(0.002, 0.0000, 0.01);
-        pidXdiff_close = new PIDcontroller(0.003, 0.00001, 0.02);
-        pidRot = new PIDcontroller(1000, 0,5000);
+        this.meanWindSpeed = meanWindSpeed;
+        //pidYdiff_far = new PIDcontroller(-11.5, 0, -2350);
+        //pidYdiff_close = new PIDcontroller(-25.7, 0, -1150);
+        //pidXdiff_far = new PIDcontroller(0.002, 0, 0.01);
+        //pidXdiff_close = new PIDcontroller(0.003, 0.00005, 0.02);
+        //pidRot_far = new PIDcontroller(1000, 0,5000);
+        //pidRot_close = new PIDcontroller(22810, 0,13838);
 
+        pidYdiff_far = new PIDcontroller(-11.5, 0, -2350);
+        pidYdiff_close = new PIDcontroller(-25.7, 0, -900);
+        pidXdiff_far = new PIDcontroller(0.002, 0, 0.01);
+        pidXdiff_close = new PIDcontroller(0.004, 0.00004, 0.02);
+        pidRot_far = new PIDcontroller(1000, 0,5000);
+        pidRot_close = new PIDcontroller(4000, 0,8000);
+
+        //pidRot_close = new PIDcontroller(2300, 0,7000);
         if(stochasticWind) initializeWind();
     }
 
     public RocketLanderClosedLoop(double length, Vector3D centralPos,
                                   Vector3D centralVel, Date date) {
-        this(length, centralPos, centralVel, date, false);
+        this(length, centralPos, centralVel, date, false, 0);
+    }
+
+    public RocketLanderClosedLoop(double length, Vector3D centralPos,
+                                  Vector3D centralVel, Date date, boolean stochasticWind) {
+        this(length, centralPos, centralVel, date, stochasticWind, -99);
     }
 
     @Override
@@ -93,7 +113,7 @@ public class RocketLanderClosedLoop extends Rocket{
 
 
        if(i%1000==0){
-           printStatus();
+           //printStatus();
        }
        i++;
        totTime = totTime.add(increment);
@@ -104,16 +124,28 @@ public class RocketLanderClosedLoop extends Rocket{
         double xError = centralPos.getX();
         double tError = centralPos.getZ();
 
-        double xImpulse;
-        if(centralPos.getY() > cutoffClose){
-            xImpulse = pidXdiff_far.calculateOutput(xError, dt);
+        double xImpulse = 0;
+        if(Math.abs(centralVel.getZ()) < 1.5708){
+            if(centralPos.getY() > cutoffClose){
+                xImpulse = pidXdiff_far.calculateOutput(xError, dt);
+            }else {
+                xImpulse = pidXdiff_close.calculateOutput(xError, dt);
+            }
+        }
+        double tImpulse;
+        double estimatedTimeLeft = centralPos.getY()/-centralVel.getY();
+        if(estimatedTimeLeft < cutoffFinal){
+            if(!phase3){ printStatus();phase3 = true;}
+            tImpulse = -tError;
+            //tImpulse = (0.2*xImpulse)-tError;
+            Fl = pidRot_close.calculateOutput(tImpulse, dt);
         }else{
-            xImpulse = pidXdiff_close.calculateOutput(xError, dt);
+            tImpulse = xImpulse-tError;
+            Fl = pidRot_far.calculateOutput(tImpulse, dt);
         }
 
 
-        double tImpulse = xImpulse-tError;
-        Fl = pidRot.calculateOutput(tImpulse, dt);
+
         if(centralPos.getY() > cutoffClose){
             Ft = pidYdiff_far.calculateOutput(yError, dt);
         }else{
@@ -124,37 +156,34 @@ public class RocketLanderClosedLoop extends Rocket{
 
     private void initializeWind() {
         // random wind speed form -10 to 10 meters per seconds;
-        //meanWindSpeed = (Math.random() * 20) - 10;
-        meanWindSpeed = 10;
+        if(meanWindSpeed==-99) meanWindSpeed = (Math.random() * 20) - 10;
     }
 
     private void applyWindForce() {
         // random windnoise of -0.5 m to 0.5 m.
-        double windNoise = Math.random() - 0.5;
-        currentWindSpeed = meanWindSpeed + windNoise;
+        double windNoise = (Math.random() *0.1) +0.95;
+        currentWindSpeed = meanWindSpeed * windNoise;
         // force = area of impact * air density * windSpeed
         double windForce = sidearea * airDensity * currentWindSpeed;
         windAcc = windForce/mass;
         //System.out.println("Acc: " + acceleration.getX());
         //System.out.println("Wind_acc: " + windAcc);
         //System.out.println();
-
         acceleration.setX(acceleration.getX() + windAcc);
     }
-
 
     @Override
     public void setCentralPos(Vector3D newCentralPos) {
         centralPos = newCentralPos;
-        if(newCentralPos.getY() < 0.01) {
+
+        if(newCentralPos.getY() < landedAltitude) {
             printStatus();
+            landed = true;
             System.out.println("Landed");
-            System.exit(-1);
+            System.out.println("Mean wind speed: " + meanWindSpeed+"\n\n");
+            //System.exit(-1);
         }
     }
-
-
-
 
     private void printStatus() {
         System.out.println("time: " + totTime.toString() + "\n" +
@@ -170,7 +199,6 @@ public class RocketLanderClosedLoop extends Rocket{
                 "t-pos: " + this.getCentralPos().getZ() + "\n" +
                 "t-vel: " + this.getCentralVel().getZ() + "\n\n");
     }
-
 
     public double getSideThrusterForce() {
         return Fl;

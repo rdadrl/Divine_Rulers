@@ -23,18 +23,19 @@ public class RocketLanderOpenLoopCopyTest {
 
         for (int i = 0; i < (2000 * (1d / 0.01)); i++) {
             verletVelocity.updateLocation(10, TimeUnit.MILLISECONDS);
-        if(i%100==0) {
-            System.out.println("X:" + rocket.centralPos.getX());
-            System.out.println("Y:" + rocket.centralPos.getY());
-            System.out.println("Z:" + rocket.centralPos.getZ());
-            System.out.println("Vx:" + rocket.centralVel.getX());
-            System.out.println("Vy:" + rocket.centralVel.getY());
-            System.out.println("Vz:" + rocket.centralVel.getZ());
-            System.out.println("Ax:" + rocket.acceleration.getX());
-            System.out.println("Ay:" + rocket.acceleration.getY());
-            System.out.println("Az:" + rocket.acceleration.getZ());
-            System.out.println();
-        }
+            if (i % 50 == 0) {
+                System.out.println("time: " + rocket.totTime.toString());
+                System.out.println("X:" + rocket.centralPos.getX());
+                System.out.println("Y:" + rocket.centralPos.getY());
+                System.out.println("Z:" + rocket.centralPos.getZ());
+                System.out.println("Vx:" + rocket.centralVel.getX());
+                System.out.println("Vy:" + rocket.centralVel.getY());
+                System.out.println("Vz:" + rocket.centralVel.getZ());
+                System.out.println("Ax:" + rocket.acceleration.getX());
+                System.out.println("Ay:" + rocket.acceleration.getY());
+                System.out.println("Az:" + rocket.acceleration.getZ());
+                System.out.println();
+            }
         }
 
     }
