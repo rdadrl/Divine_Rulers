@@ -81,6 +81,24 @@ public abstract class Rocket extends Projectile{
         mass = dryMass + fuelMass;
     }
 
+    void initializeWind() {
+        // random wind speed form -10 to 10 meters per seconds;
+        if(meanWindSpeed==-99) meanWindSpeed = (Math.random() * 20) - 10;
+    }
+
+    void applyWindForce() {
+        // random windnoise of -0.5 m to 0.5 m.
+        double windNoise = (Math.random() *0.1) +0.95;
+        currentWindSpeed = meanWindSpeed * windNoise;
+        // force = area of impact * air density * windSpeed
+        double windForce = sidearea * airDensity * currentWindSpeed;
+        windAcc = windForce/mass;
+        //System.out.println("Acc: " + acceleration.getX());
+        //System.out.println("Wind_acc: " + windAcc);
+        //System.out.println();
+        acceleration.setX(acceleration.getX() + windAcc);
+    }
+
     private void printStatus() {
         System.out.println("time: " + totTime.toString() + "\n" +
                 "fuel: " + fuelMass + "\n" +
