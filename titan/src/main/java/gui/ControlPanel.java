@@ -3,9 +3,12 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -22,6 +25,7 @@ public class ControlPanel extends JPanel{
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		panel.add(panelSpeed());
+		panel.add(panelSelectMode());
 		panel.add(panelLaunch());
 		this.add(panel, BorderLayout.LINE_START);
 		
@@ -60,6 +64,26 @@ public class ControlPanel extends JPanel{
 		panel.add(lUnit3, gc);
 		this.add(panel);
 		return panel;
+	}
+	
+	public JPanel panelSelectMode() {
+		JPanel p = new JPanel();
+		String[] strs = { "RK4", "euler" };
+
+		JComboBox listB = new JComboBox(strs);
+		listB.setSelectedIndex(0);
+		listB.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Constant.mode = listB.getSelectedItem().toString();
+			}
+			
+		});
+		
+		p.add(listB);
+		return p;
+
 	}
 	
 	public JPanel panelLaunch() {
