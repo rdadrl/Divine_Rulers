@@ -16,6 +16,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import physics.RungeKutta4;
 import solarsystem.*;
 import utils.Date;
 import utils.MathUtil;
@@ -36,7 +37,7 @@ public class MainMenuTestNormalSpeed extends Application {
 
     // Timing variables
     private Date date = new Date(2018, 0, 18, 12, 0, 0);
-    private final long dt = 6;
+    private final long dt = 1;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
 
 
@@ -73,6 +74,8 @@ public class MainMenuTestNormalSpeed extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        solarSystem.setODEsolver(new RungeKutta4());
 
         CelestialObject earthObj = solarSystem.getPlanets().getEarth();
         CelestialObject sunObj = solarSystem.getPlanets().getSun();

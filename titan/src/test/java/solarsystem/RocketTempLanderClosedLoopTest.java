@@ -55,9 +55,9 @@ public class RocketTempLanderClosedLoopTest {
 
     private void landTestWindSpecificSpeed(double windSpeed) {
         Date date = new Date(2000,0,1,0,0,0);
-        RocketLanderClosedLoop rocket = new RocketLanderClosedLoop(100, new Vector3D(-800, 180000
+        RocketLanderClosedLoop rocket = new RocketLanderClosedLoop(100, new Vector3D(900, 170000
                 ,0),
-                new Vector3D(20,-500,0),date, true, windSpeed);
+                new Vector3D(-30,-500,0),date, true, windSpeed);
         ArrayList<RocketLanderClosedLoop> obj = new ArrayList<>();
         obj.add(rocket);
         VerletVelocity verletVelocity = new VerletVelocity(obj, date);

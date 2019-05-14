@@ -24,7 +24,8 @@ public class Controller {
 		Planet[] planets = view.cvs.planets;
 		
 		Vector3D initialV = new Vector3D(Constant.escapeV *1e3, Constant.escapeV*1e3, 0);
-		Vector3D[][] dfs = new Vector3D[planets.length][2]; 
+		Vector3D[][] dfs = new Vector3D[planets.length][2];
+
 		ActionListener lst = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

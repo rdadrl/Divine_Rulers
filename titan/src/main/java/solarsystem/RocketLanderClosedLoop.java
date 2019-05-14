@@ -18,7 +18,7 @@ public class RocketLanderClosedLoop extends Rocket{
 
     private PIDcontroller pidYdiff_far;
     private double cutoffClose = 10000.0;
-    private double cutoffFinal = 3.5;
+    private double cutoffFinal = 4.4;
     private PIDcontroller pidYdiff_close;
     private PIDcontroller pidXdiff_close;
     private PIDcontroller pidXdiff_far;
@@ -55,9 +55,9 @@ public class RocketLanderClosedLoop extends Rocket{
         pidYdiff_far = new PIDcontroller(-11.5, 0, -2350);
         pidYdiff_close = new PIDcontroller(-25.7, 0, -900);
         pidXdiff_far = new PIDcontroller(0.002, 0, 0.01);
-        pidXdiff_close = new PIDcontroller(0.004, 0.00004, 0.02);
+        pidXdiff_close = new PIDcontroller(0.0045, 0.000045, 0.02);
         pidRot_far = new PIDcontroller(1000, 0,5000);
-        pidRot_close = new PIDcontroller(4000, 0,9000);
+        pidRot_close = new PIDcontroller(5000, 0,18000);
 
         //pidRot_close = new PIDcontroller(2300, 0,7000);
         if(stochasticWind) initializeWind();

@@ -13,20 +13,35 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A class which uses a verlet velocity algorithm the locate the location of the
- * planets. This is an 2nd order ODE solver.
+ * planets. This is an 2nd order ODEsolver solver.
  * https://resources.saylor.org/wwwresources/archived/site/wp-content/uploads/2011/06/MA221-6.1.pdf
  *
  */
-public class VerletVelocity {
+public class VerletVelocity implements ODEsolver {
     private ArrayList<? extends CelestialObject> bodies;
     private ArrayList<Projectile> projectiles;
     private ArrayList<Planet> planets;
     private Date currentDate;
 
+    public VerletVelocity(){}
 
     public VerletVelocity(ArrayList<? extends CelestialObject> bodies,
                           Date date) {
         this.currentDate = date;
+        this.bodies = bodies;
+        projectiles = new ArrayList<>();
+        planets = new ArrayList<>();
+        for (CelestialObject body: bodies) {
+            body.initializeCartesianCoordinates(date);
+            if (body instanceof Projectile) projectiles.add((Projectile) body);
+            if (body instanceof Planet) planets.add((Planet) body);
+            System.out.println(body);
+        }
+        updateAcceleration();
+    }
+
+    public void initialize(ArrayList<? extends CelestialObject> bodies,
+                                 Date date) {this.currentDate = date;
         this.bodies = bodies;
         projectiles = new ArrayList<>();
         planets = new ArrayList<>();
