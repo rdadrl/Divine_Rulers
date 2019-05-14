@@ -192,6 +192,8 @@ public class RocketLanderOpenLoopCopy extends Rocket {
             }
             timeCurrentPhase += dt;
             if (timeAtCurrentPhase < timeCurrentPhase) {
+                double y_doubledot=acceleration.getY();
+                Ft = Math.abs(y_doubledot*mass- g*mass);
                 calculateMass();
             } else {
                 phase3_vertical_done = true;
@@ -251,24 +253,6 @@ public class RocketLanderOpenLoopCopy extends Rocket {
         y_doubledot = Math.pow(y_dot, 2) / (2 * yRocket);
         timeCurrentPhase = Math.abs(y_dot / y_doubledot);
         acceleration.setY(y_doubledot);
-        Ft = y_doubledot + g;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

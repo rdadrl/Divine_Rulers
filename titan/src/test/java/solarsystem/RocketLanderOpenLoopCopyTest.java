@@ -34,6 +34,9 @@ public class RocketLanderOpenLoopCopyTest {
                 System.out.println("Ax:" + rocket.acceleration.getX());
                 System.out.println("Ay:" + rocket.acceleration.getY());
                 System.out.println("Az:" + rocket.acceleration.getZ());
+                System.out.println("Main Thruster:" + rocket.getMainThrusterForce());
+                System.out.println("Side Thrusters:" + rocket.getSideThrusterForce());
+                System.out.println("Fuel Mass:" + rocket.getFuelMass());
                 System.out.println();
             }
         }
