@@ -117,7 +117,7 @@ public class RocketLanderOpenLoopEuler extends Projectile {
         for(double i=0;i<=time_halfway;i+=dt){
             update();
             calculateMass();
-            if(y%10==0){
+            if(y==10){
                 System.out.println("X:"+centralPos.getX());
                 System.out.println("Y:"+centralPos.getY());
                 System.out.println("Z:"+centralPos.getZ());
@@ -343,7 +343,7 @@ public class RocketLanderOpenLoopEuler extends Projectile {
     //TODO:ARDA help me for runnable thread launcher shit :D
 
     public static void main (String[] args){
-        RocketLanderOpenLoopEuler rocket=new RocketLanderOpenLoopEuler(new Vector3D(600,1500,0),
+        RocketLanderOpenLoopEuler rocket=new RocketLanderOpenLoopEuler(new Vector3D(1000,20000,0),
                 new Vector3D(0,0,0),0);
     }
 }

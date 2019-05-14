@@ -12,7 +12,7 @@ public class RocketLanderOpenLoopCopy extends Rocket {
     private BigDecimal increment = new BigDecimal("0.01");
 
     private double timeCurrentPhase;
-    private double timeAtCurrentPhase =0;
+    private double timeAtCurrentPhase = 0;
     private double theta;
 
     private boolean init_rotB;
@@ -23,7 +23,7 @@ public class RocketLanderOpenLoopCopy extends Rocket {
     private boolean rot3_init;
     private boolean phase3_freefall_init;
     private boolean phase3_vertical_init;
-    
+
     private boolean rot1_done;
     private boolean phase1_done;
     private boolean rot2_done;
@@ -36,15 +36,15 @@ public class RocketLanderOpenLoopCopy extends Rocket {
     private double xLandingPad;
 
     public RocketLanderOpenLoopCopy(Vector3D centralPos,
-                                    Vector3D centralVel, Date date){
+                                    Vector3D centralVel, Date date) {
         this.name = "OpenLoop Rocket_temp: ";
-        this.xLandingPad=0;
+        this.xLandingPad = 0;
         this.mass = dryMass + fuelMass;
         this.date = date;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
-        Fl=0;
-        Ft=0;
+        Fl = 0;
+        Ft = 0;
         acceleration = new Vector3D();
         //rotation to have x position equal 0
     }
@@ -53,177 +53,204 @@ public class RocketLanderOpenLoopCopy extends Rocket {
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date) {
         dt = differenceInSeconds(date); // get size of the time step
         this.date = new Date(date);
-        if(!rot1_done) {
+        if (!rot1_done) {
             // initialize rotation
-            if(!rot1_init) {
-                theta=0.785398; //45° in radians
+            if (!rot1_init) {
+                double xRocket = centralPos.getX();
+                if (xRocket > xLandingPad) {
+                    theta = 0.785398; //45° in radians
+                } else {
+                    theta = -0.785398;
+                }
+                System.out.println("Rotation Started");
                 initRotation(theta);
                 rot1_init = true;
             }
             timeAtCurrentPhase += dt;
             // first half rotation
-            if(timeAtCurrentPhase < timeCurrentPhase/2d) {
+            if (timeAtCurrentPhase < timeCurrentPhase / 2d) {
                 calculateMass();
-            // second half rotation
-            }else if(timeAtCurrentPhase < timeCurrentPhase) {
-                if(!init_rotB) initRotationB();
+                // second half rotation
+            } else if (timeAtCurrentPhase < timeCurrentPhase) {
+                if (!init_rotB) initRotationB();
                 calculateMass();
-            }else{
-                Fl=0;
-                double theta_doubledot=0;
+            } else {
+                Fl = 0;
+                double theta_doubledot = 0;
                 acceleration.setZ(theta_doubledot);
                 rot1_done = true;
                 init_rotB = false;
                 timeAtCurrentPhase = 0;
             }
         } else if (!phase1_done) {
-            if(!phase1_init) {
+            if (!phase1_init) {
+                System.out.println("Phase 1 x Started");
                 initAccelerationPhase1();
                 timeCurrentPhase = 10;
                 phase1_init = true;
             }
             timeAtCurrentPhase += dt;
-            if(timeAtCurrentPhase < timeCurrentPhase) {
-                setXAccelerationPhase1();
-            }else{
+            if (timeAtCurrentPhase < timeCurrentPhase) {
+                calculateMass();
+            } else {
                 phase1_done = true;
                 timeAtCurrentPhase = 0;
+                Ft = 0;
+                acceleration.setX(0);
             }
         } else if (!rot2_done) {
-            if(!rot2_init) {
-                theta=-1.5708; //45° in radians
+            if (!rot2_init) {
+                double xRocket = centralPos.getX();
+                if (xRocket > xLandingPad) {
+                    theta = -1.5708; //-90° in radians
+                } else {
+                    theta = 1.5708;
+                }
+                System.out.println("Rotation Started");
                 initRotation(theta);
                 rot2_init = true;
             }
             timeAtCurrentPhase += dt;
             // first half rotation
-            if(timeAtCurrentPhase < timeCurrentPhase/2d) {
+            if (timeAtCurrentPhase < timeCurrentPhase / 2d) {
                 calculateMass();
                 // second half rotation
-            }else if(timeAtCurrentPhase < timeCurrentPhase) {
-                if(!init_rotB) initRotationB();
+            } else if (timeAtCurrentPhase < timeCurrentPhase) {
+                if (!init_rotB) initRotationB();
                 calculateMass();
-            }else{
-                Fl=0;
-                double theta_doubledot=0;
+            } else {
+                Fl = 0;
+                double theta_doubledot = 0;
                 acceleration.setZ(theta_doubledot);
                 rot2_done = true;
                 init_rotB = false;
                 timeAtCurrentPhase = 0;
             }
         } else if (!phase2_done) {
-            if(!phase2_init) {
-                initAccelerationPhase2();
+            if (!phase2_init) {
+                theta = centralPos.getZ();
+                System.out.println("Phase 2 x Started");
+                initAccelerationPhase2(theta);
                 phase2_init = true;
             }
             timeAtCurrentPhase += dt;
-            if(timeAtCurrentPhase < timeCurrentPhase) {
-                setXAccelerationPhase2(theta);
-            }else{
+            if (timeAtCurrentPhase < timeCurrentPhase) {
+                calculateMass();
+            } else {
                 phase2_done = true;
                 timeAtCurrentPhase = 0;
+                Ft = 0;
+                acceleration.setX(0);
             }
         } else if (!rot3_done) {
-            if(!rot3_init) {
-                theta=-1.5708; //45° in radians
+            if (!rot3_init) {
+                double xRocket = centralPos.getX();
+                if (xRocket > xLandingPad) {
+                    theta = 0.785398; //45° in radians
+                } else {
+                    theta = -0.785398;
+                }
+                System.out.println("Rotation Started");
                 initRotation(theta);
                 rot3_init = true;
             }
             timeAtCurrentPhase += dt;
             // first half rotation
-            if(timeAtCurrentPhase < timeCurrentPhase/2d) {
+            if (timeAtCurrentPhase < timeCurrentPhase / 2d) {
                 calculateMass();
                 // second half rotation
-            }else if(timeAtCurrentPhase < timeCurrentPhase) {
-                if(!init_rotB) initRotationB();
+            } else if (timeAtCurrentPhase < timeCurrentPhase) {
+                if (!init_rotB) initRotationB();
                 calculateMass();
-            }else{
-                Fl=0;
-                double theta_doubledot=0;
+            } else {
+                Fl = 0;
+                double theta_doubledot = 0;
                 acceleration.setZ(theta_doubledot);
                 rot3_done = true;
                 init_rotB = false;
                 timeCurrentPhase = 0;
             }
         } else if (!phase3_freefall_done) {
-            if(!phase3_freefall_init) {
+            if (!phase3_freefall_init) {
+                System.out.println("Free Fall Started");
                 initFreeFall();
                 phase3_freefall_init = true;
             }
             timeAtCurrentPhase += dt;
-            if(timeAtCurrentPhase > timeCurrentPhase) {
+            if (timeAtCurrentPhase > timeCurrentPhase) {
                 phase3_freefall_done = true;
                 timeCurrentPhase = 0;
             }
-        }else if (!phase3_vertical_done) {
-            if(!phase3_vertical_init) {
+        } else if (!phase3_vertical_done) {
+            if (!phase3_vertical_init) {
+                System.out.println("Landing Started");
                 initVerticalLanding();
                 phase3_vertical_init = true;
             }
             timeCurrentPhase += dt;
-            if(timeAtCurrentPhase < timeCurrentPhase) {
+            if (timeAtCurrentPhase < timeCurrentPhase) {
                 calculateMass();
-            }else{
+            } else {
                 phase3_vertical_done = true;
                 timeAtCurrentPhase = 0;
             }
         }
     }
+
     public void initRotation(double theta) {
-        Fl=maxFlPropulsion;
-        double theta_doubledot=4*maxFlPropulsion/J;
+        Fl = maxFlPropulsion;
+        double theta_doubledot;
+        if (theta > 0) {
+            theta_doubledot = 4 * maxFlPropulsion / J;
+        } else {
+            theta_doubledot = -4 * maxFlPropulsion / J;
+        }
+        theta_doubledot = 4 * -maxFlPropulsion / J;
         acceleration.setZ(theta_doubledot);
-        timeCurrentPhase = Math.sqrt(theta/theta_doubledot) * 2;
-        System.out.println("time Rot: " +  timeCurrentPhase);
+        timeCurrentPhase = Math.sqrt(Math.abs(theta)/Math.abs(theta_doubledot)) * 2;
+        System.out.println("time Rot: " + timeCurrentPhase);
     }
 
     public void initRotationB() {
-        double theta_doubledot=4*-maxFlPropulsion/J;
+        double theta_doubledot = -acceleration.getZ();
         acceleration.setZ(theta_doubledot);
     }
 
     public void initAccelerationPhase1() {
-        double x_doubledot=-g;
+        double x_doubledot = -g;
         acceleration.setX(x_doubledot);
+        Ft = 2 / Math.sqrt(2) * mass * g;
     }
 
-    public void setXAccelerationPhase1(){
-        Ft=2/Math.sqrt(2)*mass*g;
-        calculateMass();
-    }
-
-    public void initAccelerationPhase2() {
-        double xRocket=centralPos.getX();
-        double x=xRocket-xLandingPad;
-        double x_dot=centralVel.getX();
-        timeCurrentPhase=2*x/x_dot;
-        double x_doubledot=Math.pow(x_dot,2)/2*x;
+    public void initAccelerationPhase2(double theta) {
+        double xRocket = centralPos.getX();
+        double x = xRocket - xLandingPad;
+        double x_dot = centralVel.getX();
+        timeCurrentPhase = 2 * x / Math.abs(x_dot);
+        double x_doubledot = Math.pow(x_dot, 2) / (2 * x);
         acceleration.setX(x_doubledot);
-        System.out.println("time ph2: " +  timeCurrentPhase);
-    }
-    
-    public void setXAccelerationPhase2(double theta){
-        Ft=-mass*acceleration.getX()/Math.sin(theta);
-        calculateMass();
+        Ft = -mass * acceleration.getX() / Math.sin(theta);
+        System.out.println("time ph2: " + timeCurrentPhase);
     }
 
     public void initFreeFall() {
         double y_dot = centralVel.getY();
-        double yRocket= centralPos.getY();
-        timeCurrentPhase=(-y_dot+Math.sqrt(Math.pow(y_dot,2)-4*g/2.0*(-1/4.0)*yRocket))/g;
-        double y_doubledot=g;
+        double yRocket = centralPos.getY();
+        timeCurrentPhase = (-y_dot + Math.sqrt(Math.pow(y_dot, 2) - 4 * g / 2.0 * (-1 / 4.0) * yRocket)) / g;
+        double y_doubledot = -g;
         acceleration.setY(y_doubledot);
     }
 
     public void initVerticalLanding() {
-        double yRocket= centralPos.getY();
+        double yRocket = centralPos.getY();
         double y_dot = centralVel.getY();
         double y_doubledot = acceleration.getY();
-        timeCurrentPhase=-y_dot/y_doubledot;
-        y_doubledot=Math.pow(y_dot,2)/2*yRocket;
+        y_doubledot = Math.pow(y_dot, 2) / (2 * yRocket);
+        timeCurrentPhase = Math.abs(y_dot / y_doubledot);
         acceleration.setY(y_doubledot);
-        Ft=y_doubledot+g;
+        Ft = y_doubledot + g;
     }
+
 
 
 
