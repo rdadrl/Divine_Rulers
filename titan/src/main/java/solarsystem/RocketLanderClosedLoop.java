@@ -57,7 +57,7 @@ public class RocketLanderClosedLoop extends Rocket{
         pidXdiff_far = new PIDcontroller(0.002, 0, 0.01);
         pidXdiff_close = new PIDcontroller(0.004, 0.00004, 0.02);
         pidRot_far = new PIDcontroller(1000, 0,5000);
-        pidRot_close = new PIDcontroller(4000, 0,8000);
+        pidRot_close = new PIDcontroller(4000, 0,9000);
 
         //pidRot_close = new PIDcontroller(2300, 0,7000);
         if(stochasticWind) initializeWind();
@@ -198,14 +198,6 @@ public class RocketLanderClosedLoop extends Rocket{
                 "x-vel: " + this.getCentralVel().getX() + "\n" +
                 "t-pos: " + this.getCentralPos().getZ() + "\n" +
                 "t-vel: " + this.getCentralVel().getZ() + "\n\n");
-    }
-
-    public double getSideThrusterForce() {
-        return Fl;
-    }
-
-    public double getMainThrusterForce() {
-        return Ft;
     }
 
 }

@@ -98,4 +98,13 @@ public abstract class Rocket extends Projectile{
         return landed;
     }
 
+
+    public double getSideThrusterForce() {
+        return Fl;
+    }
+
+    public double getMainThrusterForce() {
+        return Ft;
+    }
+
 }
