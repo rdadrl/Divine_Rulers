@@ -29,7 +29,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
-public class MainMenuTestNormalSpeed extends Application {
+public class MainMenuTestNormalSpeed_RK4 extends Application {
     // runing variables
     private final boolean RUNFRAMEFORFRAME = false;
     private boolean pauseStatus = true;
@@ -75,6 +75,7 @@ public class MainMenuTestNormalSpeed extends Application {
             e.printStackTrace();
         }
 
+        solarSystem.setODEsolver(new RungeKutta4());
 
         CelestialObject earthObj = solarSystem.getPlanets().getEarth();
         CelestialObject sunObj = solarSystem.getPlanets().getSun();
