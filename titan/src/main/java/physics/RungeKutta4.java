@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+import gui.Constant;
+import gui.Orbiter;
+
 /**
  *
  *
@@ -58,10 +61,11 @@ public class RungeKutta4 implements ODEsolver {
         Vector3D[] doty = new Vector3D[2];
         doty[0] = y[1].scale(dt);
         self.setAcceleration(planets, currentDate);
-        doty[1] = self.getAcceleration();
+        doty[1] = self.getAcceleration().scale(dt);
         return doty;
     }
-
+    
+    
     public static Vector3D[] predict(Vector3D[] y, Vector3D[] k, double coff) {
         Vector3D[] p = new Vector3D[2];
         for(int i = 0; i < y.length; i++) {
