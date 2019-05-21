@@ -66,7 +66,6 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
         //pidXdiff_close = new PIDcontroller(0.001, 0.00001, 0.);
         pidXdiff_close = new PIDcontroller(0.001, 0.000009, 0.18);
         //pidXdiff_close = new PIDcontroller(0.002, 0.000005, 0.1);
-
         //pidXdiff_close = new PIDcontroller(0.0008, 0.00001, 0.2);
 
         pidRot_far = new PIDcontroller(1000, 0,5000);
@@ -141,8 +140,8 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
             if(totTime.doubleValue()%0.5 == 0){
                 double curxVel = centralVel.getX();
                 //if(curxVel * oldxVel < 0 || (Math.abs(curxVel) < 0.05 && Math.abs(oldxVel) < Math.abs(curxVel))) {
-                //if(Math.abs(centralVel.getX())<0.5 && Math.abs(oldAcceleration_smooth.getX())<0.5 && Math.abs(centralJerk.getX())<0.5){
-                if(totTime.doubleValue()>320.0){
+                if(Math.abs(centralVel.getX())<0.5 && Math.abs(oldAcceleration_smooth.getX())<0.5 && Math.abs(centralJerk.getX())<0.5){
+                //if(totTime.doubleValue()>320.0){
                     phase2X = true;
                     printStatus();
 
@@ -168,8 +167,8 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
             if(!phase2X){
                 xImpulse = pidXdiff_far.calculateOutput(xError, dt);
             }else {
-                //xImpulse = pidXdiff_far.calculateOutput(xError, dt);
-                xImpulse = pidXdiff_close.calculateOutput(xError, dt);
+                xImpulse = pidXdiff_far.calculateOutput(xError, dt);
+                //xImpulse = pidXdiff_close.calculateOutput(xError, dt);
             }
         }
         double tImpulse;
@@ -179,13 +178,12 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
 
         if(phase3){
             tImpulse = -tError;
-            //tImpulse = (0.2*xImpulse)-tError;
+//            tImpulse = (0.2*xImpulse)-tError;
             Fl = pidRot_close.calculateOutput(tImpulse, dt);
         }else{
             tImpulse = xImpulse-tError;
             Fl = pidRot_far.calculateOutput(tImpulse, dt);
         }
-
 
         if(!phase2Y){
             Ft = pidYdiff_far.calculateOutput(yError, dt);

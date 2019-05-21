@@ -131,9 +131,15 @@ public abstract class Rocket extends Projectile{
 
     void applyAdvancedWindForce() {
         double Z2 = centralPos.getY();
-        double meanWindSpeedHeight = meanWindSpeed * Math.pow((Z2/Z1), A_conts);
+        double meanWindSpeedHeight;
+        if(Z2 > 100.0) {
+            meanWindSpeedHeight = meanWindSpeed * Math.pow((Z2/Z1), A_conts);
+        }else{
+            meanWindSpeedHeight = meanWindSpeed* (Math.log(Z2/Z0)/Math.log(Z1/Z0));
+        }
         if(Double.isNaN(meanWindSpeedHeight)) meanWindSpeedHeight = 0;
         double windNoise = (Math.random() *0.1) +0.95;
+
         currentWindSpeed = meanWindSpeedHeight * windNoise;
         double windForce = sidearea * airDensity * currentWindSpeed;
         windAcc = windForce/mass;
