@@ -160,7 +160,7 @@ public class LandingPhase3d extends Application {
                 while(!pauseStatus) {
                     if (rocketObj.getLanded()) { //if landed
                         System.out.println("Thanks for flying with Paredis Spacelines.");
-                        System.exit(1);
+                        pauseStatus = true;
                     }
                     else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
                         vVref.updateLocation(10, TimeUnit.MILLISECONDS);
@@ -247,7 +247,7 @@ public class LandingPhase3d extends Application {
             {
                 long differancePerAnimationFrameInMS = (currentN - lastFrame) / 1000000L;
                 if (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS) {
-                    rocket.setTranslateX(rocketObj.getCentralPos().getX() / 100);
+                    rocket.setTranslateX(rocketObj.getCentralPos().getX()*2);
                     rocket.setTranslateY(-rocketObj.getCentralPos().getY()/ 100);
                     rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight()/2D);
                     rocket.setTranslateZ(0);
