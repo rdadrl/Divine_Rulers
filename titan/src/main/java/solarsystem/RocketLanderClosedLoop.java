@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * the rotation vector.
  *
  */
-public class RocketLanderClosedLoop_works_simpleWind extends Rocket{
+public class RocketLanderClosedLoop extends Rocket{
     private static int counter = 0;
 
     private PIDcontroller pidYdiff_far;
@@ -38,8 +38,8 @@ public class RocketLanderClosedLoop_works_simpleWind extends Rocket{
     private Vector3D oldAcceleration_smooth = new Vector3D();
     private Vector3D newAcceleration_smooth = new Vector3D();
 
-    public RocketLanderClosedLoop_works_simpleWind(double length, Vector3D centralPos,
-                                                   Vector3D centralVel, Date date, boolean stochasticWind, double meanWindSpeed){
+    public RocketLanderClosedLoop(double length, Vector3D centralPos,
+                                  Vector3D centralVel, Date date, boolean stochasticWind, double meanWindSpeed){
         super.landedAltitude = 0.01;
 
         this.name = "Rocket_temp: " + counter;
@@ -72,13 +72,13 @@ public class RocketLanderClosedLoop_works_simpleWind extends Rocket{
         if(stochasticWind) initializeSimpleWind();
     }
 
-    public RocketLanderClosedLoop_works_simpleWind(double length, Vector3D centralPos,
-                                                   Vector3D centralVel, Date date) {
+    public RocketLanderClosedLoop(double length, Vector3D centralPos,
+                                  Vector3D centralVel, Date date) {
         this(length, centralPos, centralVel, date, false, 0);
     }
 
-    public RocketLanderClosedLoop_works_simpleWind(double length, Vector3D centralPos,
-                                                   Vector3D centralVel, Date date, boolean stochasticWind) {
+    public RocketLanderClosedLoop(double length, Vector3D centralPos,
+                                  Vector3D centralVel, Date date, boolean stochasticWind) {
         this(length, centralPos, centralVel, date, stochasticWind, -99);
     }
 

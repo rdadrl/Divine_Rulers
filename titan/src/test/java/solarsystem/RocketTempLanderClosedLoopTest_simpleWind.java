@@ -54,7 +54,7 @@ public class RocketTempLanderClosedLoopTest_simpleWind {
 
     private void landerSpecs1(double windSpeed) {
         Date date = new Date(2000,0,1,0,0,0);
-        RocketLanderClosedLoop_works_simpleWind rocket = new RocketLanderClosedLoop_works_simpleWind(100, new Vector3D(700, 150000
+        RocketLanderClosedLoop rocket = new RocketLanderClosedLoop(100, new Vector3D(700, 150000
                 ,0.02),
                 new Vector3D(0,-600,0.01),date, true, windSpeed);
         runVerlet(rocket, date);
@@ -62,15 +62,15 @@ public class RocketTempLanderClosedLoopTest_simpleWind {
 
     private void landerSpecs2(double windSpeed) {
         Date date = new Date(2000,0,1,0,0,0);
-        RocketLanderClosedLoop_works_simpleWind rocket = new RocketLanderClosedLoop_works_simpleWind(100, new Vector3D(1000, 180000
+        RocketLanderClosedLoop rocket = new RocketLanderClosedLoop(100, new Vector3D(1000, 180000
                 ,0),
                 new Vector3D(-30,-600,0),date, true, windSpeed);
         runVerlet(rocket, date);
 
     }
 
-    private void runVerlet(RocketLanderClosedLoop_works_simpleWind rocket, Date date) {
-        ArrayList<RocketLanderClosedLoop_works_simpleWind> obj = new ArrayList<>();
+    private void runVerlet(RocketLanderClosedLoop rocket, Date date) {
+        ArrayList<RocketLanderClosedLoop> obj = new ArrayList<>();
         obj.add(rocket);
         VerletVelocity verletVelocity = new VerletVelocity(obj, date);
         ArrayList<Double> y_pos, x_pos, y_vel, x_vel, y_acc, x_acc, y_jerk, x_jerk, t, t_pos, t_vel, t_acc;

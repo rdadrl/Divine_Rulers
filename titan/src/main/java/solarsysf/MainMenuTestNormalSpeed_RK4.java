@@ -37,7 +37,7 @@ public class MainMenuTestNormalSpeed_RK4 extends Application {
 
     // Timing variables
     private Date date = new Date(2018, 0, 18, 12, 0, 0);
-    private final long dt = 1;
+    private final long dt = 6;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
 
 

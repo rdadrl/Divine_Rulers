@@ -106,8 +106,8 @@ public class LandingPhase3d extends Application {
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
 
-        Cylinder landingPad = new Cylinder(60, 50);
-        landingPad.setTranslateY(10);
+        Cylinder landingPad = new Cylinder(60, 1);
+        landingPad.setTranslateY(0);
         landingPad.setMaterial(new PhongMaterial(Color.DARKRED));
 
         Sphere titan = new Sphere(3000);
@@ -117,7 +117,7 @@ public class LandingPhase3d extends Application {
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
         titan.setMaterial(titanMaterial);
 
-        root.getChildren().addAll(rocket,titan, landingPad, light);
+        root.getChildren().addAll(rocket,titan, light);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
@@ -158,7 +158,7 @@ public class LandingPhase3d extends Application {
 
             public void run() {
                 while(!pauseStatus) {
-                    if (rocketObj.getLandedStatus()) { //if landed
+                    if (rocketObj.getLanded()) { //if landed
                         System.out.println("Thanks for flying with Paredis Spacelines.");
                         System.exit(1);
                     }
@@ -249,6 +249,8 @@ public class LandingPhase3d extends Application {
                 if (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS) {
                     rocket.setTranslateX(rocketObj.getCentralPos().getX() / 100);
                     rocket.setTranslateY(-rocketObj.getCentralPos().getY()/ 100);
+                    rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight()/2D);
+                    rocket.setTranslateZ(0);
 
                     //Handle key events
                     if (goNorth) {
