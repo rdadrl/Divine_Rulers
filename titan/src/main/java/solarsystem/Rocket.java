@@ -1,5 +1,6 @@
 package solarsystem;
 
+import physics.VerletVelocity;
 import utils.Date;
 import utils.Vector3D;
 
@@ -23,12 +24,20 @@ public abstract class Rocket extends Projectile{
     double airDensity = 5.0; // kg/m^2
 
     boolean stochasticWind;
+    boolean adancedWind;
     double meanWindSpeed;
     double currentWindSpeed;
     double windAcc;
     double dt; // timestep in seconds
     double Fl; // force thrusters
     double Ft; // force latereral thrusters
+
+    final double Z0 = 0.5;
+    final double Z1 = 10;
+    final double Z2 = 100;
+    double A_conts;
+
+    Vector3D centralJerk = new Vector3D();
 
     boolean landed;
     double landedAltitude = 0;
@@ -51,8 +60,21 @@ public abstract class Rocket extends Projectile{
 
     @Override
     public void setCentralVel(Vector3D newCentralVel) {
-        this.date = new Date(date);
         this.centralVel = newCentralVel;
+    }
+
+    void setCentralJerk(Vector3D oldAcc, Vector3D newACC, double dt){
+
+        centralJerk = (newACC.substract(oldAcc).scale(1/dt));
+//        System.out.println("TotTime: " + totTime);
+//        System.out.println("OCV: " + oldAcc.getX());
+//        System.out.println("NCV: " + newACC.getX());
+//        System.out.println("SUBTR: " + newACC.substract(oldAcc).getX());
+//        System.out.println("CJ: " + centralJerk.getX() + "\n");
+    }
+
+    public Vector3D getCentralJerk() {
+        return centralJerk;
     }
 
     @Override
@@ -81,12 +103,20 @@ public abstract class Rocket extends Projectile{
         mass = dryMass + fuelMass;
     }
 
-    void initializeWind() {
+    void initializeSimpleWind() {
         // random wind speed form -10 to 10 meters per seconds;
         if(meanWindSpeed==-99) meanWindSpeed = (Math.random() * 20) - 10;
     }
 
-    void applyWindForce() {
+    void initializeAdvancedWind() {
+        if(meanWindSpeed==-99) meanWindSpeed = (Math.random() * 20) - 10;
+        double V1 = meanWindSpeed;
+        double V2 = V1* (Math.log(Z2/Z0)/Math.log(Z1/Z0));
+        A_conts = Math.log(V2/V1)/Math.log(Z2/Z1);
+    }
+
+
+    void applySimpleWindForce() {
         // random windnoise of -0.5 m to 0.5 m.
         double windNoise = (Math.random() *0.1) +0.95;
         currentWindSpeed = meanWindSpeed * windNoise;
@@ -96,6 +126,17 @@ public abstract class Rocket extends Projectile{
         //System.out.println("Acc: " + acceleration.getX());
         //System.out.println("Wind_acc: " + windAcc);
         //System.out.println();
+        acceleration.setX(acceleration.getX() + windAcc);
+    }
+
+    void applyAdvancedWindForce() {
+        double Z2 = centralPos.getY();
+        double meanWindSpeedHeight = meanWindSpeed * Math.pow((Z2/Z1), A_conts);
+        if(Double.isNaN(meanWindSpeedHeight)) meanWindSpeedHeight = 0;
+        double windNoise = (Math.random() *0.1) +0.95;
+        currentWindSpeed = meanWindSpeedHeight * windNoise;
+        double windForce = sidearea * airDensity * currentWindSpeed;
+        windAcc = windForce/mass;
         acceleration.setX(acceleration.getX() + windAcc);
     }
 
@@ -114,6 +155,12 @@ public abstract class Rocket extends Projectile{
 
     public boolean getLanded() {
         return landed;
+    }
+
+    public boolean fuelLeft() {return fuelMass>0;}
+
+    public double getTotalTime(){
+        return totTime.doubleValue();
     }
 
 

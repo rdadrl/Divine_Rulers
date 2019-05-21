@@ -2,8 +2,6 @@ package solarsysf;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import solarsystem.RocketLanderClosedLoop;
-import solarsystem.RocketLanderOpenLoop;
 import solarsystem.RocketLanderOpenLoopCopy;
 import solarsystem.SolarSystem;
 import utils.Date;
