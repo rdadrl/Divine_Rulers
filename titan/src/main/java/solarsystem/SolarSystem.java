@@ -1,6 +1,7 @@
 package solarsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import physics.ODEsolver;
 import physics.VerletVelocity;
 import utils.Date;
 
@@ -19,7 +20,7 @@ public class SolarSystem {
     private Date currentDate;
     private ArrayList<CelestialObject> allAnimatedObjects;
     private ArrayList<Projectile> projectiles;
-    private VerletVelocity verletVelocity;
+    private ODEsolver ODEsolver;
 
     /**
      * Constructor of the solar system
@@ -27,6 +28,20 @@ public class SolarSystem {
      */
     public SolarSystem() throws  IOException{
         createPlanets();
+        ODEsolver = new VerletVelocity();
+    }
+
+    /**
+     * Constructor of the solar system
+     * @throws IOException
+     */
+    public SolarSystem(ODEsolver odEsolver) throws  IOException{
+        createPlanets();
+        ODEsolver = odEsolver;
+    }
+
+    public void setODEsolver(ODEsolver ODEsolver) {
+        this.ODEsolver = ODEsolver;
     }
 
     /**
@@ -72,32 +87,32 @@ public class SolarSystem {
         allAnimatedObjects = new ArrayList<>(getPlanets().getAll());
         allAnimatedObjects.addAll(projectiles);
         this.projectiles = projectiles;
-        verletVelocity = new VerletVelocity(this.allAnimatedObjects, date);
+        ODEsolver.initialize(this.allAnimatedObjects, date);
     }
 
     public void updateAnimation(long dt, TimeUnit timeUnit){
-        if(verletVelocity == null){
+        if(ODEsolver == null){
             System.err.println("Cannot update animation without initializaton");
             System.exit(-1);
         }
-        verletVelocity.updateLocation(dt, timeUnit);
+        ODEsolver.updateLocation(dt, timeUnit);
     }
 
     public void updateAnimationRelativeTimeStep(long standardDt, TimeUnit standardTimeUnit){
-        if(verletVelocity == null){
+        if(ODEsolver == null){
             System.err.println("Cannot update animation without initializaton");
             System.exit(-1);
         }
         if(CannonBall.minDistanceAllCurrentDT < 1.0E08) {
-            verletVelocity.updateLocation(10, TimeUnit.SECONDS);
+            ODEsolver.updateLocation(10, TimeUnit.SECONDS);
         }else if(CannonBall.minDistanceAllCurrentDT < 1.0E09){
-            verletVelocity.updateLocation(100, TimeUnit.SECONDS);
+            ODEsolver.updateLocation(100, TimeUnit.SECONDS);
         }else if(CannonBall.minDistanceAllCurrentDT < 1.0E10){
-            verletVelocity.updateLocation(1000, TimeUnit.SECONDS);
+            ODEsolver.updateLocation(1000, TimeUnit.SECONDS);
         }else if(CannonBall.minDistanceAllCurrentDT < 1.0E11){
-            verletVelocity.updateLocation(10000, TimeUnit.SECONDS);
+            ODEsolver.updateLocation(10000, TimeUnit.SECONDS);
         }else{
-            verletVelocity.updateLocation(standardDt, standardTimeUnit);
+            ODEsolver.updateLocation(standardDt, standardTimeUnit);
         }
 
     }

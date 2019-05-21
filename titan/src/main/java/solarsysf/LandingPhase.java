@@ -12,7 +12,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import physics.VerletVelocity;
 import solarsystem.Rocket;
-import solarsystem.RocketLanderClosedLoop;
 import utils.Date;
 
 import java.io.FileInputStream;

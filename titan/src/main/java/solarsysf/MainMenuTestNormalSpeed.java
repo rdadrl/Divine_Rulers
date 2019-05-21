@@ -16,6 +16,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import physics.RungeKutta4;
 import solarsystem.*;
 import utils.Date;
 import utils.MathUtil;
@@ -73,6 +74,7 @@ public class MainMenuTestNormalSpeed extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         CelestialObject earthObj = solarSystem.getPlanets().getEarth();
         CelestialObject sunObj = solarSystem.getPlanets().getSun();

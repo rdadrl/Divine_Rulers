@@ -16,12 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import physics.VerletVelocity;
-import solarsystem.Projectile;
 import solarsystem.Rocket;
-import solarsystem.RocketLanderClosedLoop;
 import utils.Date;
-import utils.MathUtil;
-import utils.Vector3D;
 
 import java.io.FileInputStream;
 import java.text.DecimalFormat;

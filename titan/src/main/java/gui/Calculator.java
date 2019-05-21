@@ -2,6 +2,8 @@ package gui;
 
 import utils.Vector3D;
 
+import java.util.Arrays;
+
 public class Calculator {
 	
 	public static double force(Orbiter a, Orbiter b) {
@@ -87,6 +89,7 @@ public class Calculator {
 	 * @param n number of steps  
 	 */
 	public static void rk4sim(Planet[] planets, Vector3D[][] kav, double dt, int n) {
+		kav.toString();
 		for(int j = 0; j < n; j++) {
 			for(int i = 0; i < planets.length; i++) {
 				
