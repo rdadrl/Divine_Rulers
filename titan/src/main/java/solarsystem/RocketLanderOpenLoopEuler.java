@@ -213,7 +213,11 @@ public class RocketLanderOpenLoopEuler extends Projectile {
         System.out.println("Free fall started");
         double y_dot = centralVel.getY();
         double yRocket= centralPos.getY();
+        System.out.println();
+        System.out.println("Vitesse avant commencement:"+centralVel.getY());
+        System.out.println("Position avant commencement: "+centralPos.getY());
         double tFreeFall=(-y_dot+Math.sqrt(Math.pow(y_dot,2)-4*g/2.0*(-1/4.0)*yRocket))/g;
+        System.out.println("Time Free Fall:"+tFreeFall);
         double y_doubledot=-g;
         acceleration.setY(y_doubledot);
         int y=0;
