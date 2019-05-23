@@ -24,7 +24,7 @@ public abstract class Rocket extends Projectile{
     double airDensity = 5.0; // kg/m^2
 
     boolean stochasticWind;
-    boolean adancedWind;
+    boolean advancedWind;
     double meanWindSpeed;
     double currentWindSpeed;
     double windAcc;
@@ -146,18 +146,6 @@ public abstract class Rocket extends Projectile{
         acceleration.setX(acceleration.getX() + windAcc);
     }
 
-    private void printStatus() {
-        System.out.println("time: " + totTime.toString() + "\n" +
-                "fuel: " + fuelMass + "\n" +
-                "Ft: " + Ft + "\n" +
-                "Fl: " + Fl + "\n" +
-                "y-pos: " + this.getCentralPos().getY() + "\n" +
-                "y-vel: " + this.getCentralVel().getY() + "\n" +
-                "x-pos: " + this.getCentralPos().getX() + "\n" +
-                "x-vel: " + this.getCentralVel().getX() + "\n" +
-                "t-pos: " + this.getCentralPos().getZ() + "\n" +
-                "t-vel: " + this.getCentralVel().getZ() + "\n\n");
-    }
 
     public boolean getLanded() {
         return landed;
@@ -176,6 +164,34 @@ public abstract class Rocket extends Projectile{
 
     public double getMainThrusterForce() {
         return Ft;
+    }
+
+    public double getCurrentWindSpeed() {return currentWindSpeed;
+    }
+
+    public double getMeanWindSpeed() {
+        return meanWindSpeed;
+    }
+
+    public void printStatus() {
+        System.out.println("time: " + totTime.toString() + "\n" +
+                "fuel: " + fuelMass + "\n" +
+                "Ft: " + Ft + "\n" +
+                "Fl: " + Fl + "\n" +
+                "w_acc: " + windAcc + "\n" +
+                "x_acc: " + (acceleration.getX() - windAcc) + "\n" +
+                "y-pos: " + this.getCentralPos().getY() + "\n" +
+                "y-vel: " + this.getCentralVel().getY() + "\n" +
+                "y-acc: " + this.getAcceleration().getY() + "\n" +
+                "y-jerk: " + this.getCentralJerk().getY() + "\n" +
+                "x-pos: " + this.getCentralPos().getX() + "\n" +
+                "x-vel: " + this.getCentralVel().getX() + "\n" +
+                "x-acc: " + this.getAcceleration().getX() + "\n" +
+                "x-jerk: " + this.getCentralJerk().getX() + "\n" +
+                "t-pos: " + this.getCentralPos().getZ() + "\n" +
+                "t-vel: " + this.getCentralVel().getZ() + "\n" +
+                "t-acc: " + this.acceleration.getZ() + "\n" +
+                "mean wind: " + meanWindSpeed + "\n\n");
     }
 
 }

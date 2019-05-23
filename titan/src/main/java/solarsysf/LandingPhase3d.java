@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
@@ -102,6 +103,15 @@ public class LandingPhase3d extends Application {
         //Titan & Rocket:
         Box rocket = new Box(20, 100, 20);
         rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
+        Rotate rotate = new Rotate();
+        rotate.setAxis(new Point3D(0,0,90));
+        rocket.getTransforms().add(rotate);
+
+
+
+
+
+
         //rocket.setTranslateX(rocketObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
@@ -125,7 +135,7 @@ public class LandingPhase3d extends Application {
         camera.setTranslateX(0);
         camera.setNearClip(1);
         camera.setFarClip(171000);
-        camera.getTransforms().addAll(xRotate, yRotate);
+        //camera.getTransforms().addAll(xRotate, yRotate);
 
         SubScene subScene = new SubScene(root,800,600,false, SceneAntialiasing.BALANCED);
         subScene.setCamera(camera);
@@ -161,6 +171,7 @@ public class LandingPhase3d extends Application {
                     if (rocketObj.getLanded()) { //if landed
                         System.out.println("Thanks for flying with Paredis Spacelines.");
                         pauseStatus = true;
+                        rocketObj.printStatus();
                     }
                     else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
                         vVref.updateLocation(10, TimeUnit.MILLISECONDS);
@@ -247,10 +258,11 @@ public class LandingPhase3d extends Application {
             {
                 long differancePerAnimationFrameInMS = (currentN - lastFrame) / 1000000L;
                 if (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS) {
-                    rocket.setTranslateX(rocketObj.getCentralPos().getX()*2);
+                    rocket.setTranslateX(rocketObj.getCentralPos().getX());
                     rocket.setTranslateY(-rocketObj.getCentralPos().getY()/ 100);
                     rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight()/2D);
                     rocket.setTranslateZ(0);
+                    rotate.setAngle(-Math.toDegrees(rocketObj.getCentralPos().getZ()));
 
                     //Handle key events
                     if (goNorth) {
@@ -330,6 +342,8 @@ public class LandingPhase3d extends Application {
                 "t-vel\t\t: " + df.format(rocketObj.getCentralVel().getZ()) + "\n" +
                 "ft%\t\t: " + df.format(rocketObj.getMainThrusterForceAsPercentage()) + "\n" +
                 "fuel\t\t: " + df.format(rocketObj.getFuelMass()) + "\n" +
+                "c-wind\t: " + df.format(rocketObj.getCurrentWindSpeed()) + "\n" +
+                "m-wind\t: " + df.format(rocketObj.getMeanWindSpeed()) + "\n" +
                 "speed\t: " + verletUpdateUnitMultiplier + "x";
     }
 }

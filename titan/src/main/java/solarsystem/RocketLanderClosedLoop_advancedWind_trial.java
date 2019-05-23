@@ -13,13 +13,13 @@ import java.util.ArrayList;
  * the rotation vector.
  *
  */
-public class RocketLanderClosedLoop_advancedWind extends Rocket{
+public class RocketLanderClosedLoop_advancedWind_trial extends Rocket{
     private static int counter = 0;
     private boolean advancedWind = true;
 
     private PIDcontroller pidYdiff_far;
     private double cutoffClose = 10000.0;
-    private double cutoffFinal = 5;
+    private double cutoffFinal = 3;
     private double cutoffJerk = 0.01;
     private PIDcontroller pidYdiff_close;
     private PIDcontroller pidXdiff_close;
@@ -40,9 +40,9 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
     private Vector3D oldAcceleration_smooth = new Vector3D();
     private Vector3D newAcceleration_smooth = new Vector3D();
 
-    public RocketLanderClosedLoop_advancedWind(double length, Vector3D centralPos,
-                                               Vector3D centralVel, Date date, boolean stochasticWind, double meanWindSpeed){
-        super.landedAltitude = 0.01;
+    public RocketLanderClosedLoop_advancedWind_trial(double length, Vector3D centralPos,
+                                                     Vector3D centralVel, Date date, boolean stochasticWind, double meanWindSpeed){
+        super.landedAltitude = 0.0;
 
         this.name = "Rocket_temp: " + counter;
         this.radius = length;
@@ -61,10 +61,10 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
 
         pidYdiff_far = new PIDcontroller(-12.5, 0, -2350);
         //pidYdiff_far = new PIDcontroller(-12.5, 0, -1792);
-        pidYdiff_close = new PIDcontroller(-26.0, 0, -900);
-        pidXdiff_far = new PIDcontroller(0.0009, 0, 0.05);
+        pidYdiff_close = new PIDcontroller(-26.0, 0, -910);
+        pidXdiff_far = new PIDcontroller(0.002, 0, 0.045);
         //pidXdiff_close = new PIDcontroller(0.001, 0.00001, 0.);
-        pidXdiff_close = new PIDcontroller(0.001, 0.000009, 0.18);
+        pidXdiff_close = new PIDcontroller(0.005, 0.000001, 0.05);
         //pidXdiff_close = new PIDcontroller(0.002, 0.000005, 0.1);
         //pidXdiff_close = new PIDcontroller(0.0008, 0.00001, 0.2);
 
@@ -76,13 +76,13 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
         }
     }
 
-    public RocketLanderClosedLoop_advancedWind(double length, Vector3D centralPos,
-                                               Vector3D centralVel, Date date) {
+    public RocketLanderClosedLoop_advancedWind_trial(double length, Vector3D centralPos,
+                                                     Vector3D centralVel, Date date) {
         this(length, centralPos, centralVel, date, false, 0);
     }
 
-    public RocketLanderClosedLoop_advancedWind(double length, Vector3D centralPos,
-                                               Vector3D centralVel, Date date, boolean stochasticWind) {
+    public RocketLanderClosedLoop_advancedWind_trial(double length, Vector3D centralPos,
+                                                     Vector3D centralVel, Date date, boolean stochasticWind) {
         this(length, centralPos, centralVel, date, stochasticWind, -99);
     }
 
@@ -136,18 +136,33 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
         double xError = centralPos.getX();
         double tError = centralPos.getZ();
 
+//        if(Math.abs(centralVel.getX())<0.3){
+//            double t = totTime.doubleValue();
+//            double v = centralVel.getX();
+//            double a = oldAcceleration_smooth.getX();
+//            double j = centralJerk.getX();
+//            if(totTime.doubleValue()%0.5 == 0){
+//                double tt = totTime.doubleValue();
+//            }
+//            if(totTime.doubleValue()>300.0){
+//                double tt = totTime.doubleValue();
+//            }
+//
+//        }
         if(!phase2X && totTime.doubleValue() > 50.0){
-            if(totTime.doubleValue()%0.5 == 0){
-                double curxVel = centralVel.getX();
+            double curxVel = centralVel.getX();
+
+
+
                 //if(curxVel * oldxVel < 0 || (Math.abs(curxVel) < 0.05 && Math.abs(oldxVel) < Math.abs(curxVel))) {
-                if(Math.abs(centralVel.getX())<0.5 && Math.abs(oldAcceleration_smooth.getX())<0.5 && Math.abs(centralJerk.getX())<0.5){
+                //if(Math.abs(centralVel.getX())<0.5 && Math.abs(oldAcceleration_smooth.getX())<0.5 && Math.abs(centralJerk.getX())<0.5){
+            if((Math.abs(curxVel) < 0.1|| curxVel*oldxVel < 0) && Math.abs(oldAcceleration_smooth.getX())<0.1){
+
                 //if(totTime.doubleValue()>320.0){
-                    phase2X = true;
-                    printStatus();
-
-                }
-
+                phase2X = true;
+//                printStatus();
             }
+            oldxVel = curxVel;
         }
 //        if(totTime.doubleValue() == 300.0) {
 //            System.out.println(totTime.doubleValue());
@@ -162,18 +177,29 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
 
         double xImpulse = 0;
 
+//        if(Math.abs(centralPos.getZ()) > 1.5708){
+//            double t = centralPos.getZ();
+//            double tv = centralVel.getZ();
+//            double ta = acceleration.getZ();
+//            double tj = centralJerk.getZ();
+//        }
 
-        if(Math.abs(centralPos.getZ()) < 1.5708){
+        if(Math.abs(centralPos.getZ()) < 1.5708/2D){
             if(!phase2X){
                 xImpulse = pidXdiff_far.calculateOutput(xError, dt);
             }else {
-                xImpulse = pidXdiff_far.calculateOutput(xError, dt);
-                //xImpulse = pidXdiff_close.calculateOutput(xError, dt);
+                //xImpulse = pidXdiff_far.calculateOutput(xError, dt);
+                xImpulse = pidXdiff_close.calculateOutput(xError, dt);
             }
         }
+
+
+
+
         double tImpulse;
         if(!phase3 && ((centralPos.getY()-landedAltitude)/-centralVel.getY()) < cutoffFinal){
             phase3 = true;
+            printStatus();
         }
 
         if(phase3){
@@ -223,9 +249,11 @@ public class RocketLanderClosedLoop_advancedWind extends Rocket{
                 "x-pos: " + this.getCentralPos().getX() + "\n" +
                 "x-vel: " + this.getCentralVel().getX() + "\n" +
                 "x-acc: " + this.getAcceleration().getX() + "\n" +
+                "x_acc_sm: " + oldAcceleration_smooth.getX() + "\n" +
                 "x-jerk: " + this.getCentralJerk().getX() + "\n" +
                 "t-pos: " + this.getCentralPos().getZ() + "\n" +
                 "t-vel: " + this.getCentralVel().getZ() + "\n" +
+                "t-acc: " + this.acceleration.getZ() + "\n" +
                 "mean wind: " + meanWindSpeed + "\n\n");
     }
 }
