@@ -43,6 +43,7 @@ public class RocketLanderOpenLoopVerlet extends Rocket {
 
     public RocketLanderOpenLoopVerlet(Vector3D centralPos,
                                       Vector3D centralVel, Date date) {
+        this.landedAltitude = -1000;
         this.name = "OpenLoop Rocket_temp: ";
         this.xLandingPad = 0;
         this.mass = dryMass + fuelMass;

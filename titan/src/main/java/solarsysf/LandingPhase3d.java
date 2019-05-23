@@ -39,6 +39,7 @@ public class LandingPhase3d extends Application {
     private int scnH = 600;
     private final boolean DEBUG = true;
     private boolean pauseStatus = false; //play/pause animations and gui updates
+    private boolean oneMoreRun = false;
     private Label debugText;
     private Date date;
     private long startTime;
@@ -103,11 +104,6 @@ public class LandingPhase3d extends Application {
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
 
-
-
-
-
-
         //rocket.setTranslateX(rocketObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
@@ -167,7 +163,7 @@ public class LandingPhase3d extends Application {
                     if (rocketObj.getLanded()) { //if landed
                         System.out.println("Thanks for flying with Paredis Spacelines.");
                         pauseStatus = true;
-                        rocketObj.printStatus();
+                        oneMoreRun = true;
                     }
                     else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
                         vVref.updateLocation(10, TimeUnit.MILLISECONDS);
@@ -253,7 +249,7 @@ public class LandingPhase3d extends Application {
             public void handle(long currentN)
             {
                 long differancePerAnimationFrameInMS = (currentN - lastFrame) / 1000000L;
-                if (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS) {
+                if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
                     rocket.setTranslateX(rocketObj.getCentralPos().getX());
                     rocket.setTranslateY(-rocketObj.getCentralPos().getY()/ 100);
                     rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight()/2D);
@@ -302,6 +298,7 @@ public class LandingPhase3d extends Application {
                     if (DEBUG) debugText.setText(constructDebugText());
                     currentFPS = (int) (1000 / differancePerAnimationFrameInMS);
                     lastFrame= currentN;
+                    if(oneMoreRun) oneMoreRun = false;
                 }
 
             }
