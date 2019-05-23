@@ -2,7 +2,6 @@ package solarsysf;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import solarsystem.RocketLanderOpenLoopCopy;
 import solarsystem.SolarSystem;
 import utils.Date;
 import utils.Vector3D;
@@ -14,10 +13,10 @@ public class LandingPhaseLauncherOpenLoop extends Application {
             SolarSystem solarSystem = new SolarSystem(); //Solar System Instance
             Date date = new Date(2002, 9, 18, 12, 0, 0); //Date
 
-            Application landingPhaseApp =
+           /* Application landingPhaseApp =
                     new LandingPhaseInger(new RocketLanderOpenLoopCopy(new Vector3D(300, 170000,0),
                             new Vector3D(0,0,0), date), date);
-            landingPhaseApp.start(new Stage()); //start with a empty stage (or you may go ahead and give some specs)
+            landingPhaseApp.start(new Stage()); */ //start with a empty stage (or you may go ahead and give some specs)
         } catch (Exception e) {
             e.printStackTrace();
         }
