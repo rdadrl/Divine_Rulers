@@ -27,7 +27,7 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
 
     @Test
     public void landerTestWind() {
-        landTestWindSpecificSpeed(-10, 2);
+        landTestWindSpecificSpeed(-5, 1);
     }
 
     @Test
@@ -56,17 +56,9 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
 
     private void landerSpecs1(double windSpeed) {
         Date date = new Date(2000,0,1,0,0,0);
-        RocketLanderClosedLoop_advancedWind_good rocket = new RocketLanderClosedLoop_advancedWind_good(100, new Vector3D(3000, 150000
+        RocketLanderClosedLoop_advancedWind_good rocket = new RocketLanderClosedLoop_advancedWind_good(100, new Vector3D(300, 150000
                 ,0.04),
-                new Vector3D(-40,-50,0.01),date, true, windSpeed);
-        runVerlet(rocket, date);
-    }
-
-    private void landerSpecs3(double windSpeed) {
-        Date date = new Date(2000,0,1,0,0,0);
-        RocketLanderClosedLoop_advancedWind_good rocket = new RocketLanderClosedLoop_advancedWind_good(100, new Vector3D(-3000, 150000
-                ,0.04),
-                new Vector3D(40,-50,0.01),date, true, windSpeed);
+                new Vector3D(0,-600,0.01),date, true, windSpeed);
         runVerlet(rocket, date);
     }
 
@@ -77,6 +69,14 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
                 new Vector3D(30,-600,0),date, true, windSpeed);
         runVerlet(rocket, date);
 
+    }
+
+    private void landerSpecs3(double windSpeed) {
+        Date date = new Date(2000,0,1,0,0,0);
+        RocketLanderClosedLoop_advancedWind_good rocket = new RocketLanderClosedLoop_advancedWind_good(100, new Vector3D(-3000, 150000
+                ,0.04),
+                new Vector3D(40,-50,0.01),date, true, windSpeed);
+        runVerlet(rocket, date);
     }
 
     private void runVerlet(RocketLanderClosedLoop_advancedWind_good rocket, Date date) {

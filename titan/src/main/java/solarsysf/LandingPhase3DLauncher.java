@@ -2,6 +2,7 @@ package solarsysf;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import physics.RungeKutta4;
 import solarsystem.RocketLanderClosedLoop_advancedWind_good;
 import solarsystem.SolarSystem;
 import utils.Date;
@@ -16,6 +17,7 @@ public class LandingPhase3DLauncher extends Application {
 
             Application landingPhaseApp = new LandingPhase3d(new RocketLanderClosedLoop_advancedWind_good(100,
                     new Vector3D(1000, 170000,0), new Vector3D(0,-700,0),date, true), date);
+            ((LandingPhase3d) landingPhaseApp).setODEsolver(new RungeKutta4());
             landingPhaseApp.start(new Stage()); //start with a empty stage (or you may go ahead and give some specs)
         } catch (Exception e) {
             e.printStackTrace();

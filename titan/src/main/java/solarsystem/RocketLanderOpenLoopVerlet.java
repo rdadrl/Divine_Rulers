@@ -324,6 +324,7 @@ public class RocketLanderOpenLoopVerlet extends Rocket {
         requiredAcc=y_doubledot;
         System.out.println("Perfect acc:"+y_doubledot);
         timeCurrentPhase=Math.abs(centralPos.getY()*2/(centralVel.getY()));
+        Ft = Ft + ((mass*g)/Math.cos(centralPos.getZ()));
         Ft=(y_doubledot+g)*mass/Math.cos(centralPos.getZ());
         Fl=-Ft*Math.tan(centralPos.getZ());
         System.out.println("Ft of vertical: "+Ft);

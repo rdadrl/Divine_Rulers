@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import physics.ODEsolver;
 import physics.VerletVelocity;
 import solarsystem.Rocket;
 import utils.Date;
@@ -29,7 +30,7 @@ public class LandingPhase extends Application {
     private Label debugText;
     private Date date;
     private long startTime;
-    private VerletVelocity verletVelocity;
+    private ODEsolver ODEsolver;
     private final int MAX_ANIMATION_FPS =30;
     private int currentFPS;
     // rocket vars
@@ -39,6 +40,8 @@ public class LandingPhase extends Application {
     private final int MAX_MAIN_THRUSTER_WIDTH = 150;
     private final int FASTEST_MAIN_THRUSTER_ANIMATION = 40; //in ms
     private final int SLOWEST_MAIN_THRUSTER_ANIMATION = 15; //in ms
+
+    private ArrayList<Rocket> obj;
 
     private final boolean DEBUG = true;
 
@@ -107,9 +110,9 @@ public class LandingPhase extends Application {
 
         class verletUpdater implements Runnable {
 
-            private VerletVelocity vVref;
+            private ODEsolver vVref;
             private long lastUpdate = System.nanoTime();
-            public verletUpdater(VerletVelocity ref) {
+            public verletUpdater(ODEsolver ref) {
                 this.vVref = ref;
             }
 
@@ -122,7 +125,7 @@ public class LandingPhase extends Application {
                 }
             }
         }
-        Thread vVt = new Thread(new verletUpdater(verletVelocity));
+        Thread vVt = new Thread(new verletUpdater(ODEsolver));
         vVt.start();
         //animations and updates to the gui elements:
         new AnimationTimer()
@@ -161,11 +164,16 @@ public class LandingPhase extends Application {
         this.rocketObj = rocketObj;
         this.MAX_POSSIBLE_FUEL_AMOUNT = rocketObj.getFuelMass();
         startTime = date.getTimeInMillis();
-        ArrayList<Rocket> obj = new ArrayList<>();
+        obj = new ArrayList<>();
         obj.add(rocketObj);
-        this.verletVelocity = new VerletVelocity(obj, date);
+        this.ODEsolver = new VerletVelocity(obj, date);
 
         //push to start
+    }
+
+    public void setODEsolver(physics.ODEsolver ODEsolver) {
+        this.ODEsolver = ODEsolver;
+        ODEsolver.initialize(obj, date);
     }
 
     public String constructDebugText () {

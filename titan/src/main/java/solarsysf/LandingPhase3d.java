@@ -2,21 +2,16 @@ package solarsysf;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -26,10 +21,10 @@ import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import physics.ODEsolver;
 import physics.VerletVelocity;
 import solarsystem.Rocket;
 import utils.Date;
-import utils.MathUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -47,13 +42,14 @@ public class LandingPhase3d extends Application {
     private Label debugText;
     private Date date;
     private long startTime;
-    private VerletVelocity verletVelocity;
+    private ODEsolver ODEsolver;
     private final int MAX_ANIMATION_FPS =30;
     private int currentFPS;
     private double verletUpdateUnitInMs = 10;
     private int verletUpdateUnitMultiplier = 1;
     // rocket vars
     private Rocket rocketObj;
+    private ArrayList<Rocket> obj;
 
     //HID Event flags
     private final int CAMERA_MOVEMENT_STEP_SIZE = 10;
@@ -160,9 +156,9 @@ public class LandingPhase3d extends Application {
 
         class verletUpdater implements Runnable {
 
-            private VerletVelocity vVref;
+            private ODEsolver vVref;
             private long lastUpdate = System.nanoTime();
-            public verletUpdater(VerletVelocity ref) {
+            public verletUpdater(ODEsolver ref) {
                 this.vVref = ref;
             }
 
@@ -181,7 +177,7 @@ public class LandingPhase3d extends Application {
             }
         }
 
-        Thread vVt = new Thread(new verletUpdater(verletVelocity));
+        Thread vVt = new Thread(new verletUpdater(ODEsolver));
         vVt.start();
 
 
@@ -322,11 +318,16 @@ public class LandingPhase3d extends Application {
         this.date = date;
         this.rocketObj = rocketObj;
         startTime = date.getTimeInMillis();
-        ArrayList<Rocket> obj = new ArrayList<>();
+        obj = new ArrayList<>();
         obj.add(rocketObj);
-        this.verletVelocity = new VerletVelocity(obj, date);
+        this.ODEsolver = new VerletVelocity(obj, date);
 
         //push to start
+    }
+
+    public void setODEsolver(physics.ODEsolver ODEsolver) {
+        this.ODEsolver = ODEsolver;
+        ODEsolver.initialize(obj, date);
     }
 
     public String constructDebugText () {
