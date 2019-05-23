@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class RocketTempLanderClosedLoopTest_simpleWind {
-    final boolean CHART = true;
+    final boolean CHART = false;
     final boolean PRINT = false;
     final double PRINT_INTERVAL = 1;
     @Test
@@ -180,13 +180,9 @@ public class RocketTempLanderClosedLoopTest_simpleWind {
     private void createChart(ArrayList<Double> xDataAL, ArrayList<Double> yDataAL, String name) {
         double[] xData = xDataAL.stream().mapToDouble(d -> d).toArray();
         double[] yData = yDataAL.stream().mapToDouble(d -> d).toArray();
-
-
         XYChart chart = QuickChart.getChart(name, "X", "Y", "y(x)", xData, yData);
-
-
         try {
-            BitmapEncoder.saveBitmapWithDPI(chart, ("./src/test/resources/simple_wind/" + name), BitmapEncoder.BitmapFormat.PNG, 300);
+            BitmapEncoder.saveBitmapWithDPI(chart, ("./src/test/resources/simple_wind_works_PID/" + name), BitmapEncoder.BitmapFormat.PNG, 300);
         } catch (IOException e) {
             e.printStackTrace();
         }
