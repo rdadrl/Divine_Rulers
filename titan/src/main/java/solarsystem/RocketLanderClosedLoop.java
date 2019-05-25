@@ -45,7 +45,7 @@ public class RocketLanderClosedLoop extends Rocket{
         this.name = "Rocket_temp: " + counter;
         this.radius = length;
         this.mass = dryMass + fuelMass;
-        this.date = date;
+        this.old_date = date;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
         this.stochasticWind = stochasticWind;
@@ -85,7 +85,7 @@ public class RocketLanderClosedLoop extends Rocket{
     @Override
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date){
         dt = differenceInSeconds(date); // get size of the time step
-        this.date = new Date(date);
+        this.old_date = new Date(date);
         if(dt!= 0) updateController();
 
         // IF WE WANT TO USE PID TO TRACK WE NEED TO CHECK WITH THE POSITION AT TIME T-1;

@@ -38,9 +38,9 @@ public class Planet extends CelestialObject {
     public void initializeCartesianCoordinates(Date date) {
         if(centralBody == null){return;}
 
-        //check whether current values are already stored for these date.
-        if(this.date != null && date.compareTo(this.date) == 0){return;}
-        else{this.date = new Date(date);}
+        //check whether current values are already stored for these old_date.
+        if(this.old_date != null && date.compareTo(this.old_date) == 0){return;}
+        else{this.old_date = new Date(date);}
 
         Vector3D[] cartesian = KeplerToCartesian.getCartesianCoordinates(this, date);
         orbitalPos = cartesian[0];
@@ -105,7 +105,7 @@ public class Planet extends CelestialObject {
     }
 
     /**
-     * @param date date
+     * @param date old_date
      * @return departureVelocity vector
      */
     public Vector3D getOrbitalVelAtDate(Date date){

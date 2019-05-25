@@ -20,7 +20,7 @@ public abstract class CelestialObject {
     @JsonProperty("radius")
     double radius;      // in km
 
-    Date date;   // Date of the current
+    Date old_date;   // Date of the current
     Vector3D centralPos = new Vector3D(); // Coordinate with the sun as a center.
     Vector3D centralVel = new Vector3D(); // Velocity vector with sun in the center
 
@@ -54,7 +54,7 @@ public abstract class CelestialObject {
      * @return acceleration
      */
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date){
-        this.date = date;
+        this.old_date = date;
         Vector3D forces = gravitationalForces(this, objectsInSpace);
         acceleration = forces.scale(1D/mass);
     }
@@ -86,10 +86,10 @@ public abstract class CelestialObject {
     }
 
     /**
-     * @return date associated with the variable
+     * @return old_date associated with the variable
      */
     public Date getDate() {
-        return date;
+        return old_date;
     }
 
     public abstract void initializeCartesianCoordinates(Date date);

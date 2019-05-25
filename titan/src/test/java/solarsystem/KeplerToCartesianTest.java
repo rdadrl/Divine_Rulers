@@ -25,7 +25,7 @@ public class KeplerToCartesianTest {
         /*
         SolarSystem solarSystem = new SolarSystem();
         Planet saturn = solarSystem.getPlanets().getSaturn();
-        Vector3D coordinate = saturn.getCentralPos(date);
+        Vector3D coordinate = saturn.getCentralPos(old_date);
         System.out.println("\nSaturn");
         System.out.println("X: " + coordinate.getX());
         System.out.println("Y: " + coordinate.getY());
@@ -33,7 +33,7 @@ public class KeplerToCartesianTest {
 
 
         Planet venus = solarSystem.getPlanets().getVenus();
-        coordinate = venus.getCentralPos(date);
+        coordinate = venus.getCentralPos(old_date);
         System.out.println("\nVenus");
         System.out.println("X: " + coordinate.getX());
         System.out.println("Y: " + coordinate.getY());
@@ -76,7 +76,7 @@ public class KeplerToCartesianTest {
         /*
         SolarSystem solarSystem = new SolarSystem();
         Planet saturn = solarSystem.getPlanets().getSaturn();
-        Vector3D HEEPos = saturn.getCentralPos(date);
+        Vector3D HEEPos = saturn.getCentralPos(old_date);
         System.out.println("\nSaturn");
         System.out.println("X: " + HEEPos.getX());
         System.out.println("Y: " + HEEPos.getY());
@@ -84,7 +84,7 @@ public class KeplerToCartesianTest {
 
 
         Planet venus = solarSystem.getPlanets().getVenus();
-        HEEPos = venus.getCentralPos(date);
+        HEEPos = venus.getCentralPos(old_date);
         System.out.println("\nVenus");
         System.out.println("X: " + HEEPos.getX());
         System.out.println("Y: " + HEEPos.getY());
@@ -154,7 +154,7 @@ public class KeplerToCartesianTest {
             Vector3D HEEPos = planet.getCentralPosAtDate(date);
             Vector3D OrbPos = planet.getOrbitalPosAtDate(date);
             if(PRINT){
-                //printXYZ(planet.getName(), OrbPos, date);
+                //printXYZ(planet.getName(), OrbPos, old_date);
                 printXYZ(planet.getName(), HEEPos, date);
                 //System.out.println();
             }
@@ -171,7 +171,7 @@ public class KeplerToCartesianTest {
         Vector3D HEEPos = planet.getCentralPosAtDate(date);
         Vector3D OrbPos = planet.getOrbitalPosAtDate(date);
         if(PRINT){
-            //printXYZ(planet.getName(), OrbPos, date);
+            //printXYZ(planet.getName(), OrbPos, old_date);
             printXYZ(planet.getName(), HEEPos, date);
             //System.out.println();
         }

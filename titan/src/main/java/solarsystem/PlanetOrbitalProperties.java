@@ -49,8 +49,8 @@ public class PlanetOrbitalProperties {
     private double w_a = w_J2000 - o_J2000; // argument of the periphelion
 
     /**
-     * Initialize the orbital properties for a specific date
-     * @param date date
+     * Initialize the orbital properties for a specific old_date
+     * @param date old_date
      */
     public void setOrbitalProperties(Date date){
         if(JT == date.dateToJulian()){
@@ -62,7 +62,7 @@ public class PlanetOrbitalProperties {
         // centuries since julian time
         double T = (JT - utils.Date.J2000)/36525.0;
 
-        // Calculate orbital properties at a specific date.
+        // Calculate orbital properties at a specific old_date.
         a = (a_J2000 + a_Cnt * T) * MathUtil.AU; // convert to meters
         e = e_J2000 + e_Cnt * T;
         i = i_J2000 + i_Cnt * T;
@@ -74,7 +74,7 @@ public class PlanetOrbitalProperties {
     }
 
     /**
-     * @param date date
+     * @param date old_date
      * @return array of orbital properties. In the order of semi-major axis (a), eccentricity (e)
      * , departureInclination (i), longitude (l), periapsis (w), ascending node (o), and gravetational
      * parementer (mu)
@@ -85,8 +85,8 @@ public class PlanetOrbitalProperties {
     }
 
     /**
-     * @param date date
-     * @return semi-major axis on date
+     * @param date old_date
+     * @return semi-major axis on old_date
      */
     public double getSemiMajorAxis(Date date) {
         setOrbitalProperties(date);
@@ -101,8 +101,8 @@ public class PlanetOrbitalProperties {
     }
 
     /**
-     * @param date date
-     * @return eccentricity on date
+     * @param date old_date
+     * @return eccentricity on old_date
      */
     public double getEccentricity(Date date) {
         setOrbitalProperties(date);
@@ -110,8 +110,8 @@ public class PlanetOrbitalProperties {
     }
 
     /**
-     * @param date date
-     * @return departureInclination on date
+     * @param date old_date
+     * @return departureInclination on old_date
      */
     public double getInclination(Date date) {
         setOrbitalProperties(date);
@@ -119,8 +119,8 @@ public class PlanetOrbitalProperties {
     }
 
     /**
-     * @param date date
-     * @return longitude on date
+     * @param date old_date
+     * @return longitude on old_date
      */
     public double getLongitude(Date date) {
         setOrbitalProperties(date);
@@ -128,8 +128,8 @@ public class PlanetOrbitalProperties {
     }
 
     /**
-     * @param date date
-     * @return periphelon on date
+     * @param date old_date
+     * @return periphelon on old_date
      */
     public double getPeriphelon(Date date) {
         setOrbitalProperties(date);
@@ -137,8 +137,8 @@ public class PlanetOrbitalProperties {
     }
 
     /**
-     * @param date date
-     * @return argument of the periphelon at the given date
+     * @param date old_date
+     * @return argument of the periphelon at the given old_date
      */
     public double getPeriphelonArgument(Date date){
         setOrbitalProperties(date);
@@ -146,8 +146,8 @@ public class PlanetOrbitalProperties {
     }
 
     /**
-     * @param date date
-     * @return acending node on date
+     * @param date old_date
+     * @return acending node on old_date
      */
     public double getAscendingNode(Date date) {
         setOrbitalProperties(date);

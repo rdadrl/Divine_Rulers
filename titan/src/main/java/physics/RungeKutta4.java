@@ -4,6 +4,7 @@ package physics;
 import solarsystem.CelestialObject;
 import solarsystem.Projectile;
 import utils.Date;
+import utils.Vector;
 import utils.Vector3D;
 
 import java.util.ArrayList;
@@ -57,11 +58,10 @@ public class RungeKutta4 implements ODEsolver {
         dfs = new Vector3D[bodies.size()][2];
     }
 
-    public Vector3D[] deriv(Vector3D[] y, CelestialObject self, double dt) {
+    public Vector3D[] deriv(Vector3D[] y, Vector3D acceleration, double dt) {
         Vector3D[] doty = new Vector3D[2];
         doty[0] = y[1].scale(dt);
-        self.setAcceleration(planets, currentDate);
-        doty[1] = self.getAcceleration().scale(dt);
+        doty[1] = acceleration.scale(dt);
         return doty;
     }
     
@@ -86,17 +86,19 @@ public class RungeKutta4 implements ODEsolver {
      */
     public Vector3D[] rk4(Vector3D p0, Vector3D v0, double dt, CelestialObject self) {
         Vector3D[] y = new Vector3D[] {p0, v0};
+        self.setAcceleration(planets, currentDate);
+        Vector3D acceleration = self.getAcceleration();
 
-        Vector3D[] k1 = deriv(y, self, dt);
+        Vector3D[] k1 = deriv(y, acceleration, dt);
 
         Vector3D[] yp = predict(y, k1, 0.5);
-        Vector3D[] k2 = deriv(yp, self, dt);
+        Vector3D[] k2 = deriv(yp, acceleration, dt);
 
         yp = predict(y, k2, 0.5);
-        Vector3D[] k3 = deriv(yp, self, dt);
+        Vector3D[] k3 = deriv(yp, acceleration, dt);
 
         yp = predict(y, k3, 1);
-        Vector3D[] k4 = deriv(yp, self, dt);
+        Vector3D[] k4 = deriv(yp, acceleration, dt);
 
         Vector3D[] coff = new Vector3D[2];
         for(int i = 0; i < k1.length; i++) {

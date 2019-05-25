@@ -64,6 +64,14 @@ public class Vector3D implements Vector<Point3D> {
         return out;
     }
 
+    public Vector3D absolute() {
+	    Vector3D absolute = new Vector3D();
+	    absolute.setX(Math.abs(x));
+        absolute.setY(Math.abs(y));
+        absolute.setZ(Math.abs(z));
+        return absolute;
+    }
+
 	/*
 	 * calculate the dot product of two vectors
 	 */

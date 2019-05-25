@@ -48,6 +48,7 @@ public class LandingPhase3d extends Application {
     private int currentFPS;
     private double verletUpdateUnitInMs = 10;
     private int verletUpdateUnitMultiplier = 1;
+    private int counter;
     // rocket vars
     private Rocket rocketObj;
     private ArrayList<Rocket> obj;
@@ -112,6 +113,10 @@ public class LandingPhase3d extends Application {
         landingPad.setTranslateY(0);
         landingPad.setMaterial(new PhongMaterial(Color.DARKRED));
 
+        Sphere landingDot = new Sphere(2);
+        landingPad.setMaterial(new PhongMaterial(Color.DARKBLUE));
+
+
         Sphere titan = new Sphere(3000);
         titan.setTranslateY(3000);
         PhongMaterial titanMaterial = new PhongMaterial();
@@ -119,7 +124,7 @@ public class LandingPhase3d extends Application {
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
         titan.setMaterial(titanMaterial);
 
-        root.getChildren().addAll(rocket,titan, light);
+        root.getChildren().addAll(titan, rocket, light, landingDot);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
@@ -251,55 +256,68 @@ public class LandingPhase3d extends Application {
                 long differancePerAnimationFrameInMS = (currentN - lastFrame) / 1000000L;
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
                     rocket.setTranslateX(rocketObj.getCentralPos().getX());
-                    rocket.setTranslateY(-rocketObj.getCentralPos().getY()/ 100);
-                    rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight()/2D);
+                    rocket.setTranslateY(-rocketObj.getCentralPos().getY() / 100);
+                    rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight() / 2D);
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(rocketObj.getCentralPos().getZ()));
-
-                    //Handle key events
-                    if (goNorth) {
-                        camera.setTranslateZ(camera.getTranslateZ() + goNorthDelta);
-                        if (goNorthDelta < CAMERA_MAX_SPEED) goNorthDelta += CAMERA_MOVEMENT_STEP_SIZE;
-                    }
-                    else if (goNorthDelta > CAMERA_INITAL_SPEED) goNorthDelta = CAMERA_INITAL_SPEED;
-
-                    if (goSouth) {
-                        camera.setTranslateZ(camera.getTranslateZ() - goSouthDelta);
-                        if (goSouthDelta < CAMERA_MAX_SPEED) goSouthDelta += CAMERA_MOVEMENT_STEP_SIZE;
-                    }
-                    else if (goSouthDelta > CAMERA_INITAL_SPEED) goSouthDelta = CAMERA_INITAL_SPEED;
-
-                    if (goEast) {
-                        camera.setTranslateX(camera.getTranslateX() + goEastDelta);
-                        if (goEastDelta < CAMERA_MAX_SPEED) goEastDelta += CAMERA_MOVEMENT_STEP_SIZE;
-                    }
-                    else if (goEastDelta > CAMERA_INITAL_SPEED) goEastDelta = CAMERA_INITAL_SPEED;
-
-                    if (goWest) {
-                        camera.setTranslateX(camera.getTranslateX() - goWestDelta);
-                        if (goWestDelta < CAMERA_MAX_SPEED) goWestDelta += CAMERA_MOVEMENT_STEP_SIZE;
-                    }
-                    else if (goWestDelta > CAMERA_INITAL_SPEED) goWestDelta = CAMERA_INITAL_SPEED;
-
-                    if (goUp) {
-                        camera.setTranslateY(camera.getTranslateY() + goUpDelta);
-                        if (goUpDelta < CAMERA_MAX_SPEED) goUpDelta += CAMERA_MOVEMENT_STEP_SIZE;
-                    }
-                    else if (goUpDelta > CAMERA_INITAL_SPEED) goUpDelta = CAMERA_INITAL_SPEED;
-
-                    if (goDown) {
-                        camera.setTranslateY(camera.getTranslateY() - goDownDelta);
-                        if (goDownDelta < CAMERA_MAX_SPEED) goDownDelta += CAMERA_MOVEMENT_STEP_SIZE;
-                    }
-                    else if (goDownDelta > CAMERA_INITAL_SPEED) goDownDelta = CAMERA_INITAL_SPEED;
-
-
-
+//                    if (counter % 10 == 0 || oneMoreRun) System.out.println("LD " +
+//                            "X: " + landingDot.getTranslateX() +
+//                            ", Y: " + landingDot.getTranslateY() +
+//                            ", Z: " + landingDot.getTranslateZ()
+//                    );
+//                    if (counter % 10 == 0 || oneMoreRun) System.out.println("RK " +
+//                            "X: " + rocket.getTranslateX() +
+//                            ", Y: " + rocket.getTranslateY() +
+//                            ", Z: " + rocket.getTranslateZ()
+//                    );
                     if (DEBUG) debugText.setText(constructDebugText());
                     currentFPS = (int) (1000 / differancePerAnimationFrameInMS);
                     lastFrame= currentN;
                     if(oneMoreRun) oneMoreRun = false;
+                    counter ++;
                 }
+
+                //Handle key events
+                if (goNorth) {
+                    camera.setTranslateZ(camera.getTranslateZ() + goNorthDelta);
+                    if (goNorthDelta < CAMERA_MAX_SPEED) goNorthDelta += CAMERA_MOVEMENT_STEP_SIZE;
+                }
+                else if (goNorthDelta > CAMERA_INITAL_SPEED) goNorthDelta = CAMERA_INITAL_SPEED;
+
+                if (goSouth) {
+                    camera.setTranslateZ(camera.getTranslateZ() - goSouthDelta);
+                    if (goSouthDelta < CAMERA_MAX_SPEED) goSouthDelta += CAMERA_MOVEMENT_STEP_SIZE;
+                }
+                else if (goSouthDelta > CAMERA_INITAL_SPEED) goSouthDelta = CAMERA_INITAL_SPEED;
+
+                if (goEast) {
+                    camera.setTranslateX(camera.getTranslateX() + goEastDelta);
+                    if (goEastDelta < CAMERA_MAX_SPEED) goEastDelta += CAMERA_MOVEMENT_STEP_SIZE;
+                }
+                else if (goEastDelta > CAMERA_INITAL_SPEED) goEastDelta = CAMERA_INITAL_SPEED;
+
+                if (goWest) {
+                    camera.setTranslateX(camera.getTranslateX() - goWestDelta);
+                    if (goWestDelta < CAMERA_MAX_SPEED) goWestDelta += CAMERA_MOVEMENT_STEP_SIZE;
+                }
+                else if (goWestDelta > CAMERA_INITAL_SPEED) goWestDelta = CAMERA_INITAL_SPEED;
+
+                if (goUp) {
+                    camera.setTranslateY(camera.getTranslateY() + goUpDelta);
+                    if (goUpDelta < CAMERA_MAX_SPEED) goUpDelta += CAMERA_MOVEMENT_STEP_SIZE;
+                }
+                else if (goUpDelta > CAMERA_INITAL_SPEED) goUpDelta = CAMERA_INITAL_SPEED;
+
+                if (goDown) {
+                    camera.setTranslateY(camera.getTranslateY() - goDownDelta);
+                    if (goDownDelta < CAMERA_MAX_SPEED) goDownDelta += CAMERA_MOVEMENT_STEP_SIZE;
+                }
+                else if (goDownDelta > CAMERA_INITAL_SPEED) goDownDelta = CAMERA_INITAL_SPEED;
+
+
+
+
+
 
             }
         }.start();

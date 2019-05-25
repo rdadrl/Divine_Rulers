@@ -17,13 +17,13 @@ public class Rocket_temp extends Projectile{
         this.radius = radius;
         this.toPlanet = toPlanet;
         this.fromPlanet = fromPlanet;
-        this.date = date;
+        this.old_date = date;
         this.departureVelocity = velocity * 1000;
     }
 
     @Override
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date){
-        this.date = date;
+        this.old_date = date;
         Vector3D gravity = gravitationalForces(this, objectsInSpace);
         Vector3D dir = toPlanet.getCentralPos().substract(centralPos).unit().scale(departureVelocity);
         double dist = toPlanet.getCentralPos().substract(centralPos).length();

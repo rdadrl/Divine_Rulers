@@ -1,6 +1,5 @@
 package solarsystem;
 
-import physics.VerletVelocity;
 import utils.Date;
 import utils.Vector3D;
 
@@ -44,7 +43,12 @@ public abstract class Rocket extends Projectile{
 
 
     double differenceInSeconds(Date date) {
-        return (date.getTimeInMillis() - this.date.getTimeInMillis())/1000D;
+
+        return (date.getTimeInMillis() - this.old_date.getTimeInMillis())/1000D;
+    }
+
+    long differenceInMiliSeconds(Date date) {
+        return (date.getTimeInMillis() - this.old_date.getTimeInMillis());
     }
 
     public double getFuelMass() {
@@ -136,6 +140,9 @@ public abstract class Rocket extends Projectile{
             meanWindSpeedHeight = meanWindSpeed * Math.pow((Z2/Z1), A_conts);
         }else{
             meanWindSpeedHeight = meanWindSpeed* (Math.log(Z2/Z0)/Math.log(Z1/Z0));
+            if(meanWindSpeed > 0) {
+                meanWindSpeedHeight = Math.max(0, meanWindSpeedHeight);
+            }else  meanWindSpeedHeight = Math.min(0, meanWindSpeedHeight);
         }
         if(Double.isNaN(meanWindSpeedHeight)) meanWindSpeedHeight = 0;
         double windNoise = (Math.random() *0.1) +0.95;
