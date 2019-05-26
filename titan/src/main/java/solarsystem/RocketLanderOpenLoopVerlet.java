@@ -25,7 +25,6 @@ public class RocketLanderOpenLoopVerlet extends Rocket {
     private boolean phase3_freefall_init;
     private boolean rot4_init;
     private boolean phase3_vertical_init;
-    private boolean rot5_init;
 
     private boolean rot1_done;
     private boolean phase1_done;
@@ -35,15 +34,13 @@ public class RocketLanderOpenLoopVerlet extends Rocket {
     private boolean phase3_freefall_done;
     private boolean rot4_done;
     private boolean phase3_vertical_done;
-    private boolean rot5_done;
-    private boolean phase4_vertical_done;
 
 
     private double xLandingPad;
 
     public RocketLanderOpenLoopVerlet(Vector3D centralPos,
                                       Vector3D centralVel, Date date) {
-        this.landedAltitude = -1000;
+        this.landedAltitude = 0;
         this.name = "OpenLoop Rocket_temp: ";
         this.xLandingPad = 0;
         this.mass = dryMass + fuelMass;
@@ -255,6 +252,9 @@ public class RocketLanderOpenLoopVerlet extends Rocket {
                 calculateMass();
                 theta=centralPos.getZ();
                 Ft=(requiredAcc+g)*mass/Math.cos(centralPos.getZ());
+                if(centralVel.getY()>0){
+                    Ft=0;
+                }
                 Fl=-Ft*Math.tan(centralPos.getZ());
                 updateAcceleration();
             }
@@ -321,11 +321,10 @@ public class RocketLanderOpenLoopVerlet extends Rocket {
     public void initVerticalLanding() {
         double yRocket = centralPos.getY();
         double y_dot = centralVel.getY();
-        double y_doubledot = Math.pow(y_dot, 2) / (2 * yRocket)*1.0049;
+        double y_doubledot = Math.pow(y_dot, 2) / (2 * yRocket)*1.005055;
         requiredAcc=y_doubledot;
         System.out.println("Perfect acc:"+y_doubledot);
-        timeCurrentPhase=Math.abs(centralPos.getY()*2/(centralVel.getY()));
-        Ft = Ft + ((mass*g)/Math.cos(centralPos.getZ()));
+        timeCurrentPhase=Math.abs(centralPos.getY()*2/(centralVel.getY()))*1.1;
         Ft=(y_doubledot+g)*mass/Math.cos(centralPos.getZ());
         Fl=-Ft*Math.tan(centralPos.getZ());
         System.out.println("Ft of vertical: "+Ft);
