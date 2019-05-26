@@ -17,7 +17,7 @@ public class LandingPhase3DLauncherOpenLoop extends Application {
             SolarSystem solarSystem = new SolarSystem(); //Solar System Instance
             Date date = new Date(2000, 0, 1, 0, 0, 0);
 
-            Application landingPhaseApp = new LandingPhase3d(new RocketLanderOpenLoopVerlet( new Vector3D(1000, 200000
+            Application landingPhaseApp = new LandingPhase3d(new RocketLanderOpenLoopVerlet( new Vector3D(1000, 170000
                             , 0),
                     new Vector3D(0, 0, 0), date), date);
             //((LandingPhase3d) landingPhaseApp).setODEsolver(new VerletVelocity());
