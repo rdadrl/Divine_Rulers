@@ -26,7 +26,7 @@ public class RocketLanderClosedLoop_advancedWind_good extends Rocket{
     private double cutoffFinal = 8;
 //    private double cutoffJerk = 0.01;
     private PIDcontroller pidYdiff_close, pidXdiff_close, pidXdiff_far, pidRot_far, pidRot_close, max_pidRot, min_pidRot, pidXdiff_far_MT;
-    private double rotMax = 1.4; // maximum rotation of 90 degrees.
+    private double rotMax = 1.5; // maximum rotation of 90 degrees.
 
     private BigDecimal increment = new BigDecimal("0");
 
@@ -185,6 +185,7 @@ public class RocketLanderClosedLoop_advancedWind_good extends Rocket{
     private void updateController() {
         double yError = centralPos.getY();
         double xError = centralPos.getX();
+        double xError_vel = centralVel.getX();
         double tError = centralPos.getZ();
 
 //        if(Math.abs(centralVel.getX())<0.3){
@@ -236,13 +237,12 @@ public class RocketLanderClosedLoop_advancedWind_good extends Rocket{
         }
 
 
-
         double xImpulse;
         if(!phase2X){
-            xImpulse = pidXdiff_far.calculateOutput(xError, dt);
+            xImpulse = pidXdiff_far.calculateOutput(xError, xError_vel, dt);
             //xImpulse = pidXdiff_close.calculateOutput(xError, dt);
         }else {
-            xImpulse = pidXdiff_far.calculateOutput(xError, dt);
+            xImpulse = pidXdiff_far.calculateOutput(xError,xError_vel, dt);
             //xImpulse = pidXdiff_close.calculateOutput(xError, dt);
         }
 

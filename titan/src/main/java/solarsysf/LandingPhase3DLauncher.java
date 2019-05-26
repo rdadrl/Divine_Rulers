@@ -17,7 +17,7 @@ public class LandingPhase3DLauncher extends Application {
 
             Application landingPhaseApp = new LandingPhase3d(new RocketLanderClosedLoop_advancedWind_good(100,
                     new Vector3D(1000, 170000,0), new Vector3D(-30,-700,0),date, true), date);
-            ((LandingPhase3d) landingPhaseApp).setODEsolver(new RungeKutta4());
+            //((LandingPhase3d) landingPhaseApp).setODEsolver(new RungeKutta4());
             landingPhaseApp.start(new Stage()); //start with a empty stage (or you may go ahead and give some specs)
         } catch (Exception e) {
             e.printStackTrace();

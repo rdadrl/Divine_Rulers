@@ -28,7 +28,7 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
     boolean CHART = false;
     boolean PRINT = true;
     final double PRINT_INTERVAL = 100;
-    final int testCase = 3;
+    final int testCase = 6;
     ODEsolver ODEsolver = new VerletVelocity();
 
     @Test
@@ -80,6 +80,8 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
                 return landerSpecs4(windSpeed);
             case 5:
                 return landerSpecs5(windSpeed);
+            case 6:
+                return landerSpecs6(windSpeed);
             default:
                 return landerSpecs1(windSpeed);
         }
@@ -125,6 +127,15 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
         Date date = new Date(2000,0,1,0,0,0);
         RocketLanderClosedLoop_advancedWind_good rocket = new RocketLanderClosedLoop_advancedWind_good(100,
         new Vector3D(1000, 170000,0), new Vector3D(-30,-700,0),date, true, windSpeed);
+        runODE(rocket, date);
+        return rocket;
+
+    }
+
+    private RocketLanderClosedLoop_advancedWind_good landerSpecs6(double windSpeed) {
+        Date date = new Date(2000,0,1,0,0,0);
+        RocketLanderClosedLoop_advancedWind_good rocket = new RocketLanderClosedLoop_advancedWind_good(100,
+                new Vector3D(800000, 200000,-1.5), new Vector3D(-3000,0,0),date, true, windSpeed);
         runODE(rocket, date);
         return rocket;
 
