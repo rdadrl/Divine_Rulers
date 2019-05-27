@@ -33,6 +33,13 @@
             <version>3.5.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.interactivemesh.jfx.importer.3ds</groupId>
+            <artifactId>3ds-importer</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/jim3dsModelImporterJFX.jar</systemPath>
+        </dependency>
     </dependencies>
 
 </project>
