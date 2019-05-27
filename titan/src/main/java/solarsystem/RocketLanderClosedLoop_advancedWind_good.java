@@ -23,10 +23,10 @@ public class RocketLanderClosedLoop_advancedWind_good extends Rocket{
     private double cutoffClose_y = 10000.0;
     private double cutoffClose_yVel = -100.0;
 //    private double cutoffClose_x = 5000.0;
-    private double cutoffFinal = 8;
+    private double cutoffFinal = 5;
 //    private double cutoffJerk = 0.01;
     private PIDcontroller pidYdiff_close, pidXdiff_close, pidXdiff_far, pidRot_far, pidRot_close, max_pidRot, min_pidRot, pidXdiff_far_MT;
-    private double rotMax = 1.4; // maximum rotation of 90 degrees.
+    private double rotMax = 1.5; // maximum rotation of 90 degrees.
 
     private BigDecimal increment = new BigDecimal("0");
 
@@ -75,14 +75,14 @@ public class RocketLanderClosedLoop_advancedWind_good extends Rocket{
 
         //pidYdiff_far = new PIDcontroller(-12.5, 0, -1792);
         pidYdiff_close = new PIDcontroller(-26.0, 0, -950);
-        pidXdiff_far = new PIDcontroller(0.002, 0, 0.08);
+        pidXdiff_far = new PIDcontroller(0.004, 0, 0.08);
 
         pidXdiff_far_MT = new PIDcontroller(-11.0, 0, -2350);
 
-        //pidXdiff_close = new PIDcontroller(0.001, 0.00001, 0.);
-        pidXdiff_close = new PIDcontroller(0.006,  0, 0.24);
-        //pidXdiff_close = new PIDcontroller(0.002, 0.000005, 0.1);
-        //pidXdiff_close = new PIDcontroller(0.0008, 0.00001, 0.2);
+//        pidXdiff_close = new PIDcontroller(0.001, 0.00001, 0.);
+//        pidXdiff_close = new PIDcontroller(0.006,  0, 0.24);
+//        pidXdiff_close = new PIDcontroller(0.002, 0.000005, 0.1);
+//        pidXdiff_close = new PIDcontroller(0.0008, 0.00001, 0.2);
 
 
 
@@ -185,6 +185,7 @@ public class RocketLanderClosedLoop_advancedWind_good extends Rocket{
     private void updateController() {
         double yError = centralPos.getY();
         double xError = centralPos.getX();
+        double xError_vel = centralVel.getX();
         double tError = centralPos.getZ();
 
 //        if(Math.abs(centralVel.getX())<0.3){
@@ -236,14 +237,12 @@ public class RocketLanderClosedLoop_advancedWind_good extends Rocket{
         }
 
 
-
         double xImpulse;
         if(!phase2X){
-            xImpulse = pidXdiff_far.calculateOutput(xError, dt);
+            xImpulse = pidXdiff_far.calculateOutput(xError, xError_vel, dt);
             //xImpulse = pidXdiff_close.calculateOutput(xError, dt);
         }else {
-            xImpulse = pidXdiff_far.calculateOutput(xError, dt);
-            //xImpulse = pidXdiff_close.calculateOutput(xError, dt);
+            xImpulse = pidXdiff_far.calculateOutput(xError,xError_vel, dt);
         }
 
         double tImpulse;

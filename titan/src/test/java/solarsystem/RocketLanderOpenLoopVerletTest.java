@@ -41,7 +41,7 @@ public class RocketLanderOpenLoopVerletTest {
                 break;
             }
             verletVelocity.updateLocation(10, TimeUnit.MILLISECONDS);
-            if (i % 50 == 0) {
+            if (i % 100 == 0 || rocket.totTime.doubleValue() < 20) {
                 System.out.println("time: " + rocket.totTime.toString());
                 System.out.println("X:" + rocket.centralPos.getX());
                 System.out.println("Y:" + rocket.centralPos.getY());

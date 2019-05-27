@@ -26,16 +26,17 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
     private String folderName = "advanced_wind_trialMaxRot_noPID/";
     private String pathName;
     boolean CHART = false;
-    boolean PRINT = true;
+    boolean PRINT = false;
     final double PRINT_INTERVAL = 100;
-    final int testCase = 3;
+    final int testCase = 1;
     ODEsolver ODEsolver = new VerletVelocity();
 
     @Test
     public void checkParametersNoWind() {
         CHART = false;
         PRINT = false;
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 7; i++) {
+            System.out.println(i);
             RocketLanderClosedLoop_advancedWind_good rocket = landTestWindSpecificSpeed(0, i);
             Assert.assertTrue(rocket.getCentralPos().getY() < 0.1);
             Assert.assertTrue(rocket.getCentralPos().getX() < 0.1);
@@ -43,6 +44,25 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
             Assert.assertTrue(rocket.getCentralVel().getY() < 0.1);
             Assert.assertTrue(rocket.getCentralVel().getX() < 0.1);
             Assert.assertTrue(rocket.getCentralVel().getZ() < 0.01);
+        }
+    }
+
+    @Test
+    public void checkParametersWind() {
+        CHART = false;
+        PRINT = false;
+        for (int i = 1; i <= 7; i++) {
+            System.out.println("TC:" + i);
+            for (int j = -7; j<= 7; j++){
+                System.out.println("\tWIND:" + j);
+                RocketLanderClosedLoop_advancedWind_good rocket = landTestWindSpecificSpeed(j, i);
+                Assert.assertTrue(Math.abs(rocket.getCentralPos().getY()) < 0.1);
+                Assert.assertTrue(Math.abs(rocket.getCentralPos().getX()) < 30);
+                Assert.assertTrue(Math.abs(rocket.getCentralPos().getZ()) < 0.02);
+                Assert.assertTrue(Math.abs(rocket.getCentralVel().getY()) < 0.1);
+                Assert.assertTrue(Math.abs(rocket.getCentralVel().getX()) < 0.1);
+                Assert.assertTrue(Math.abs(rocket.getCentralVel().getZ()) < 0.01);
+            }
         }
     }
 
@@ -56,7 +76,7 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
     @Test
     public void landerTestWind() {
         if(CHART) createFolderDate();
-        landTestWindSpecificSpeed(-10, testCase);
+        landTestWindSpecificSpeed(10, testCase);
     }
 
     @Test
@@ -80,6 +100,10 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
                 return landerSpecs4(windSpeed);
             case 5:
                 return landerSpecs5(windSpeed);
+            case 6:
+                return landerSpecs6(windSpeed);
+            case 7:
+                return landerSpecs7(windSpeed);
             default:
                 return landerSpecs1(windSpeed);
         }
@@ -129,11 +153,29 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
         return rocket;
 
     }
+
+    private RocketLanderClosedLoop_advancedWind_good landerSpecs6(double windSpeed) {
+        Date date = new Date(2000,0,1,0,0,0);
+        RocketLanderClosedLoop_advancedWind_good rocket = new RocketLanderClosedLoop_advancedWind_good(100,
+                new Vector3D(1000, 170000, 0), new Vector3D(0, 0, 0),date, true, windSpeed);
+        runODE(rocket, date);
+        return rocket;
+
+    }
+
+    private RocketLanderClosedLoop_advancedWind_good landerSpecs7(double windSpeed) {
+        Date date = new Date(2000,0,1,0,0,0);
+        RocketLanderClosedLoop_advancedWind_good rocket = new RocketLanderClosedLoop_advancedWind_good(100,
+                new Vector3D(1000, 170000, 0.01), new Vector3D(-30, -600, -0.01),date, true, windSpeed);
+        runODE(rocket, date);
+        return rocket;
+
+    }
     private void runODE(RocketLanderClosedLoop_advancedWind_good rocket, Date date) {
         ArrayList<RocketLanderClosedLoop_advancedWind_good> obj = new ArrayList<>();
         obj.add(rocket);
         ODEsolver.initialize(obj, date);
-        ArrayList<Double> y_pos, x_pos, y_vel, x_vel, y_acc, x_acc, y_jerk, x_jerk, t, t_pos, t_vel, t_acc, x_acc_abs, Ft_list, Fl_list, x_jerk_avg, x_acc_avg, t_10;
+        ArrayList<Double> y_pos, x_pos, y_vel, x_vel, y_acc, x_acc, y_jerk, x_jerk, t, t_pos, t_vel, t_acc, x_acc_abs, Ft_list, Fl_list, x_jerk_avg, x_acc_avg, t_10, cur_wind;
 
         y_pos = new ArrayList<>();
         x_pos = new ArrayList<>();
@@ -153,6 +195,7 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
         x_jerk_avg = new ArrayList<>();
         t_10 = new ArrayList<>();
         x_acc_avg = new ArrayList<>();
+        cur_wind = new ArrayList<>();
 
 
         for(int i = 0; i < (2000*(1d/0.01)); i++) {
@@ -176,6 +219,7 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
                 //x_jerk_avg.add(rocket.getAverageJerkX());
                 t_10.add(rocket.getTotalTime());
                 //x_acc_avg.add(rocket.getAverageAccX());
+                cur_wind.add(rocket.getCurrentWindSpeed());
 
             }
             if(PRINT) {
@@ -213,6 +257,8 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
 //            createChart(t, t_acc, rocket.meanWindSpeed + "_t_acc",0, 0, Hl);
             createChart(t, Ft_list, rocket.meanWindSpeed + "_Ft",0, 0, Hl);
 //            createChart(t, Fl_list, rocket.meanWindSpeed + "_Fl",0, 0, Hl);
+            createChart(cur_wind, y_pos, rocket.meanWindSpeed + "_windSpeed");
+            createChart(x_pos, y_pos, rocket.meanWindSpeed + "_XY");
         }
 
     }
@@ -235,8 +281,6 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
     private void createChart(ArrayList<Double> xDataAL, ArrayList<Double> yDataAL, String name, double yMin, double yMax, double Hl_t) {
         double[] xData = xDataAL.stream().mapToDouble(d -> d).toArray();
         double[] yData = yDataAL.stream().mapToDouble(d -> d).toArray();
-
-
         if(yData.length >0) {
             XYChart chart = QuickChart.getChart(name, "X", "Y", "y(x)", xData, yData);
             if(yMin != 0 || yMax !=0){
@@ -246,8 +290,7 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
             }else{
                 chart.addSeries("Hl", new double[]{Hl_t, Hl_t}, new double[]{Collections.min(yDataAL), Collections.max(yDataAL)});
             }
-
-              try {
+            try {
                 BitmapEncoder.saveBitmapWithDPI(chart, (pathName + name), BitmapEncoder.BitmapFormat.PNG, 300);
             } catch (IOException e) {
                 e.printStackTrace();
