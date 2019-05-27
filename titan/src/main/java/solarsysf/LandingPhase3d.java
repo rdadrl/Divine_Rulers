@@ -1,5 +1,6 @@
 package solarsysf;
 
+import com.interactivemesh.jfx.importer.ImportException;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -15,9 +16,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
-import javafx.scene.shape.Cylinder;
-import javafx.scene.shape.Sphere;
+import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -26,9 +25,13 @@ import physics.VerletVelocity;
 import solarsystem.Rocket;
 import utils.Date;
 
+import java.io.File;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import com.interactivemesh.jfx.importer.tds.*;
 
 public class LandingPhase3d extends Application {
     // gui variables
@@ -52,6 +55,7 @@ public class LandingPhase3d extends Application {
     // rocket vars
     private Rocket rocketObj;
     private ArrayList<Rocket> obj;
+    private static final String MESH_FILENAME = "lunarlandernofoil_carbajal.3ds";
 
     //HID Event flags
     private final int CAMERA_MOVEMENT_STEP_SIZE = 10;
@@ -84,6 +88,7 @@ public class LandingPhase3d extends Application {
         globalRoot = new StackPane();
         globalRoot.setStyle("-fx-background-image: url('textures/galaxy_starfield.png');");
 
+
         //Labels:
         if (DEBUG) {
             debugText = new Label(constructDebugText());
@@ -105,6 +110,7 @@ public class LandingPhase3d extends Application {
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
 
+        Group rocketMesh = loadRocket();
         //rocket.setTranslateX(rocketObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
@@ -124,7 +130,7 @@ public class LandingPhase3d extends Application {
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
         titan.setMaterial(titanMaterial);
 
-        root.getChildren().addAll(titan, rocket, light, landingDot);
+        root.getChildren().addAll(titan, rocket, light, landingDot, rocketMesh);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
@@ -343,6 +349,21 @@ public class LandingPhase3d extends Application {
     public void setODEsolver(physics.ODEsolver ODEsolver) {
         this.ODEsolver = ODEsolver;
         ODEsolver.initialize(obj, date);
+    }
+
+    public Group loadRocket() {
+        TdsModelImporter tdsImporter = new TdsModelImporter();
+        try {
+            tdsImporter.read(new File(System.getProperty("user.dir") + "/src/main/resources/" + MESH_FILENAME));
+        }
+        catch (ImportException e) {
+            // handle exception
+        }
+        Node[] rootNodes = tdsImporter.getImport();
+
+        Group rocketNode = new Group();
+        rocketNode.getChildren().addAll(rootNodes);
+        return rocketNode;
     }
 
     public String constructDebugText () {
