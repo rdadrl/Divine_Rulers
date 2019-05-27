@@ -31,8 +31,8 @@ public class RocketLanderOpenLoopPlotting {
 
         for (int i=0; i < (2000 * (1d / 0.01)); i++) {
             iteration=i;
-            xData.add(rocket.totTime);
-            yData.add(rocket.centralPos.getZ());
+            xData.add(rocket.centralPos.getX());
+            yData.add(rocket.centralPos.getY());
             if (rocket.landed){
                 System.out.println("LANDED!!!");
                 System.out.println("time: " + rocket.totTime.toString());
@@ -71,13 +71,13 @@ public class RocketLanderOpenLoopPlotting {
         }
 
         // Create Chart
-        XYChart chart = QuickChart.getChart("Z position", "Time", "Z position", "Z(t)", xData, yData);
+        XYChart chart = QuickChart.getChart("XY", "X", "Y", "XY", xData, yData);
 
         // Show it
         new SwingWrapper(chart).displayChart();
 
         try{
-            BitmapEncoder.saveBitmap(chart, "./Zpos", BitmapEncoder.BitmapFormat.PNG);
+            BitmapEncoder.saveBitmap(chart, "./noWindXY", BitmapEncoder.BitmapFormat.PNG);
         }
         catch(IOException e){
             System.out.println("fail");
