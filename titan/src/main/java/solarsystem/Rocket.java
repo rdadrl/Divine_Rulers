@@ -153,6 +153,15 @@ public abstract class Rocket extends Projectile{
         acceleration.setX(acceleration.getX() + windAcc);
     }
 
+    double applySimpleWindAcc() {
+        // random windnoise of -0.5 m to 0.5 m.
+        double windNoise = (Math.random() *0.1) +0.95;
+        currentWindSpeed = meanWindSpeed * windNoise;
+        // force = area of impact * air density * windSpeed
+        double windForce = sidearea * airDensity * currentWindSpeed;
+        return windAcc = windForce/mass;
+    }
+
 
     public boolean getLanded() {
         return landed;
