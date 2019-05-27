@@ -31,10 +31,10 @@ public abstract class Rocket extends Projectile{
     double Fl; // force thrusters
     double Ft; // force latereral thrusters
 
-    final double Z0 = 0.5;
+    final double Z0 = 0.0024;
     final double Z1 = 10;
     final double Z2 = 100;
-    double A_conts;
+    double A_conts = 0.22;
 
     Vector3D centralJerk = new Vector3D();
 
@@ -115,8 +115,8 @@ public abstract class Rocket extends Projectile{
     void initializeAdvancedWind() {
         if(meanWindSpeed==-99) meanWindSpeed = (Math.random() * 20) - 10;
         double V1 = meanWindSpeed;
-        double V2 = V1* (Math.log(Z2/Z0)/Math.log(Z1/Z0));
-        A_conts = Math.log(V2/V1)/Math.log(Z2/Z1);
+        double V2 = V1 * (Math.log(Z2/Z0)/Math.log(Z1/Z0));
+        //A_conts = Math.log(V2/V1)/Math.log(Z2/Z1);
     }
 
 
