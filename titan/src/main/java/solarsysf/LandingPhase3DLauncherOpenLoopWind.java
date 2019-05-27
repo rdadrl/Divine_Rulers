@@ -2,16 +2,13 @@ package solarsysf;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import physics.RungeKutta4;
-import physics.VerletVelocity;
-import solarsystem.RocketLanderClosedLoop;
 import solarsystem.RocketLanderOpenLoopVerlet;
 import solarsystem.RocketLanderOpenLoopVerletWind;
 import solarsystem.SolarSystem;
 import utils.Date;
 import utils.Vector3D;
 
-public class LandingPhase3DLauncherOpenLoop extends Application {
+public class LandingPhase3DLauncherOpenLoopWind extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
@@ -20,7 +17,7 @@ public class LandingPhase3DLauncherOpenLoop extends Application {
 
             Application landingPhaseApp = new LandingPhase3d(new RocketLanderOpenLoopVerletWind( new Vector3D(1000, 170000
                     , 0),
-                    new Vector3D(0, 0, 0),true,10, date), date);
+                    new Vector3D(0, 0, 0),true,5, date), date);
             //((LandingPhase3d) landingPhaseApp).setODEsolver(new VerletVelocity());
             landingPhaseApp.start(new Stage()); //start with a empty stage (or you may go ahead and give some specs)
         } catch (Exception e) {
