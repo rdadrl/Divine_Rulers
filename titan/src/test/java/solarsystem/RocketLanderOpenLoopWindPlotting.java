@@ -21,7 +21,7 @@ public class RocketLanderOpenLoopWindPlotting {
         Date date = new Date(2000, 0, 1, 0, 0, 0);
         RocketLanderOpenLoopVerletWind rocket = new RocketLanderOpenLoopVerletWind( new Vector3D(1000, 170000
                 , 0),
-                new Vector3D(0, 0, 0),true,10, date);
+                new Vector3D(0, 0, 0),true,5, date);
         ArrayList<RocketLanderOpenLoopVerletWind> obj = new ArrayList<>();
         obj.add(rocket);
         VerletVelocity verletVelocity = new VerletVelocity(obj, date);
@@ -32,7 +32,7 @@ public class RocketLanderOpenLoopWindPlotting {
         for (int i=0; i < (2000 * (1d / 0.01)); i++) {
             iteration=i;
             xData.add(rocket.totTime);
-            yData.add(rocket.centralPos.getX());
+            yData.add(rocket.acceleration.getZ());
             if (rocket.landed){
                 System.out.println("LANDED!!!");
                 System.out.println("time: " + rocket.totTime.toString());
@@ -71,13 +71,13 @@ public class RocketLanderOpenLoopWindPlotting {
         }
 
         // Create Chart
-        XYChart chart = QuickChart.getChart("X position", "Time", "X position", "X(t)", xData, yData);
+        XYChart chart = QuickChart.getChart("Z acceleration", "Time", "Z acceleration", "Az(t)", xData, yData);
 
         // Show it
         new SwingWrapper(chart).displayChart();
 
         try{
-            BitmapEncoder.saveBitmap(chart, "./XposWind", BitmapEncoder.BitmapFormat.PNG);
+            BitmapEncoder.saveBitmap(chart, "./ZaccWind", BitmapEncoder.BitmapFormat.PNG);
         }
         catch(IOException e){
             System.out.println("fail");
