@@ -26,9 +26,13 @@ import javafx.stage.Stage;
 import physics.ODEsolver;
 import physics.VerletVelocity;
 import solarsystem.Rocket;
+import solarsystem.RocketLanderClosedLoop_advancedWind_good;
+import solarsystem.SolarSystem;
 import utils.Date;
+import utils.Vector3D;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +60,7 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
     private Rocket rocketObj;
     private ArrayList<Rocket> obj;
     private static final String MESH_FILENAME = "lunarlandernofoil_carbajal.3ds";
+    private static final String FILE_LOC = "src/main/resources/tryModel/destination-moon.3DS";
 
     //HID Event flags
     private final int CAMERA_MOVEMENT_STEP_SIZE = 10;
@@ -131,7 +136,7 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
         titan.setMaterial(titanMaterial);
 
         root.getChildren().addAll(titan, rocket, light, landingDot);//, rocketMesh);
-        //root.getChildren().addAll(rocketMesh);
+        root.getChildren().addAll(rocketMesh);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
@@ -354,21 +359,32 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
 
     public Node[] loadRocket() {
 
+        File file = new File(FILE_LOC);
         TdsModelImporter tdsImporter = new TdsModelImporter();
-        File rocketFile = null;
+        String filename = "";
         try {
-            rocketFile = new File(MESH_FILENAME);
+            filename = file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
-        catch (Exception e) { System.out.println("File import fucked up"); }
+        System.out.println(filename);
+        tdsImporter.read(filename);
+        final Node[] tdsMesh = (Node[]) tdsImporter.getImport();
+        tdsImporter.close();
+        return tdsMesh;
+//        try {
+//            rocketFile = new File(MESH_FILENAME);
+//        }
+//        catch (Exception e) { System.out.println("File import fucked up"); }
+//
+//        try {
+//            tdsImporter.read(rocketFile);
+//        }
+//        catch (ImportException e) {
+//            // handle exception
+//            System.out.println("tds importer fucked up at somepoint.");
+//        }
 
-        try {
-            tdsImporter.read(rocketFile);
-        }
-        catch (ImportException e) {
-            // handle exception
-            System.out.println("tds importer fucked up at somepoint.");
-        }
-        return tdsImporter.getImport();
     }
 
     public String constructDebugText () {
@@ -388,4 +404,5 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
                 "m-wind\t: " + df.format(rocketObj.getMeanWindSpeed()) + "\n" +
                 "speed\t: " + verletUpdateUnitMultiplier + "x";
     }
+
 }

@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class RocketTempLanderClosedLoopTest_advancedWind_rot {
     private String folderName = "advanced_wind_trialMaxRot_noPID/";
     private String pathName;
-    boolean CHART = false;
+    boolean CHART = true;
     boolean PRINT = false;
     final double PRINT_INTERVAL = 100;
     final int testCase = 1;
@@ -233,7 +233,7 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
         }
         rocket.printStatus();
         if(CHART){
-            double Hl = rocket.phase2X_time;
+            double Hl = rocket.phase2Y_time;
 
 //            createChart(t, x_jerk_avg, rocket.meanWindSpeed + "_x_jerk_avg_z", -0.01, 0.01, Hl);
 //            createChart(t, x_jerk_avg, rocket.meanWindSpeed + "_x_jerk_avg", 0, 0, Hl);
@@ -286,9 +286,9 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
             if(yMin != 0 || yMax !=0){
                 chart.getStyler().setYAxisMax(yMax);
                 chart.getStyler().setYAxisMin(yMin);
-                chart.addSeries("Hl", new double[]{Hl_t, Hl_t}, new double[]{yMin, yMax});
+                chart.addSeries("Y-phase", new double[]{Hl_t, Hl_t}, new double[]{yMin, yMax});
             }else{
-                chart.addSeries("Hl", new double[]{Hl_t, Hl_t}, new double[]{Collections.min(yDataAL), Collections.max(yDataAL)});
+                chart.addSeries("Y-phase", new double[]{Hl_t, Hl_t}, new double[]{Collections.min(yDataAL), Collections.max(yDataAL)});
             }
             try {
                 BitmapEncoder.saveBitmapWithDPI(chart, (pathName + name), BitmapEncoder.BitmapFormat.PNG, 300);
