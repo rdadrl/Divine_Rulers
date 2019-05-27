@@ -35,6 +35,7 @@ public class RocketLanderOpenLoopVerletWind extends Rocket {
     private boolean phase3_freefall_done;
     private boolean rot4_done;
     private boolean phase3_vertical_done;
+    private Vector3D main_acceleration = new Vector3D();
 
 
     private double xLandingPad;
@@ -311,6 +312,8 @@ public class RocketLanderOpenLoopVerletWind extends Rocket {
             }
         }
         totTime = totTime.add(increment);
+        acceleration = new Vector3D(main_acceleration);
+        applySimpleWindForce();
     }
 
     public void updateAcceleration(){
@@ -319,13 +322,11 @@ public class RocketLanderOpenLoopVerletWind extends Rocket {
         double tacc = Fl*4/J;
 
 
-        if(stochasticWind){
-            xacc+=applySimpleWindAcc();
-        }
+        main_acceleration.setX(xacc);
+        main_acceleration.setY(yacc);
+        main_acceleration.setZ(tacc);
 
-        acceleration.setX(xacc);
-        acceleration.setY(yacc);
-        acceleration.setZ(tacc);
+        acceleration = new Vector3D(main_acceleration);
     }
 
     public void initRotation(double theta) {

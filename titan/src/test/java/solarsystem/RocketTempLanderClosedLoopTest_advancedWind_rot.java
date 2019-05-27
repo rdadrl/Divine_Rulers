@@ -281,8 +281,6 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
     private void createChart(ArrayList<Double> xDataAL, ArrayList<Double> yDataAL, String name, double yMin, double yMax, double Hl_t) {
         double[] xData = xDataAL.stream().mapToDouble(d -> d).toArray();
         double[] yData = yDataAL.stream().mapToDouble(d -> d).toArray();
-
-
         if(yData.length >0) {
             XYChart chart = QuickChart.getChart(name, "X", "Y", "y(x)", xData, yData);
             if(yMin != 0 || yMax !=0){
@@ -292,8 +290,7 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
             }else{
                 chart.addSeries("Hl", new double[]{Hl_t, Hl_t}, new double[]{Collections.min(yDataAL), Collections.max(yDataAL)});
             }
-
-              try {
+            try {
                 BitmapEncoder.saveBitmapWithDPI(chart, (pathName + name), BitmapEncoder.BitmapFormat.PNG, 300);
             } catch (IOException e) {
                 e.printStackTrace();
