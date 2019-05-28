@@ -1,6 +1,7 @@
 package solarsysf;
 
 import com.interactivemesh.jfx.importer.ImportException;
+//import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import com.interactivemesh.jfx.importer.tds.TdsModelImporter;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -9,6 +10,7 @@ import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -60,7 +62,10 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
     private Rocket rocketObj;
     private ArrayList<Rocket> obj;
     private static final String MESH_FILENAME = "lunarlandernofoil_carbajal.3ds";
-    private static final String FILE_LOC = "src/main/resources/tryModel/destination-moon.3DS";
+    //private static final String FILE_LOC = "src/main/resources/tryModel/destination-moon.3DS";
+    private static final String FILE_LOC = "src/main/resources/rocketObj/scifi_cartoon_rocket.obj";
+
+//    private static final String FILE_LOC = "src/main/resources/lunarLander/lunarlandernofoil_carbajal.3ds";
 
     //HID Event flags
     private final int CAMERA_MOVEMENT_STEP_SIZE = 10;
@@ -111,14 +116,19 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
         //Titan & Rocket:
         Box rocket = new Box(20, 100, 20);
         rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
+
+
+//        Group rocket = loadRocket();
+        //rocket.setTranslateX(rocketObj.getCentralPos().getX());
+        rocket.setTranslateX(20);
+        rocket.setTranslateY(-40);
         Rotate rotate = new Rotate();
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
 
-        Node[] rocketMesh = loadRocket();
-        //rocket.setTranslateX(rocketObj.getCentralPos().getX());
-        rocket.setTranslateX(20);
-        rocket.setTranslateY(-40);
+
+
+        //rocket.prefHeight(100);
 
         Cylinder landingPad = new Cylinder(60, 1);
         landingPad.setTranslateY(0);
@@ -135,8 +145,8 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
         titan.setMaterial(titanMaterial);
 
-        root.getChildren().addAll(titan, rocket, light, landingDot);//, rocketMesh);
-        root.getChildren().addAll(rocketMesh);
+        root.getChildren().addAll(titan, light, landingDot);//, rocketMesh);
+        root.getChildren().addAll(rocket);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
@@ -166,6 +176,7 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
 
         //below sets up the stage, if implementing as scene, don't forget to remove.
         mainScene = new Scene(globalRoot, scnW, scnH, true);
+
 
         class verletUpdater implements Runnable {
 
@@ -269,7 +280,7 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
                     rocket.setTranslateX(rocketObj.getCentralPos().getX());
                     rocket.setTranslateY(-rocketObj.getCentralPos().getY() / 100);
-                    rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight() / 2D);
+                    rocket.setTranslateY(rocket.getTranslateY() - rocket.getScaleY() / 2D);
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(rocketObj.getCentralPos().getZ()));
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("LD " +
@@ -357,21 +368,22 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
         ODEsolver.initialize(obj, date);
     }
 
-    public Node[] loadRocket() {
+    public void loadRocket() {
 
-        File file = new File(FILE_LOC);
-        TdsModelImporter tdsImporter = new TdsModelImporter();
-        String filename = "";
-        try {
-            filename = file.toURI().toURL().toString();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        System.out.println(filename);
-        tdsImporter.read(filename);
-        final Node[] tdsMesh = (Node[]) tdsImporter.getImport();
-        tdsImporter.close();
-        return tdsMesh;
+//        File file = new File(FILE_LOC);
+//        ObjModelImporter objImporter = new ObjModelImporter();
+////        TdsModelImporter tdsImporter = new TdsModelImporter();
+//        String filename = "";
+//        try {
+//            filename = file.toURI().toURL().toString();
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(filename);
+//        objImporter.read(filename);
+//        final Node[] tdsMesh = (Node[]) objImporter.getImport();
+//        objImporter.close();
+//        return new Group(tdsMesh);
 //        try {
 //            rocketFile = new File(MESH_FILENAME);
 //        }

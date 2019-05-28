@@ -1,5 +1,6 @@
 package solarsystem;
 
+import com.opencsv.CSVWriter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.knowm.xchart.BitmapEncoder;
@@ -12,6 +13,7 @@ import utils.Date;
 import utils.Vector3D;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,11 +27,13 @@ import java.util.concurrent.TimeUnit;
 public class RocketTempLanderClosedLoopTest_advancedWind_rot {
     private String folderName = "advanced_wind_trialMaxRot_noPID/";
     private String pathName;
-    boolean CHART = true;
+    boolean CHART = false;
     boolean PRINT = false;
+    boolean CSV = true;
     final double PRINT_INTERVAL = 100;
     final int testCase = 1;
     ODEsolver ODEsolver = new VerletVelocity();
+    private static ArrayList<String[]> csvRows = new ArrayList<>();
 
     @Test
     public void checkParametersNoWind() {
@@ -70,18 +74,21 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
     @Test
     public void landerTestNoWind() {
         if(CHART) createFolderDate();
+        if(CSV) logResultsToCSVFile ();
         landTestWindSpecificSpeed(0, testCase);
     }
 
     @Test
     public void landerTestWind() {
         if(CHART) createFolderDate();
+        if(CSV) logResultsToCSVFile ();
         landTestWindSpecificSpeed(10, testCase);
     }
 
     @Test
     public void landerTestWindMultiple() {
         if(CHART) createFolderDate();
+        if(CSV) logResultsToCSVFile ();
         for(int i = -10; i <= 10; i++) {
             //if(i%2 != 0) continue;
             landTestWindSpecificSpeed(i, testCase);
@@ -261,6 +268,12 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
             createChart(x_pos, y_pos, rocket.meanWindSpeed + "_XY");
         }
 
+        if(CSV) {
+            addCSVRow(rocket.meanWindSpeed, rocket.getCentralPos().getX(), rocket.getCentralVel().getX(),
+                    rocket.getCentralPos().getY(), rocket.getCentralVel().getY() , rocket.getCentralPos().getZ(),
+                    rocket.getCentralVel().getZ());
+        }
+
     }
 
     private void createChart(ArrayList<Double> xDataAL, ArrayList<Double> yDataAL, String name) {
@@ -303,5 +316,51 @@ public class RocketTempLanderClosedLoopTest_advancedWind_rot {
         SimpleDateFormat formatter = new SimpleDateFormat("dd_MM_HH_mm");
         pathName = "./src/test/resources/" + folderName + formatter.format(currentDate) + "_T" + testCase+"/";
         new File(pathName).mkdir();
+    }
+
+
+    private void logResultsToCSVFile () {
+        try {
+            java.util.Date date = new java.util.Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("ddMMHHmm");
+            File file =
+                    new File(folderName + formatter.format(date) +
+                            ".csv");
+
+            // Create FileWriter object with file as parameter
+            FileWriter outputfile = new FileWriter(file);
+
+            // Create CSVWriter object file writer object as parameter
+            CSVWriter writer = new CSVWriter(outputfile);
+
+            // adding header to csv
+
+            String[] header;
+
+            header = new String[]{"Wind", "X pos", "X vel", "Y pos",
+                    "Y vel", "Theta pos", "Theta vel"};
+
+            writer.writeNext(header);
+            writer.writeAll(csvRows);
+
+            // Closing writer connection
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Could not write the results to the csv file: " + e.getLocalizedMessage());
+        }
+    }
+
+    private static void addCSVRow (double wind, double xpos, double xvel, double ypos, double yvel, double zpos, double zvel) {
+        String[] values = {
+                String.valueOf(wind),
+                String.valueOf(xpos),
+                String.valueOf(xvel),
+                String.valueOf(ypos),
+                String.valueOf(yvel),
+                String.valueOf(zpos),
+                String.valueOf(zvel),
+        };
+
+        csvRows.add(values);
     }
 }
