@@ -1,11 +1,11 @@
 package physics;
 
-import solarsystem.CannonBall;
+import solarsystem.rocket.cannonBall.CannonBall;
 import solarsystem.CelestialObject;
 import solarsystem.Planet;
-import solarsystem.Projectile;
+import solarsystem.rocket.Projectile;
 import utils.Date;
-import utils.Vector3D;
+import utils.vector.Vector3D;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,20 +18,20 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class VerletVelocity implements ODEsolver {
-    private ArrayList<? extends CelestialObject> bodies;
+    private ArrayList<? extends ODEsolvable> bodies;
     private ArrayList<Projectile> projectiles;
     private ArrayList<Planet> planets;
     private Date currentDate;
 
     public VerletVelocity(){}
 
-    public VerletVelocity(ArrayList<? extends CelestialObject> bodies,
+    public VerletVelocity(ArrayList<? extends ODEsolvable> bodies,
                           Date date) {
         this.currentDate = date;
         this.bodies = bodies;
         projectiles = new ArrayList<>();
         planets = new ArrayList<>();
-        for (CelestialObject body: bodies) {
+        for (ODEsolvable body: bodies) {
             body.initializeCartesianCoordinates(date);
             if (body instanceof Projectile) projectiles.add((Projectile) body);
             if (body instanceof Planet) planets.add((Planet) body);
@@ -40,12 +40,12 @@ public class VerletVelocity implements ODEsolver {
         updateAcceleration();
     }
 
-    public void initialize(ArrayList<? extends CelestialObject> bodies,
+    public void initialize(ArrayList<? extends ODEsolvable> bodies,
                                  Date date) {this.currentDate = date;
         this.bodies = bodies;
         projectiles = new ArrayList<>();
         planets = new ArrayList<>();
-        for (CelestialObject body: bodies) {
+        for (ODEsolvable body: bodies) {
             body.initializeCartesianCoordinates(date);
             if (body instanceof Projectile) projectiles.add((Projectile) body);
             if (body instanceof Planet) planets.add((Planet) body);
@@ -56,7 +56,7 @@ public class VerletVelocity implements ODEsolver {
 
     private void updateAcceleration(){
         //Don't let the cannonballs put force on each other.
-        for (CelestialObject body: bodies) {
+        for (ODEsolvable body: bodies) {
             body.setAcceleration(planets, currentDate);
         }
     }
@@ -92,7 +92,7 @@ public class VerletVelocity implements ODEsolver {
         // set the change in position
         // v(t + dt) = x(t) + v(t) dt + 0.5 a(t) dt^2
         // a(t) = F(t) / m
-        for (CelestialObject body: bodies) {
+        for (ODEsolvable body: bodies) {
             Vector3D startVel = body.getCentralVel();
             Vector3D startPos = body.getCentralPos();
             Vector3D startAcceleration = body.getAcceleration();
@@ -110,7 +110,7 @@ public class VerletVelocity implements ODEsolver {
         // step 3 update the forces halfway
         updateAcceleration();
 
-        for (CelestialObject body: bodies) {
+        for (ODEsolvable body: bodies) {
             Vector3D halfVel = body.getCentralVel();
             Vector3D endAcceleration = body.getAcceleration();
 

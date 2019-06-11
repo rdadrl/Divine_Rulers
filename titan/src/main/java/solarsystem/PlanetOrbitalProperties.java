@@ -3,9 +3,6 @@ package solarsystem;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import utils.Date;
 import utils.MathUtil;
-import utils.Vector3D;
-
-import java.util.ArrayList;
 
 /**
  * A class which will be a place holder for the keplerian orbital properties of a planet

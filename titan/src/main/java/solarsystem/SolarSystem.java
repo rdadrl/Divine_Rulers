@@ -3,6 +3,8 @@ package solarsystem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import physics.ODEsolver;
 import physics.VerletVelocity;
+import solarsystem.rocket.Projectile;
+import solarsystem.rocket.cannonBall.CannonBall;
 import utils.Date;
 
 import java.io.FileInputStream;
@@ -70,7 +72,11 @@ public class SolarSystem {
         this.allAnimatedObjects = allAnimatedObjects;
     }
 
-    public void getStaticPositionsPlanets(Date date){
+    /**
+     * Get the starting positions of the planets based upon kepler approximation
+     * @param date Date of the planet positions.
+     */
+    public void getPositionsPlanetsAtDateKepler(Date date){
         currentDate = date;
         for(Planet planet: getPlanets().getAll()){
             planet.initializeCartesianCoordinates(date);
@@ -90,6 +96,10 @@ public class SolarSystem {
         ODEsolver.initialize(this.allAnimatedObjects, date);
     }
 
+    /**
+     * @param dt the timestep amount
+     * @param timeUnit the timestep unit
+     */
     public void updateAnimation(long dt, TimeUnit timeUnit){
         if(ODEsolver == null){
             System.err.println("Cannot update animation without initializaton");
@@ -98,6 +108,14 @@ public class SolarSystem {
         ODEsolver.updateLocation(dt, timeUnit);
     }
 
+    /**
+     * Will update the planets of the solarsystem based upon some standard timestep.
+     * In addition as the projectile moves closer to the target planet, the timesteps will become
+     * smaller
+     *
+     * @param standardDt standard time step
+     * @param standardTimeUnit standard unit of the time step
+     */
     public void updateAnimationRelativeTimeStep(long standardDt, TimeUnit standardTimeUnit){
         if(ODEsolver == null){
             System.err.println("Cannot update animation without initializaton");
@@ -117,4 +135,8 @@ public class SolarSystem {
 
     }
 
+
+    public Date getCurrentDate() {
+        return currentDate;
+    }
 }

@@ -1,9 +1,5 @@
 package jGntx;
 
-import solarsystem.Projectile;
-
-import java.util.ArrayList;
-
 public abstract class Evolutionary<T> {
     private Population<T> localPopulation;
     private int maxFitness;

@@ -2,17 +2,13 @@ package physics;
 
 
 import solarsystem.CelestialObject;
-import solarsystem.Projectile;
+import solarsystem.rocket.Projectile;
 import utils.Date;
-import utils.Vector;
-import utils.Vector3D;
+import utils.vector.Vector3D;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
-
-import gui.Constant;
-import gui.Orbiter;
 
 /**
  *
@@ -20,7 +16,7 @@ import gui.Orbiter;
  */
 public class RungeKutta4 implements ODEsolver {
     private Date currentDate;
-    private ArrayList<? extends CelestialObject> bodies;
+    private ArrayList<? extends ODEsolvable> bodies;
     private ArrayList<Projectile> projectiles;
     private ArrayList<solarsystem.Planet> planets;
     private Vector3D[][] dfs;
@@ -28,13 +24,13 @@ public class RungeKutta4 implements ODEsolver {
 
     public RungeKutta4(){};
 
-    public RungeKutta4(ArrayList<? extends CelestialObject> bodies,
+    public RungeKutta4(ArrayList<? extends ODEsolvable> bodies,
                        Date date) {
         this.currentDate = date;
         this.bodies = bodies;
         projectiles = new ArrayList<>();
         planets = new ArrayList<>();
-        for (CelestialObject body: bodies) {
+        for (ODEsolvable body: bodies) {
             body.initializeCartesianCoordinates(date);
             if (body instanceof Projectile) projectiles.add((Projectile) body);
             if (body instanceof solarsystem.Planet) planets.add((solarsystem.Planet) body);
@@ -44,12 +40,12 @@ public class RungeKutta4 implements ODEsolver {
     }
 
     @Override
-    public void initialize(ArrayList<? extends CelestialObject> bodies, Date date) {
+    public void initialize(ArrayList<? extends ODEsolvable> bodies, Date date) {
         this.currentDate = date;
         this.bodies = bodies;
         projectiles = new ArrayList<>();
         planets = new ArrayList<>();
-        for (CelestialObject body: bodies) {
+        for (ODEsolvable body: bodies) {
             body.initializeCartesianCoordinates(date);
             if (body instanceof Projectile) projectiles.add((Projectile) body);
             if (body instanceof solarsystem.Planet) planets.add((solarsystem.Planet) body);
@@ -64,8 +60,8 @@ public class RungeKutta4 implements ODEsolver {
         doty[1] = acceleration.scale(dt);
         return doty;
     }
-    
-    
+
+
     public static Vector3D[] predict(Vector3D[] y, Vector3D[] k, double coff) {
         Vector3D[] p = new Vector3D[2];
         for(int i = 0; i < y.length; i++) {
@@ -84,7 +80,7 @@ public class RungeKutta4 implements ODEsolver {
      * @param others the list of planets
      * @return Vector3D[]{ka, kv}
      */
-    public Vector3D[] rk4(Vector3D p0, Vector3D v0, double dt, CelestialObject self) {
+    public Vector3D[] rk4(Vector3D p0, Vector3D v0, double dt, ODEsolvable self) {
         Vector3D[] y = new Vector3D[] {p0, v0};
         self.setAcceleration(planets, currentDate);
         Vector3D acceleration = self.getAcceleration();
@@ -115,10 +111,10 @@ public class RungeKutta4 implements ODEsolver {
      * @param dt delta t
      * @param n number of steps
      */
-    public void rk4sim(ArrayList<? extends CelestialObject> bodies, Vector3D[][] kav, double dt) {
+    public void rk4sim(ArrayList<? extends ODEsolvable> bodies, Vector3D[][] kav, double dt) {
         for(int i = 0; i < bodies.size(); i++) {
             if(bodies.get(i)!=null) {
-                CelestialObject planet = bodies.get(i);
+                ODEsolvable planet = bodies.get(i);
                // System.out.println(planet.toString());
                 kav[i] = rk4(planet.getCentralPos(), planet.getCentralVel(), dt, planet);
             }
@@ -126,7 +122,7 @@ public class RungeKutta4 implements ODEsolver {
 
         for(int i = 0; i < bodies.size(); i++) {
             if(bodies.get(i) != null) {
-                CelestialObject planet = bodies.get(i);
+                ODEsolvable planet = bodies.get(i);
                 planet.setCentralPos(planet.getCentralPos().add(kav[i][0]));
                 planet.setCentralVel(planet.getCentralVel().add(kav[i][1]));
             }

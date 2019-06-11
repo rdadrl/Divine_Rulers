@@ -2,7 +2,7 @@ package solarsystem;
 
 import org.junit.Test;
 import utils.MathUtil;
-import utils.Vector3D;
+import utils.vector.Vector3D;
 import utils.Date;
 
 import java.io.IOException;

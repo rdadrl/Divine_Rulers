@@ -1,7 +1,7 @@
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import solarsysf.MainMenu;
+import solarsysfGUI.MainMenu;
 
 /**
  *

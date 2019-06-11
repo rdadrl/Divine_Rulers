@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import physics.KeplerToCartesian;
 import utils.*;
+import utils.vector.Vector3D;
 
 import java.util.HashSet;
 

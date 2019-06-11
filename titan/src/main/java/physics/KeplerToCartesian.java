@@ -3,6 +3,7 @@ package physics;
 import solarsystem.PlanetOrbitalProperties;
 import solarsystem.Planet;
 import utils.*;
+import utils.vector.Vector3D;
 
 
 /**

@@ -1,5 +1,5 @@
 package rocket;
-import utils.Vector3D;
+import utils.vector.Vector3D;
 
 public class Rocket {
     private double mass;

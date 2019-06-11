@@ -1,8 +1,7 @@
 package physics;
 
 import utils.MathUtil;
-import utils.Vector;
-import utils.Vector3D;
+import utils.vector.Vector3D;
 
 
 /**

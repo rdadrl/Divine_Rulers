@@ -12,6 +12,6 @@ import java.util.concurrent.TimeUnit;
  */
 public interface ODEsolver {
     void updateLocation(long time, TimeUnit unit);
-    void initialize(ArrayList<? extends CelestialObject> bodies,
+    void initialize(ArrayList<? extends ODEsolvable> bodies,
                     Date date);
 }

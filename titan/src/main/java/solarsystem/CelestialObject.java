@@ -1,9 +1,10 @@
 package solarsystem;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import physics.ODEsolvable;
 import utils.Date;
 import utils.MathUtil;
-import utils.Vector3D;
+import utils.vector.Vector3D;
 
 import java.util.ArrayList;
 
@@ -12,19 +13,18 @@ import java.util.ArrayList;
  * planet, rocket or cannonball upon which the acceleration of the universe apply need to inherit this
  * class.
  */
-public abstract class CelestialObject {
+public abstract class CelestialObject implements ODEsolvable {
     @JsonProperty("name")
-    String name;
+    protected String name;
     @JsonProperty("mass")
-    double mass;        // in kg
+    protected double mass;        // in kg
     @JsonProperty("radius")
-    double radius;      // in km
+    protected double radius;      // in km
 
-    Date old_date;   // Date of the current
-    Vector3D centralPos = new Vector3D(); // Coordinate with the sun as a center.
-    Vector3D centralVel = new Vector3D(); // Velocity vector with sun in the center
-
-    Vector3D acceleration;
+    protected Date old_date;   // Date of the current
+    protected Vector3D centralPos = new Vector3D(); // Coordinate with the sun as a center.
+    protected Vector3D centralVel = new Vector3D(); // Velocity vector with sun in the center
+    protected Vector3D acceleration;
 
 
     /**

@@ -1,6 +1,7 @@
 package utils;
 
 import javafx.geometry.Point3D;
+import utils.vector.Vector3D;
 
 /**
  *
@@ -72,7 +73,7 @@ public class MathUtil {
      * @return whether a line intersects a sphere
      */
     public static Point3D[] collisionDetector(Vector3D fromPos, Vector3D toPos,
-                                            Vector3D sphereCenter, double sphereRadius)
+                                              Vector3D sphereCenter, double sphereRadius)
     {
         double cx = sphereCenter.getX();
         double cy = sphereCenter.getY();
