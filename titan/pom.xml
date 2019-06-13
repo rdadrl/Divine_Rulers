@@ -55,6 +55,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.interactivemesh.jfx.importer.obj</groupId>
+            <artifactId>obj-importer</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/jimObjModelImporterJFX.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>4.0</version>
