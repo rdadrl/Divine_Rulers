@@ -75,6 +75,9 @@ public class LandingPhase3d extends Application {
     private boolean goDown;
     private int goDownDelta = 50;
 
+    //Trail vars
+    Group trail = new Group();
+    PhongMaterial trailMaterial;
 
     //Something is VEEERY wrong with titan, or rocket. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
     @Override
@@ -83,7 +86,8 @@ public class LandingPhase3d extends Application {
         root = new Group();
         globalRoot = new StackPane();
         globalRoot.setStyle("-fx-background-image: url('textures/galaxy_starfield.png');");
-
+        trailMaterial = new PhongMaterial();
+        trailMaterial.setDiffuseColor(Color.WHITE);
         //Labels:
         if (DEBUG) {
             debugText = new Label(constructDebugText());
@@ -124,7 +128,7 @@ public class LandingPhase3d extends Application {
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
         titan.setMaterial(titanMaterial);
 
-        root.getChildren().addAll(titan, rocket, light, landingDot);
+        root.getChildren().addAll(titan, rocket, light, landingDot, trail);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
@@ -250,6 +254,7 @@ public class LandingPhase3d extends Application {
         //animations and updates to the yipping elements:
         new AnimationTimer()
         {
+            int waitFramesForTrail = 0;
             long lastFrame = System.nanoTime(); //... still, it doesn't have to be very precise.
             public void handle(long currentN)
             {
@@ -314,10 +319,19 @@ public class LandingPhase3d extends Application {
                 }
                 else if (goDownDelta > CAMERA_INITAL_SPEED) goDownDelta = CAMERA_INITAL_SPEED;
 
+                //Trail
+                if (waitFramesForTrail >= 30 / verletUpdateUnitMultiplier) { //if around a second passed
+                    waitFramesForTrail = 0;
 
+                    Sphere trailDot = new Sphere(5);
+                    trailDot.setMaterial(trailMaterial);
+                    trailDot.setTranslateY(rocket.getTranslateY());
+                    trailDot.setTranslateX(rocket.getTranslateX());
+                    trailDot.setTranslateZ(rocket.getTranslateZ());
 
-
-
+                    trail.getChildren().add(trailDot);
+                }
+                else waitFramesForTrail++;
 
             }
         }.start();

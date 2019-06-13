@@ -1,6 +1,8 @@
 package solarsysfGUI;
 
-//import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import com.interactivemesh.jfx.importer.ImportException;
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import com.interactivemesh.jfx.importer.tds.TdsModelImporter;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -8,7 +10,7 @@ import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
-        import javafx.scene.image.Image;
+    import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -27,8 +29,12 @@ import physics.VerletVelocity;
 import solarsystem.rocket.lunarLander.Lunarlander;
         import utils.Date;
 
-        import java.text.DecimalFormat;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class LandingPhase3dWithMeshLoaderStuff extends Application {
@@ -55,7 +61,7 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
     private ArrayList<Lunarlander> obj;
     private static final String MESH_FILENAME = "lunarlandernofoil_carbajal.3ds";
     //private static final String FILE_LOC = "src/main/resources/tryModel/destination-moon.3DS";
-    private static final String FILE_LOC = "src/main/resources/lunarlanderObj/scifi_cartoon_rocket.obj";
+    private static final String FILE_LOC = "src/main/resources/rocketObj/scifi_cartoon_rocket.obj";
 
 //    private static final String FILE_LOC = "src/main/resources/lunarLander/lunarlandernofoil_carbajal.3ds";
 
@@ -106,12 +112,16 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
         light.setColor(Color.LIGHTGOLDENRODYELLOW);
 
         //Titan & Lunarlander:
-        Box rocket = new Box(20, 100, 20);
-        rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
+        //Box rocket = new Box(20, 100, 20);
+        //rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
 
 
-//        Group rocket = loadRocket();
-        //rocket.setTranslateX(lunarlanderObj.getCentralPos().getX());
+        int rocketScale = 8;
+        Group rocket = loadRocket();
+        rocket.setScaleX(rocketScale);
+        rocket.setScaleY(rocketScale);
+        rocket.setScaleZ(rocketScale);
+        rocket.setTranslateX(lunarlanderObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
         Rotate rotate = new Rotate();
@@ -360,34 +370,51 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
         ODEsolver.initialize(obj, date);
     }
 
-    public void loadRocket() {
+    public Group loadRocket() {
 
-//        File file = new File(FILE_LOC);
-//        ObjModelImporter objImporter = new ObjModelImporter();
-////        TdsModelImporter tdsImporter = new TdsModelImporter();
-//        String filename = "";
-//        try {
-//            filename = file.toURI().toURL().toString();
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println(filename);
-//        objImporter.read(filename);
-//        final Node[] tdsMesh = (Node[]) objImporter.getImport();
-//        objImporter.close();
-//        return new Group(tdsMesh);
-//        try {
-//            rocketFile = new File(MESH_FILENAME);
-//        }
-//        catch (Exception e) { System.out.println("File import fucked up"); }
-//
-//        try {
-//            tdsImporter.read(rocketFile);
-//        }
-//        catch (ImportException e) {
-//            // handle exception
-//            System.out.println("tds importer fucked up at somepoint.");
-//        }
+        File file = new File(FILE_LOC);
+        ObjModelImporter objImporter = new ObjModelImporter();
+        TdsModelImporter tdsImporter = new TdsModelImporter();
+        String filename = "";
+        try {
+            filename = file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(filename);
+        objImporter.read(filename);
+        final Node[] tdsMesh = (Node[]) objImporter.getImport();
+
+        Map<String, PhongMaterial> mapTexs = objImporter.getNamedMaterials();
+        Iterator<String> it = mapTexs.keySet().iterator();
+        boolean differCol = true;
+        while (it.hasNext()) {
+            String key = it.next();
+            if (differCol) mapTexs.get(key).setDiffuseColor(Color.RED);
+            else mapTexs.get(key).setDiffuseColor(Color.WHITE);
+
+            differCol = !differCol;
+        }
+
+        objImporter.close();
+
+        Group rocketGroup = new Group();
+        for (int i = 1; i < tdsMesh.length; i++) {
+            rocketGroup.getChildren().add(tdsMesh[i]);
+        }
+        return rocketGroup;
+        /*try {
+            rocketFile = new File(MESH_FILENAME);
+        }
+        catch (Exception e) { System.out.println("File import fucked up"); }
+
+        try {
+            tdsImporter.read(rocketFile);
+        }
+        catch (ImportException e) {
+            // handle exception
+            System.out.println("tds importer fucked up at somepoint.");
+        }*/
 
     }
 
