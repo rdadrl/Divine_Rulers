@@ -89,6 +89,7 @@ public class LunarlanderLanderOpenLoopVerlet extends Lunarlander {
                 init_rotB = false;
                 timeAtCurrentPhase = 0;
             }
+
         } else if (!phase1_done) {
             if (!phase1_init) {
                 System.out.println("Phase 1 x Started");

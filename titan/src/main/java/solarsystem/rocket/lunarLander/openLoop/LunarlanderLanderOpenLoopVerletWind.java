@@ -316,7 +316,7 @@ public class LunarlanderLanderOpenLoopVerletWind extends Lunarlander {
         }
         totTime = totTime.add(increment);
         acceleration = new Vector3D(main_acceleration);
-        applySimpleWindForce();
+        applyAdvancedWindForce();
     }
 
     public void updateAcceleration(){
