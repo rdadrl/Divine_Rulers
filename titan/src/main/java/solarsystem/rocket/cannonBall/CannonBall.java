@@ -88,6 +88,10 @@ public class CannonBall extends Projectile {
         startVelVec = KeplerToCartesian.orbitalToEclipticPlane(w_a, o, i, VelOrbitalFromPlan);
     }
 
+    public void setStartVelocityVector(Vector3D velocityVector) {
+        this.startVelVec = velocityVector;
+    }
+
     @Override
     public String toString() {
         return "CannonBall{" +

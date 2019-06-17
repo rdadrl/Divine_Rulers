@@ -81,21 +81,21 @@ public class Planet extends CelestialObject {
     }
 
     public Vector3D getCentralPosAtDate(Date date){
-        if(!super.getDate().equals(date)){
+        if(super.getDate() == null || !super.getDate().equals(date)){
             initializeCartesianCoordinates(date);
         }
         return centralPos;
     }
 
     public Vector3D getCentralVelAtDate(Date date){
-        if(!super.getDate().equals(date)){
+        if(super.getDate() == null || !super.getDate().equals(date)){
             initializeCartesianCoordinates(date);
         }
         return centralVel;
     }
 
     public Vector3D getOrbitalPosAtDate(Date date){
-        if(!super.getDate().equals(date)){
+        if(super.getDate() == null || !super.getDate().equals(date)){
             initializeCartesianCoordinates(date);
         }
         return orbitalPos;

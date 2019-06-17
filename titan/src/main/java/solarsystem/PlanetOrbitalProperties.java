@@ -50,10 +50,6 @@ public class PlanetOrbitalProperties {
      * @param date old_date
      */
     public void setOrbitalProperties(Date date){
-        if(JT == date.dateToJulian()){
-            return;
-        }
-
         JT = date.dateToJulian(); // in centuries
 
         // centuries since julian time

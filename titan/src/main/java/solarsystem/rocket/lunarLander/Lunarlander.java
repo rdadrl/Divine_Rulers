@@ -1,6 +1,8 @@
 package solarsystem.rocket.lunarLander;
 
 import solarsystem.rocket.Projectile;
+import solarsystem.rocket.SpaceCraft;
+import sun.jvm.hotspot.memory.Space;
 import utils.Date;
 import utils.vector.Vector3D;
 
@@ -10,15 +12,7 @@ import java.math.BigDecimal;
  *
  *
  */
-public abstract class Lunarlander extends Projectile {
-    protected BigDecimal totTime = new BigDecimal("0.0");
-    protected double dryMass = 5000; //kg
-    protected double fuelMass = 10000; // kg
-    protected double mass;
-    protected double J = 100000; //moment of inertia kg m^2
-    protected double maxFtPropulsion = 44000; //newton
-    protected double maxFlPropulsion = 500; //newton
-    protected double thrusterImpulse = 3000; // ns/kg;
+public abstract class Lunarlander extends SpaceCraft {
     protected double g = 1.352; // m / s^2
     protected double sidearea = 25.0; // m^2
     protected double airDensity = 5.0; // kg/m^2
@@ -28,9 +22,7 @@ public abstract class Lunarlander extends Projectile {
     protected double meanWindSpeed;
     protected double currentWindSpeed;
     protected double windAcc;
-    protected double dt; // timestep in seconds
-    protected double Fl; // force thrusters
-    protected double Ft; // force latereral thrusters
+
 
     protected final double Z0 = 0.0024;
     protected final double Z1 = 10;
@@ -43,7 +35,14 @@ public abstract class Lunarlander extends Projectile {
     protected double landedAltitude = 0;
 
 
-
+    public Lunarlander() {
+        super.dryMass = 5000; //kg
+        super.fuelMass = 10000; // kg
+        super.J =  100000; //moment of inertia kg m^2
+        super.maxFtPropulsion = 44000; //newton
+        super.maxFlPropulsion = 500; //newton
+        super.thrusterImpulse = 3000; // ns/kg;
+    }
 
     protected double differenceInSeconds(Date date) {
 

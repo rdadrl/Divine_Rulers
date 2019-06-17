@@ -30,4 +30,6 @@ public abstract class SpaceCraft extends Projectile {
         }
         mass = dryMass + fuelMass;
     }
+
+
 }

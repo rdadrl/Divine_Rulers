@@ -47,8 +47,7 @@ public class KeplerToCartesianTest {
             printPosVel(earth.getName(), coordinate, date);
         }
         assertEquals( -0.16856286531223225,coordinate.getX()/AU, 1e-4);
-        assertEquals(0.968758969709345,coordinate.getY()/AU,
-                1e-4);
+        assertEquals(0.968758969709345,coordinate.getY()/AU, 1e-4);
         assertEquals(-2.558653782299318E-7, coordinate.getZ()/AU, 1e-4);
 
 
