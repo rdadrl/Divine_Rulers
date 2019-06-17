@@ -16,6 +16,7 @@ public class KeplerParser {
     private static Date endingDate;
 
     private static boolean outputToConsole = false;
+    private static boolean printOrbital = false;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     public static void main(String[] args) {
@@ -33,6 +34,9 @@ public class KeplerParser {
                     catch (ParseException e) {
                         System.out.println("Unable to parse starting date \"" + args[i+1] + "\"");
                     }
+                break;
+                case "--print-orbital": case "-po":
+                    printOrbital = true;
                 break;
 
                 case "--ending-date": case "-ed":
@@ -80,8 +84,10 @@ public class KeplerParser {
                         else System.out.printf(",\n\t\t{\n");
 
                         System.out.println("\t\t\t\"date\": \"" + startingDate.toString() + "\",");
-                        System.out.println("\t\t\t\"orbital_pos\": " + Vector3DtoJSONObj(cartesian[0]) + ",");
-                        System.out.println("\t\t\t\"orbital_vel\": " + Vector3DtoJSONObj(cartesian[1]) + ",");
+                        if (printOrbital) {
+                            System.out.println("\t\t\t\"orbital_pos\": " + Vector3DtoJSONObj(cartesian[0]) + ",");
+                            System.out.println("\t\t\t\"orbital_vel\": " + Vector3DtoJSONObj(cartesian[1]) + ",");
+                        }
                         System.out.println("\t\t\t\"central_pos\": " + Vector3DtoJSONObj(cartesian[2]) + ",");
                         System.out.println("\t\t\t\"central_vel\": " + Vector3DtoJSONObj(cartesian[3]));
 
@@ -92,7 +98,7 @@ public class KeplerParser {
                         calendar.add(Calendar.DATE, 1);
                         startingDate = calendar.getTime();
                     }
-                    System.out.println("\t]\n}");
+                    System.out.println("\n\t]\n}");
                 }
             }
         }
