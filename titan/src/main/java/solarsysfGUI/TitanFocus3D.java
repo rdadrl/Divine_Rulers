@@ -30,7 +30,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+//TODO: Change "scale" of Visualizer, distance are currently not adapted for a launch
+//TODO: 22km seems to be deepspace, it should be closer to the planet
+//TODO: having the trajectory drawn thicker to be able to see it from further away
+// TODO: TitanFocus3D should work with Spacecraft class as well
 public class TitanFocus3D extends Application {
+
     // yipping variables
     private Scene mainScene;
     private StackPane globalRoot;

@@ -1,5 +1,7 @@
 package solarsystem.rocket;
 
+import utils.Date;
+
 import java.math.BigDecimal;
 
 /**
@@ -31,5 +33,9 @@ public abstract class SpaceCraft extends Projectile {
         mass = dryMass + fuelMass;
     }
 
+    protected double differenceInSeconds(Date date) {
+
+        return (date.getTimeInMillis() - this.old_date.getTimeInMillis())/1000D;
+    }
 
 }

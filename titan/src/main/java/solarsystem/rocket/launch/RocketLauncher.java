@@ -22,6 +22,7 @@ public class RocketLauncher extends SpaceCraft {
     private double[] gasRelativeSpeed;
     private double[] mass_propellant;
     private double[] mass_rocketParts;
+    private double[] maxFt;
 
     private final int GEO = 35786000;
     private final double M; // 5.972*Math.pow(10,24);
@@ -43,7 +44,7 @@ public class RocketLauncher extends SpaceCraft {
         double firstPhaseFt=3780000;
         //2nd stage is Ft made by one Merlin 1C
         double secondPhaseFt=445000;
-        this.maxFtPropulsion= new double[]{firstPhaseFt,secondPhaseFt};
+        maxFt= new double[]{firstPhaseFt,secondPhaseFt};
         g0= G*M/Math.pow(R,2);//9.81;
         double firstPhaseIsp=275;
         double secondPhaseIsp=348;
@@ -85,8 +86,8 @@ public class RocketLauncher extends SpaceCraft {
 
     public void computeBurnRates(int n){
         burnRate=new double[n];
-        for(int i=0;i<maxFtPropulsion.length;i++){
-            burnRate[i]=maxFtPropulsion[i]/gasRelativeSpeed[i];
+        for(int i=0;i<maxFt.length;i++){
+            burnRate[i]=maxFt[i]/gasRelativeSpeed[i];
         }
     }
 
