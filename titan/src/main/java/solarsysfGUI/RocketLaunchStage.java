@@ -38,7 +38,7 @@ public class RocketLaunchStage extends Application {
     private Date date = new Date(2002, 9, 18, 12, 0, 0);
     private final long dt = 6;
     private final TimeUnit timeUnit = TimeUnit.HOURS;
-
+    private final int UPDATE_FREQUENCY_IN_MS = 10;
     // GUI variables
     private Scene mainScene;
     private Group root;
@@ -211,7 +211,7 @@ public class RocketLaunchStage extends Application {
 
             public void run() {
                 while(!pauseStatus) {
-                    if (System.nanoTime() - lastUpdate >= 1 * 1000000) {
+                    if (System.nanoTime() - lastUpdate >= UPDATE_FREQUENCY_IN_MS * 1000000) {
                         solarSystem.updateAnimation(dt, timeUnit);
                         lastUpdate = System.nanoTime();
                     }
