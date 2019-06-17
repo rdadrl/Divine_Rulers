@@ -51,6 +51,13 @@ public class Date extends GregorianCalendar {
     }
 
     /**
+     * construct new utils.Date from java.util.Date
+     * @param date
+     */
+    public Date(java.util.Date date){
+        this.setTimeInMillis(date.toInstant().toEpochMilli());
+    }
+    /**
      * http://scienceworld.wolfram.com/astronomy/JulianDate.html
      * @return time in julian date
      */
