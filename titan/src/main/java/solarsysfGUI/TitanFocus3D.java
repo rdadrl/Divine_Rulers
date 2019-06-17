@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class LandingPhase3d extends Application {
+public class TitanFocus3D extends Application {
     // yipping variables
     private Scene mainScene;
     private StackPane globalRoot;
@@ -343,7 +343,7 @@ public class LandingPhase3d extends Application {
         landingStage.show();
     }
 
-    public LandingPhase3d (Lunarlander lunarlanderObj, Date date) throws Exception {
+    public TitanFocus3D(Lunarlander lunarlanderObj, Date date) throws Exception {
         this.date = date;
         this.lunarlanderObj = lunarlanderObj;
         startTime = date.getTimeInMillis();

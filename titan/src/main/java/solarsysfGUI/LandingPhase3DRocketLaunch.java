@@ -14,9 +14,9 @@ public class LandingPhase3DRocketLaunch extends Application { //TODO: Should ren
             SolarSystem solarSystem = new SolarSystem(); //Solar System Instance
             Date date = new Date(2000, 0, 1, 0, 0, 0);
 
-            Application landingPhaseApp = new LandingPhase3d(new RocketLauncher(new Vector3D(0,0,-0.610865),
+            Application landingPhaseApp = new TitanFocus3D(new RocketLauncher(new Vector3D(0,0,-0.610865),
                     new Vector3D(0,0,0),date ), date);
-            //((LandingPhase3d) landingPhaseApp).setODEsolver(new VerletVelocity());
+            //((TitanFocus3D) landingPhaseApp).setODEsolver(new VerletVelocity());
             landingPhaseApp.start(new Stage()); //start with a empty stage (or you may go ahead and give some specs)
         } catch (Exception e) {
             e.printStackTrace();
