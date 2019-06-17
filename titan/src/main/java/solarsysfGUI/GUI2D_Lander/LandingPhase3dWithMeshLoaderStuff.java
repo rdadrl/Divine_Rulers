@@ -1,4 +1,4 @@
-package solarsysfGUI;
+package solarsysfGUI.GUI2D_Lander;
 
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;

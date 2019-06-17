@@ -1,7 +1,8 @@
-package solarsysfGUI;
+package solarsysfGUI.GUI2D_Lander;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import solarsysfGUI.TitanFocus3D;
 import solarsystem.SolarSystem;
 import solarsystem.rocket.launch.RocketLauncher;
 import utils.Date;

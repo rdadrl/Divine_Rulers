@@ -13,7 +13,7 @@ public class PIDcontroller {
     private double error_pos;
     private double error_vel;
     private double oldError;
-    private double totalError_pos;
+    private double totalError_pos; // I componenent
     private double tolerance;
     private double outMin = -Double.MAX_VALUE;
     private double outMax = Double.MAX_VALUE;

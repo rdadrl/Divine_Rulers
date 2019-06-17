@@ -1,4 +1,4 @@
-package solarsysfGUI;
+package solarsysfGUI.GUI2D_Lander;
 
 /**
  *

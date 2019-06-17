@@ -14,6 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import solarsystem.*;
 import solarsystem.SolarSystem;
@@ -283,13 +284,16 @@ public class RocketLaunchStage extends Application {
 
 
     private Sphere createGUIobject(CelestialObject object, Image diffuseMap, Image bumpMap){
+        Rotate rotate = new Rotate(90, 0, 0, 0, Rotate.X_AXIS);
         Sphere guiOb = new Sphere(object.getRadius() * plntRadFact);
+        guiOb.getTransforms().add(rotate);
         PhongMaterial guiMat = new PhongMaterial();
         //if no texture, apply purple as diffmap
         if (diffuseMap == null && bumpMap == null) guiMat.setDiffuseColor(Color.PURPLE);
         guiMat.setDiffuseMap(diffuseMap);
         guiMat.setBumpMap(bumpMap);
         guiOb.setMaterial(guiMat);
+
 
         guiOb.setOnMouseEntered(new EventHandler<MouseEvent> () {
             @Override

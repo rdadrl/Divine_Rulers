@@ -1,4 +1,4 @@
-package solarsysfGUI;
+package solarsysfGUI.GUI2D_Lander;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

@@ -1,7 +1,8 @@
-package solarsysfGUI;
+package solarsysfGUI.GUI2D_Lander;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import solarsysfGUI.TitanFocus3D;
 import solarsystem.rocket.lunarLander.closedLoop.LunarlanderLanderClosedLoop_advancedWind_good;
 import solarsystem.SolarSystem;
 import utils.Date;
