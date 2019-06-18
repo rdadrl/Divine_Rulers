@@ -99,7 +99,7 @@ public class LandingPhase3dRendevous extends Application {
         light.setColor(Color.LIGHTGOLDENRODYELLOW);
 
         //Titan & SpaceCraft:
-        Box rocket = new Box(2000, 100000, 20);
+        Box rocket = new Box(200, 200, 200);
         rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
         Rotate rotate = new Rotate();
         rotate.setAxis(new Point3D(0,0,90));
@@ -109,14 +109,6 @@ public class LandingPhase3dRendevous extends Application {
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
 
-        Cylinder landingPad = new Cylinder(60, 1);
-        landingPad.setTranslateY(0);
-        landingPad.setMaterial(new PhongMaterial(Color.DARKRED));
-
-        Sphere landingDot = new Sphere(2);
-        landingPad.setMaterial(new PhongMaterial(Color.DARKBLUE));
-
-
         Sphere titan = new Sphere(3000);
         //titan.setTranslateY(3000);
         PhongMaterial titanMaterial = new PhongMaterial();
@@ -124,14 +116,14 @@ public class LandingPhase3dRendevous extends Application {
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
         titan.setMaterial(titanMaterial);
 
-        root.getChildren().addAll(titan, rocket, light, landingDot);
+        root.getChildren().addAll(titan, rocket, light);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
-        camera.setTranslateZ(-500);
+        camera.setTranslateZ(-2000);
         camera.setTranslateX(0);
         camera.setNearClip(1);
-        camera.setFarClip(171000);
+        camera.setFarClip(20000000);
         //camera.getTransforms().addAll(xRotate, yRotate);
 
         SubScene subScene = new SubScene(root,800,600,false, SceneAntialiasing.BALANCED);
@@ -239,9 +231,6 @@ public class LandingPhase3dRendevous extends Application {
                     rocket.setWidth(rocket.getWidth() * 1.25);
 
                 }
-                if (key == KeyCode.EQUALS) {
-                    rocket.setWidth(rocket.getHeight());
-                }
             }
         });
 
@@ -271,7 +260,7 @@ public class LandingPhase3dRendevous extends Application {
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
                     rocket.setTranslateX(SpaceCraftObj.getCentralPos().getX()/1000000D);
                     rocket.setTranslateY(-SpaceCraftObj.getCentralPos().getY()/1000000D);
-                    rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight());
+                    //rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight());
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(SpaceCraftObj.getCentralPos().getZ()));
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("LD " +

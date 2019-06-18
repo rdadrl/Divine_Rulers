@@ -39,6 +39,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         this.centralVel = centralVel;
         this.thrusterImpulse = 0;//4000; // newtons per second TODO: Check value
         this.acceleration = new Vector3D();
+        this.toPlanet = (Planet) trajectory.getTarget();
     }
 
     @Override
