@@ -117,6 +117,8 @@ public abstract class CelestialObject implements ODEsolvable {
             // radius of distance
             double dist = r.length();
             // F(m1<-m2) = (G * m1 * m2) / r^2
+
+            double netForce_c = (MathUtil.G * o.getMass() * refOb.getMass());
             double netForce = (MathUtil.G * o.getMass() * refOb.getMass()) /
                     Math.pow(dist, 2);
             // create the force vector of between the two objects. It is in the direction of

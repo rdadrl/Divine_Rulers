@@ -7,6 +7,7 @@ import solarsystem.rocket.lunarLander.openLoop.LunarlanderLanderOpenLoopVerlet;
 import utils.Date;
 import utils.vector.Vector3D;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -14,11 +15,13 @@ public class RocketLauncherTest {
     public int iteration;
 
     @Test
-    public void launchTest() {
+    public void launchTest() throws IOException {
         Date date = new Date(2000, 0, 1, 0, 0, 0);
-        RocketLauncher rocket = new RocketLauncher( new Vector3D(0, 0
-                , 0.959931),
-                new Vector3D(0, 0, 0), date);
+        SolarSystem solarSystem = new SolarSystem();
+        Planet earth = solarSystem.getPlanets().getEarth();
+        solarSystem.getPositionsPlanetsAtDateKepler(date);
+        RocketLauncher rocket = new RocketLauncher(new Vector3D(0, 0, 0.959931), new Vector3D(0,0,0), date, earth);
+//        new RocketLauncher( new Vector3D(0, 0, 0.959931), earth);new Vector3D(0, 0, 0), date);
         ArrayList<RocketLauncher> obj = new ArrayList<>();
         obj.add(rocket);
         VerletVelocity verletVelocity = new VerletVelocity(obj, date);
@@ -27,7 +30,7 @@ public class RocketLauncherTest {
             iteration=i;
             verletVelocity.updateLocation(10, TimeUnit.MILLISECONDS);
             if (i % 50 == 0) {
-                System.out.println("time: " + rocket.getTotalTime());
+                System.out.println("time: " + rocket.getTotTime());
                 System.out.println("X:" + rocket.getCentralPos().getX());
                 System.out.println("Y:" + rocket.getCentralPos().getY());
                 System.out.println("Z:" + rocket.getCentralPos().getZ());
