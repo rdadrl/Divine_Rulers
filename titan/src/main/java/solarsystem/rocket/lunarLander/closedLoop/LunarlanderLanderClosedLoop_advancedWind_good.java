@@ -326,7 +326,6 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
         return oldAcceleration_smooth;
     }
 
-
     public double getAverageJerkX(){
         return  jerk_average_x.average();
     }

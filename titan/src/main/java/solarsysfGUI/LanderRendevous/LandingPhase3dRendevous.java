@@ -163,7 +163,7 @@ public class LandingPhase3dRendevous extends Application {
                         oneMoreRun = true;
                     }
                     else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
-                        vVref.updateLocation(10, TimeUnit.HOURS);
+                        vVref.updateLocation(1, TimeUnit.SECONDS);
                         lastUpdate = System.nanoTime();
                     }
                 }
@@ -188,13 +188,14 @@ public class LandingPhase3dRendevous extends Application {
                 if (key == KeyCode.SHIFT) goDown = true;
 
                 if (key == KeyCode.F9) if (verletUpdateUnitInMs <= 10) {
-                    verletUpdateUnitInMs = verletUpdateUnitInMs / 2;
+                    verletUpdateUnitInMs = verletUpdateUnitInMs / 2D;
                     verletUpdateUnitMultiplier = verletUpdateUnitMultiplier * 2;
                 }
-                if (key == KeyCode.F7) if (verletUpdateUnitInMs <= 10 && verletUpdateUnitMultiplier / 2 >= 1) {
-                    verletUpdateUnitInMs = verletUpdateUnitInMs * 2;
+                if (key == KeyCode.F7) if (verletUpdateUnitInMs <= 10 && verletUpdateUnitMultiplier / 2 >= 0.000001) {
+                    verletUpdateUnitInMs = verletUpdateUnitInMs * 2D;
                     verletUpdateUnitMultiplier = verletUpdateUnitMultiplier / 2;
                 }
+                if (key == KeyCode.P) pauseStatus = !pauseStatus;
             }
         });
 
@@ -258,8 +259,8 @@ public class LandingPhase3dRendevous extends Application {
             {
                 long differancePerAnimationFrameInMS = (currentN - lastFrame) / 1000000L;
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
-                    rocket.setTranslateX(SpaceCraftObj.getCentralPos().getX()/1000000D);
-                    rocket.setTranslateY(-SpaceCraftObj.getCentralPos().getY()/1000000D);
+                    rocket.setTranslateX(SpaceCraftObj.getCentralPos().getX()/1000D);
+                    rocket.setTranslateY(-SpaceCraftObj.getCentralPos().getY()/1000D);
                     //rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight());
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(SpaceCraftObj.getCentralPos().getZ()));

@@ -90,7 +90,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         //ArrayList<Planet> planets = new ArrayList<>();
         //planets.add((Planet) trajectory.getTarget());
         //Vector3D a_test = gravitationalForces(this, planets);
-        Vector3D a = d.scale(-G*trajectory.getTarget().getMass()/Math.pow(d.norm(),3));
+        Vector3D a = d.scale(-G* trajectory.getTarget().getMass()/Math.pow(d.norm(),3));
         System.out.println("Gravity: " + a);
         return a;
     }
