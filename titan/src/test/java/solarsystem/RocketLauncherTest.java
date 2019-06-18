@@ -19,7 +19,7 @@ public class RocketLauncherTest {
         Date date = new Date(2000, 0, 1, 0, 0, 0);
         SolarSystem solarSystem = new SolarSystem();
         Planet earth = solarSystem.getPlanets().getEarth();
-        solarSystem.getPositionsPlanetsAtDateKepler(date);
+        solarSystem.setPositionsPlanetsAtDateKepler(date);
         RocketLauncher rocket = new RocketLauncher(new Vector3D(0, 0, 0.959931), new Vector3D(0,0,0), date, earth);
 //        new RocketLauncher( new Vector3D(0, 0, 0.959931), earth);new Vector3D(0, 0, 0), date);
         ArrayList<RocketLauncher> obj = new ArrayList<>();
