@@ -3,8 +3,7 @@ package solarsystem.rocket.mainRocket2DRendezvous;
 import org.junit.Test;
 import physics.VerletVelocity;
 import solarsystem.SolarSystem;
-import solarsystem.rocket.Trajectory;
-import solarsystem.rocket.lunarLander.closedLoop.LunarlanderLanderClosedLoop_advancedWind_good;
+import solarsystem.Trajectory;
 import utils.Date;
 import utils.vector.Vector3D;
 

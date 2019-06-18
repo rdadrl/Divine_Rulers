@@ -18,12 +18,20 @@ public class Trajectory {
         this.targetBody = targetBody; this.a = semiMajorAxis; this.T = period;
     }
 
+    public Trajectory(CelestialObject targetBody, double semiMajorAxis, double period){
+        this.targetBody = targetBody; this.a = semiMajorAxis; this.T = period;
+    }
+
     //public void setTarget(CelestialObject target) { this.target = target; }
-    //public CelestialObject getTarget() { return target; }
+    //public CelestialObject getTargetBody() { return target; }
 
     public void setSemiMajorAxis(double semiMajorAxis) { this.a = semiMajorAxis; }
     public double getSemiMajorAxis() { return this.a; }
 
     public void setPeriod(double period) { this.T = period; }
     public double getPeriod() { return this.T; }
+
+    public CelestialObject getTargetBody() {
+        return targetBody;
+    }
 }

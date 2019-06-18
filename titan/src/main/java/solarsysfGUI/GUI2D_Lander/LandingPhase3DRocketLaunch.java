@@ -2,6 +2,7 @@ package solarsysfGUI.GUI2D_Lander;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import physics.VerletVelocity;
 import solarsysfGUI.TitanFocus3D;
 import solarsystem.Planet;
 import solarsystem.SolarSystem;
@@ -19,10 +20,10 @@ public class LandingPhase3DRocketLaunch extends Application { //TODO: Should ren
             Planet earth = solarSystem.getPlanets().getEarth();
             Date date = new Date(2000, 0, 1, 0, 0, 0);
 // TODO: TitanFocus3D should work with Spacecraft as well
-            /*Application landingPhaseApp = new TitanFocus3D(new RocketLauncher(new Vector3D(0,0,-0.610865),
+            Application landingPhaseApp = new TitanFocus3D(new RocketLauncher(new Vector3D(0,0,-0.610865),
                     new Vector3D(0,0,0),date, earth ), date);
-            //((TitanFocus3D) landingPhaseApp).setODEsolver(new VerletVelocity());
-            landingPhaseApp.start(new Stage()); */ //start with a empty stage (or you may go ahead and give some specs)
+            ((TitanFocus3D) landingPhaseApp).setODEsolver(new VerletVelocity());
+            landingPhaseApp.start(new Stage());  //start with a empty stage (or you may go ahead and give some specs)
         } catch (Exception e) {
             e.printStackTrace();
         }

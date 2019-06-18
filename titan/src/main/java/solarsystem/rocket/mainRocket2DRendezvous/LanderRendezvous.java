@@ -34,7 +34,7 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
         this.centralVel = centralVel;
         this.thrusterImpulse = 4000; // newtons per second TODO: Check value
         this.acceleration = new Vector3D();
-        this.toPlanet = (Planet) trajectory.getTarget();
+        this.toPlanet = (Planet) trajectory.getTargetBody();
     }
 
     @Override
@@ -54,8 +54,8 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
             centralVel = new Vector3D(0,0,0);
             phase = 2;
         }
-        Vector3D d = centralPos.substract(trajectory.getTarget().getCentralPos());
-        return d.scale(G*trajectory.getTarget().getMass()/Math.pow(d.norm(),3));
+        Vector3D d = centralPos.substract(trajectory.getTargetBody().getCentralPos());
+        return d.scale(G*trajectory.getTargetBody().getMass()/Math.pow(d.norm(),3));
     }
 
     private Vector3D phase2() {
@@ -67,8 +67,8 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
     }
 
     private Vector3D phase3() {
-        Vector3D d = centralPos.substract(trajectory.getTarget().getCentralPos());
-        return d.scale(G*trajectory.getTarget().getMass()/Math.pow(d.norm(),3));
+        Vector3D d = centralPos.substract(trajectory.getTargetBody().getCentralPos());
+        return d.scale(G*trajectory.getTargetBody().getMass()/Math.pow(d.norm(),3));
     }
 
     public void setDepartureTime(Date date) { this.departureTime = departureTime; }
