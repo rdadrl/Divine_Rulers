@@ -327,15 +327,6 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
     }
 
 
-    @Override
-    public void setCentralPos(Vector3D newCentralPos) {
-        centralPos = newCentralPos;
-
-        if(newCentralPos.getY() < landedAltitude) {
-            landed = true;
-        }
-    }
-
     public double getAverageJerkX(){
         return  jerk_average_x.average();
     }

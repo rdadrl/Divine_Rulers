@@ -201,15 +201,6 @@ public class LunarlanderLanderClosedLoop extends Lunarlander {
     }
 
 
-    @Override
-    public void setCentralPos(Vector3D newCentralPos) {
-        centralPos = newCentralPos;
-
-        if(newCentralPos.getY() < landedAltitude) {
-            landed = true;
-        }
-    }
-
     public void printStatus() {
         System.out.println("time: " + totTime.toString() + "\n" +
                 "fuel: " + fuelMass + "\n" +

@@ -175,15 +175,30 @@ public class TitanFocus3D extends Application {
 
             public void run() {
                 while(!pauseStatus) {
-                    if (spaceCraftObj.phaseFinished()) { //if landed
-                        System.out.println("Thanks for flying with Paredis Spacelines.");
-                        pauseStatus = true;
-                        oneMoreRun = true;
+                    if(spaceCraftObj instanceof Lunarlander) {
+                        Lunarlander lunarlander = (Lunarlander) spaceCraftObj;
+                        if (lunarlander.getLanded()) { //if landed
+                            System.out.println("Thanks for flying with Paredis Spacelines.");
+                            pauseStatus = true;
+                            oneMoreRun = true;
+                        }
+                        else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
+                            vVref.updateLocation(10, TimeUnit.MILLISECONDS);
+                            lastUpdate = System.nanoTime();
+                        }
+                    }else{
+                        if (spaceCraftObj.phaseFinished()) { //if landed
+                            System.out.println("Thanks for flying with Paredis Spacelines.");
+                            pauseStatus = true;
+                            oneMoreRun = true;
+                        }
+                        else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
+                            vVref.updateLocation(10, TimeUnit.MILLISECONDS);
+                            lastUpdate = System.nanoTime();
+                        }
+
                     }
-                    else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
-                        vVref.updateLocation(10, TimeUnit.MILLISECONDS);
-                        lastUpdate = System.nanoTime();
-                    }
+
                 }
             }
         }
@@ -349,7 +364,7 @@ public class TitanFocus3D extends Application {
         landingStage.show();
     }
 
-    public TitanFocus3D(Lunarlander spaceCraftObj, Date date) throws Exception {
+    public TitanFocus3D(SpaceCraft spaceCraftObj, Date date) throws Exception {
         this.date = date;
         this.spaceCraftObj = spaceCraftObj;
         startTime = date.getTimeInMillis();
