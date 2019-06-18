@@ -131,9 +131,10 @@ public class RungeKutta4 implements ODEsolver {
 
     @Override
     public void updateLocation(long time, TimeUnit unit) {
+
         time = TimeUnit.MILLISECONDS.convert(time, unit); //convert to seconds
         currentDate.add(Calendar.MILLISECOND, (int)time);
-        double dt = time / 1000D;
+        double dt = time /1000D;
         rk4sim(bodies, dfs, dt);
     }
 }
