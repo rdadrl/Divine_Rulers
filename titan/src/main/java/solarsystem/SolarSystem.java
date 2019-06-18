@@ -76,7 +76,7 @@ public class SolarSystem {
      * Get the starting positions of the planets based upon kepler approximation
      * @param date Date of the planet positions.
      */
-    public void getPositionsPlanetsAtDateKepler(Date date){
+    public void setPositionsPlanetsAtDateKepler(Date date){
         currentDate = date;
         for(Planet planet: getPlanets().getAll()){
             planet.initializeCartesianCoordinates(date);
@@ -91,7 +91,7 @@ public class SolarSystem {
      */
     public void initializeAnimation(Date date, ArrayList<Projectile> projectiles){
         allAnimatedObjects = new ArrayList<>(getPlanets().getAll());
-        allAnimatedObjects.addAll(projectiles);
+        if(projectiles != null) allAnimatedObjects.addAll(projectiles);
         this.projectiles = projectiles;
         ODEsolver.initialize(this.allAnimatedObjects, date);
     }

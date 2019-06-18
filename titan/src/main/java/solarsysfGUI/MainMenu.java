@@ -99,6 +99,7 @@ public class MainMenu extends Application {
             try {
                 RocketLaunchStage newGame = new RocketLaunchStage();
                 newGame.start(new Stage());
+                primaryStage.close();
             }
             catch(Exception e) {
                 System.out.println("Unable to start a new game. Could not initialize Rocket Launch Stage.");

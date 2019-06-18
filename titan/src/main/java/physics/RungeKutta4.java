@@ -127,7 +127,6 @@ public class RungeKutta4 implements ODEsolver {
                 planet.setCentralVel(planet.getCentralVel().add(kav[i][1]));
             }
         }
-
     }
 
     @Override

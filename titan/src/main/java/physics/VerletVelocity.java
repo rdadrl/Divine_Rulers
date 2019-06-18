@@ -49,7 +49,6 @@ public class VerletVelocity implements ODEsolver {
             body.initializeCartesianCoordinates(date);
             if (body instanceof Projectile) projectiles.add((Projectile) body);
             if (body instanceof Planet) planets.add((Planet) body);
-            System.out.println(body);
         }
         updateAcceleration();
     }

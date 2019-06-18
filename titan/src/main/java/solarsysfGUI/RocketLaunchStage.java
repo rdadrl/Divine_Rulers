@@ -16,6 +16,9 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import physics.ODEsolver;
+import physics.RungeKutta4;
+import physics.VerletVelocity;
 import solarsystem.*;
 import solarsystem.SolarSystem;
 import solarsystem.rocket.Projectile;
@@ -36,10 +39,12 @@ public class RocketLaunchStage extends Application {
     private boolean pauseStatus = false;
 
     // Timing variables
-    private Date date = new Date(2002, 9, 18, 12, 0, 0);
-    private final long dt = 6;
-    private final TimeUnit timeUnit = TimeUnit.HOURS;
-    private final int UPDATE_FREQUENCY_IN_MS = 10;
+    private Date date = new Date(2015, 0, 26);
+    private Date pauseDate = new Date(2019, 0, 28);
+    private boolean pausedForDate = false;
+    private final long dt = 30;
+    private final TimeUnit timeUnit = TimeUnit.SECONDS;
+    private final double UPDATE_FREQUENCY_IN_MS = 0.001;
     // GUI variables
     private Scene mainScene;
     private Group root;
@@ -54,6 +59,8 @@ public class RocketLaunchStage extends Application {
 
     private int DistanceMultiplier = 40;
     private double plntRadFact = (2.0/6371.0);
+
+    private ODEsolver odEsolver = new VerletVelocity();
 
     @Override
     public void start(Stage primaryStage) {
@@ -203,6 +210,7 @@ public class RocketLaunchStage extends Application {
                 new ArrayList<>(projectileList.values());
         allObj.addAll(solarSystem.getPlanets().getAll());
         solarSystem.setAllAnimatedObjects(allObj);
+        solarSystem.setODEsolver(odEsolver);
 
         ArrayList<Projectile> projectileInstances = new ArrayList<>(projectileList.values());
 
@@ -226,47 +234,49 @@ public class RocketLaunchStage extends Application {
         {
             public void handle(long currentNanoTime)
             {
-                if (!pauseStatus) {
-                    dateLabel.setText(date.toDateString());
-                    Vector3D coordinate;
+                dateLabel.setText(date.toDateString());
+                Vector3D coordinate;
 
-                    //have to update the sun manually because it's enormous
-                    coordinate = sunObj.getCentralPos().substract(followObject.getCentralPos());
-                    sun.setRadius(sunObj.getRadius() * plntRadFact/50.0);
-                    sun.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
-                    sun.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
-                    sun.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
-                    sun.setRotate(sun.getRotate() + 2);
+                //have to update the sun manually because it's enormous
+                coordinate = sunObj.getCentralPos().substract(followObject.getCentralPos());
+                sun.setRadius(sunObj.getRadius() * plntRadFact/50.0);
+                sun.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
+                sun.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
+                sun.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
+                sun.setRotate(sun.getRotate() + 2);
 
-                    //updateGUIobject(sun, sunObj);
-                    updateGUIobject(earth, earthObj);
-                    updateGUIobject(mercury, mercuryObj);
-                    updateGUIobject(mars, marsObj);
-                    updateGUIobject(jupiter, jupiterObj);
-                    updateGUIobject(saturn, saturnObj);
-                    updateGUIobject(titan, titanObj);
-                    updateGUIobject(uranus, uranusObj);
-                    updateGUIobject(neptune, neptuneObj);
-                    updateGUIobject(venus, venusObj);
+                //updateGUIobject(sun, sunObj);
+                updateGUIobject(earth, earthObj);
+                updateGUIobject(mercury, mercuryObj);
+                updateGUIobject(mars, marsObj);
+                updateGUIobject(jupiter, jupiterObj);
+                updateGUIobject(saturn, saturnObj);
+                updateGUIobject(titan, titanObj);
+                updateGUIobject(uranus, uranusObj);
+                updateGUIobject(neptune, neptuneObj);
+                updateGUIobject(venus, venusObj);
 
-                    //Update projectile positions & check whether it's close enough to titan to activate landing phase
-                    for(Sphere guiObject: projectileList.keySet()){
-                        updateGUIobject(guiObject, projectileList.get(guiObject));
-                        if (projectileList.get(guiObject).getClosestDistanceThisProjectile() <= 1.0171236527952513E8 * 1.1) { //i love to play with this variable, and you will too.
-                            System.out.println("Initiate the landing phase capt'!");
-                            this.stop();
-                            try {
-                                //Application landingPhaseApp =
-                                        //new LandingPhase(projectileList.get(guiObject), date);
-                                //landingPhaseApp.start(new Stage());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                //Update projectile positions & check whether it's close enough to titan to activate landing phase
+                for(Sphere guiObject: projectileList.keySet()){
+                    updateGUIobject(guiObject, projectileList.get(guiObject));
+                    if (projectileList.get(guiObject).getClosestDistanceThisProjectile() <= 1.0171236527952513E8 * 1.1) { //i love to play with this variable, and you will too.
+                        System.out.println("Initiate the landing phase capt'!");
+                        this.stop();
+                        try {
+                            //Application landingPhaseApp =
+                                    //new LandingPhase(projectileList.get(guiObject), date);
+                            //landingPhaseApp.start(new Stage());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
-
-                    if(pauseStatus) pauseStatus = true;
                 }
+
+                if(!pausedForDate && date.getTimeInMillis()>pauseDate.getTimeInMillis()){
+                    pauseStatus = true;
+                    pausedForDate = true;
+                }
+
                 //Move the camera
                 if (goNorth) camera.setTranslateY(camera.getTranslateY() - 1);
                 if (goSouth) camera.setTranslateY(camera.getTranslateY() + 1);
@@ -320,5 +330,9 @@ public class RocketLaunchStage extends Application {
         guiObject.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
         guiObject.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
         guiObject.setRotate(guiObject.getRotate() + 20);
+    }
+
+    private void updateRadius(Sphere guiObject, CelestialObject cObject) {
+        guiObject.setRadius(cObject.getRadius() * plntRadFact);
     }
 }

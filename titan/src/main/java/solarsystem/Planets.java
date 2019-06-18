@@ -2,6 +2,8 @@ package solarsystem;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * A class which is a placeholder for all the planets in the universe. That way the solarsystem
@@ -30,6 +32,8 @@ public class Planets {
     private Planet neptune;
     @JsonProperty("All")
     private ArrayList<Planet> all;
+    private HashMap<String, Planet> hashMap;
+
 
     /**
      * @return sun object
@@ -106,5 +110,15 @@ public class Planets {
      */
     public ArrayList<Planet> getAll(){
         return all;
+    }
+
+    public Planet planetByName(String name) {
+        if(hashMap == null) {
+            hashMap = new HashMap<>();
+            for(Planet plan: all) {
+                hashMap.put(plan.getName(), plan);
+            }
+        }
+        return hashMap.get(name);
     }
 }

@@ -1,4 +1,4 @@
-package physics;
+package manouvres;
 
 import utils.MathUtil;
 import utils.vector.Vector3D;

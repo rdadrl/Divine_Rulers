@@ -19,7 +19,7 @@ public class VerletVelocityTest {
     public void verletTest() throws IOException {
         Date date = new Date(2000, 0, 1, 0, 0, 0);
         SolarSystem solarSystem = new SolarSystem();
-        solarSystem.getPositionsPlanetsAtDateKepler(date);
+        solarSystem.setPositionsPlanetsAtDateKepler(date);
         ArrayList<Planet> planets = solarSystem.getPlanets().getAll();
         Planet plan = solarSystem.getPlanets().getEarth();
         VerletVelocity verletVelocity = new VerletVelocity(planets, date);
@@ -32,11 +32,6 @@ public class VerletVelocityTest {
             }
             verletVelocity.updateLocation(1, TimeUnit.DAYS);
         }
-
-
-
-
-
     }
 
     @Test
