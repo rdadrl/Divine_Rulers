@@ -88,6 +88,7 @@ public abstract class Lunarlander extends SpaceCraft {
         if(newCentralPos.getY() < landedAltitude) {
             printStatus();
             landed = true;
+            phaseFinished = true;
             System.out.println("Landed");
             //System.exit(-1);
         }
