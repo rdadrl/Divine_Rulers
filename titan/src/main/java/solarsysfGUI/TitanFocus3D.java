@@ -23,6 +23,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import physics.ODEsolver;
 import physics.VerletVelocity;
+import solarsystem.rocket.SpaceCraft;
 import solarsystem.rocket.lunarLander.Lunarlander;
 import utils.Date;
 
@@ -55,8 +56,8 @@ public class TitanFocus3D extends Application {
     private int verletUpdateUnitMultiplier = 1;
     private int counter;
     // rocket vars
-    private Lunarlander lunarlanderObj;
-    private ArrayList<Lunarlander> obj;
+    private SpaceCraft spaceCraftObj;
+    private ArrayList<SpaceCraft> obj;
 
     //HID Event flags
     private final int CAMERA_MOVEMENT_STEP_SIZE = 10;
@@ -114,7 +115,7 @@ public class TitanFocus3D extends Application {
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
 
-        //rocket.setTranslateX(lunarlanderObj.getCentralPos().getX());
+        //rocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
 
@@ -140,7 +141,7 @@ public class TitanFocus3D extends Application {
         camera.setTranslateZ(-500);
         camera.setTranslateX(0);
         camera.setNearClip(1);
-        camera.setFarClip(171000);
+        camera.setFarClip(2000000);
         //camera.getTransforms().addAll(xRotate, yRotate);
 
         SubScene subScene = new SubScene(root,800,600,false, SceneAntialiasing.BALANCED);
@@ -174,15 +175,30 @@ public class TitanFocus3D extends Application {
 
             public void run() {
                 while(!pauseStatus) {
-                    if (lunarlanderObj.getLanded()) { //if landed
-                        System.out.println("Thanks for flying with Paredis Spacelines.");
-                        pauseStatus = true;
-                        oneMoreRun = true;
+                    if(spaceCraftObj instanceof Lunarlander) {
+                        Lunarlander lunarlander = (Lunarlander) spaceCraftObj;
+                        if (lunarlander.getLanded()) { //if landed
+                            System.out.println("Thanks for flying with Paredis Spacelines.");
+                            pauseStatus = true;
+                            oneMoreRun = true;
+                        }
+                        else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
+                            vVref.updateLocation(10, TimeUnit.MILLISECONDS);
+                            lastUpdate = System.nanoTime();
+                        }
+                    }else{
+                        if (spaceCraftObj.phaseFinished()) { //if landed
+                            System.out.println("Thanks for flying with Paredis Spacelines.");
+                            pauseStatus = true;
+                            oneMoreRun = true;
+                        }
+                        else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
+                            vVref.updateLocation(10, TimeUnit.MILLISECONDS);
+                            lastUpdate = System.nanoTime();
+                        }
+
                     }
-                    else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
-                        vVref.updateLocation(10, TimeUnit.MILLISECONDS);
-                        lastUpdate = System.nanoTime();
-                    }
+
                 }
             }
         }
@@ -265,11 +281,11 @@ public class TitanFocus3D extends Application {
             {
                 long differancePerAnimationFrameInMS = (currentN - lastFrame) / 1000000L;
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
-                    rocket.setTranslateX(lunarlanderObj.getCentralPos().getX());
-                    rocket.setTranslateY(-lunarlanderObj.getCentralPos().getY() / 100);
+                    rocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
+                    rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY() / 100);
                     rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight() / 2D);
                     rocket.setTranslateZ(0);
-                    rotate.setAngle(-Math.toDegrees(lunarlanderObj.getCentralPos().getZ()));
+                    rotate.setAngle(-Math.toDegrees(spaceCraftObj.getCentralPos().getZ()));
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("LD " +
 //                            "X: " + landingDot.getTranslateX() +
 //                            ", Y: " + landingDot.getTranslateY() +
@@ -348,12 +364,12 @@ public class TitanFocus3D extends Application {
         landingStage.show();
     }
 
-    public TitanFocus3D(Lunarlander lunarlanderObj, Date date) throws Exception {
+    public TitanFocus3D(SpaceCraft spaceCraftObj, Date date) throws Exception {
         this.date = date;
-        this.lunarlanderObj = lunarlanderObj;
+        this.spaceCraftObj = spaceCraftObj;
         startTime = date.getTimeInMillis();
         obj = new ArrayList<>();
-        obj.add(lunarlanderObj);
+        obj.add(spaceCraftObj);
         this.ODEsolver = new VerletVelocity(obj, date);
 
         //push to start
@@ -367,18 +383,32 @@ public class TitanFocus3D extends Application {
     public String constructDebugText () {
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
+
+        if(spaceCraftObj instanceof Lunarlander) {
+            Lunarlander lunarlander = (Lunarlander) spaceCraftObj;
+            return  "fps\t\t: " + currentFPS + "\n" +
+                    "sec\t\t: " + df.format((date.getTimeInMillis()-startTime)/1000D) + "\n" +
+                    "y-pos\t: " + df.format(spaceCraftObj.getCentralPos().getY()) + "\n" +
+                    "y-vel\t: " + df.format(spaceCraftObj.getCentralVel().getY()) + "\n" +
+                    "x-pos\t: " + df.format(spaceCraftObj.getCentralPos().getX()) + "\n" +
+                    "x-vel\t: " + df.format(spaceCraftObj.getCentralVel().getX()) + "\n" +
+                    "t-pos\t: " + df.format(spaceCraftObj.getCentralPos().getZ()) + "\n" +
+                    "t-vel\t\t: " + df.format(spaceCraftObj.getCentralVel().getZ()) + "\n" +
+                    "ft%\t\t: " + df.format(lunarlander.getMainThrusterForceAsPercentage()) + "\n" +
+                    "fuel\t\t: " + df.format(lunarlander.getFuelMass()) + "\n" +
+                    "c-wind\t: " + df.format(lunarlander.getCurrentWindSpeed()) + "\n" +
+                    "m-wind\t: " + df.format(lunarlander.getMeanWindSpeed()) + "\n" +
+                    "speed\t: " + verletUpdateUnitMultiplier + "x";
+
+        }
+
         return  "fps\t\t: " + currentFPS + "\n" +
                 "sec\t\t: " + df.format((date.getTimeInMillis()-startTime)/1000D) + "\n" +
-                "y-pos\t: " + df.format(lunarlanderObj.getCentralPos().getY()) + "\n" +
-                "y-vel\t: " + df.format(lunarlanderObj.getCentralVel().getY()) + "\n" +
-                "x-pos\t: " + df.format(lunarlanderObj.getCentralPos().getX()) + "\n" +
-                "x-vel\t: " + df.format(lunarlanderObj.getCentralVel().getX()) + "\n" +
-                "t-pos\t: " + df.format(lunarlanderObj.getCentralPos().getZ()) + "\n" +
-                "t-vel\t\t: " + df.format(lunarlanderObj.getCentralVel().getZ()) + "\n" +
-                "ft%\t\t: " + df.format(lunarlanderObj.getMainThrusterForceAsPercentage()) + "\n" +
-                "fuel\t\t: " + df.format(lunarlanderObj.getFuelMass()) + "\n" +
-                "c-wind\t: " + df.format(lunarlanderObj.getCurrentWindSpeed()) + "\n" +
-                "m-wind\t: " + df.format(lunarlanderObj.getMeanWindSpeed()) + "\n" +
-                "speed\t: " + verletUpdateUnitMultiplier + "x";
+                "y-pos\t: " + df.format(spaceCraftObj.getCentralPos().getY()) + "\n" +
+                "y-vel\t: " + df.format(spaceCraftObj.getCentralVel().getY()) + "\n" +
+                "x-pos\t: " + df.format(spaceCraftObj.getCentralPos().getX()) + "\n" +
+                "x-vel\t: " + df.format(spaceCraftObj.getCentralVel().getX()) + "\n" +
+                "t-pos\t: " + df.format(spaceCraftObj.getCentralPos().getZ()) + "\n" +
+                "t-vel\t\t: " + df.format(spaceCraftObj.getCentralVel().getZ()) + "\n";
     }
 }
