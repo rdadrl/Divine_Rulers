@@ -72,6 +72,14 @@ public class SolarSystem {
         this.allAnimatedObjects = allAnimatedObjects;
     }
 
+    public void addAnimatedObject(CelestialObject animatedObject) { allAnimatedObjects.add(animatedObject); }
+
+    public void removeAnimatedObject(String name) {
+        for (CelestialObject o : allAnimatedObjects) {
+            if (o.getName().equals(name)) allAnimatedObjects.remove(o);
+        }
+    }
+
     /**
      * Get the starting positions of the planets based upon kepler approximation
      * @param date Date of the planet positions.
