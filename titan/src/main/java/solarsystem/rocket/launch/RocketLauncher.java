@@ -71,6 +71,7 @@ public class RocketLauncher extends SpaceCraft {
         double x_doubledot=burnRate[n-1]*gasRelativeSpeed[n-1]*-Math.sin(z)/mass-G*M*x/d;
         double y_doubledot=burnRate[n-1]*gasRelativeSpeed[n-1]*Math.cos(z)/mass-G*M*y/d;
         acceleration.setX(x_doubledot);
+
         acceleration.setY(y_doubledot);
     }
 
@@ -80,8 +81,15 @@ public class RocketLauncher extends SpaceCraft {
 
 
     public void updateOrientation(){
+        computeG();
         double z=Math.atan(centralVel.getY()/centralVel.getX())-Math.PI/2;
-        centralPos.setZ(z);
+        double v=Math.sqrt(Math.pow(centralVel.getX(),2)+Math.pow(centralVel.getY(),2));
+        double z_doubledot=g*Math.sin(z)/v-v*Math.sin(z)/(R+centralPos.getY());
+        centralVel.setZ(z_doubledot);
+    }
+
+    public void computeG(){
+        g=g0*Math.pow(R/(R+centralPos.getY()),2);
     }
 
     public void computeBurnRates(int n){

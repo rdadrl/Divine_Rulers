@@ -1,5 +1,6 @@
 package solarsystem.rocket;
 
+import solarsystem.Planet;
 import utils.Date;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public abstract class SpaceCraft extends Projectile {
     protected double Ft;
     protected double Fl;
     protected double dt;
+    protected double g;
 
 
     public void calculateMass() {
