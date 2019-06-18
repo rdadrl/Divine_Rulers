@@ -1,12 +1,13 @@
 package manouvres;
 
-import solarsystem.rocket.Trajectory;
+import solarsystem.Trajectory;
 
 /**
  *
  *
  */
 public class Hohmann {
+
 
     public static Trajectory computeImpulse() {
         return null;

@@ -4,14 +4,12 @@ import physics.ODEsolvable;
 import solarsystem.CelestialObject;
 import solarsystem.SolarSystem;
 import solarsystem.rocket.SpaceCraft;
-import solarsystem.rocket.Trajectory;
+import solarsystem.Trajectory;
 import utils.Date;
 import utils.vector.Vector3D;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
-import static java.lang.Math.*;
 import static utils.MathUtil.G;
 
 public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {

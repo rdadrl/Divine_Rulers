@@ -1,9 +1,8 @@
 package solarsystem.rocket;
 
-import solarsystem.CelestialObject;
+import solarsystem.Trajectory;
 import utils.vector.Vector3D;
 
-import solarsystem.Planet;
 import utils.Date;
 
 import java.math.BigDecimal;

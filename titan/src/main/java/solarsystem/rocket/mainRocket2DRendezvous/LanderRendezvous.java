@@ -4,7 +4,7 @@ import physics.ODEsolvable;
 import solarsystem.CelestialObject;
 import solarsystem.Planet;
 import solarsystem.rocket.SpaceCraft;
-import solarsystem.rocket.Trajectory;
+import solarsystem.Trajectory;
 import utils.Date;
 import utils.vector.Vector3D;
 
