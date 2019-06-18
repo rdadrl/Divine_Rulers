@@ -2,7 +2,6 @@ package solarsystem.rocket.lunarLander;
 
 import solarsystem.rocket.Projectile;
 import solarsystem.rocket.SpaceCraft;
-import sun.jvm.hotspot.memory.Space;
 import utils.Date;
 import utils.vector.Vector3D;
 
