@@ -31,10 +31,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-//TODO: Change "scale" of Visualizer, distance are currently not adapted for a launch
-//TODO: 22km seems to be deepspace, it should be closer to the planet
-//TODO: having the trajectory drawn thicker to be able to see it from further away
-// TODO: TitanFocus3D should work with Spacecraft class as well
 public class TitanFocus3D extends Application {
 
     // yipping variables
@@ -127,7 +123,7 @@ public class TitanFocus3D extends Application {
         landingPad.setMaterial(new PhongMaterial(Color.DARKBLUE));
 
 
-            Sphere titan = new Sphere(5149);
+            Sphere titan = new Sphere(2574);
         titan.setTranslateY(3000);
         PhongMaterial titanMaterial = new PhongMaterial();
         titanMaterial.setDiffuseMap(new Image("textures/moonmap.jpg"));
@@ -138,7 +134,7 @@ public class TitanFocus3D extends Application {
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
-        camera.setTranslateZ(-500);
+        camera.setTranslateZ(-3000);
         camera.setTranslateX(0);
         camera.setNearClip(1);
         camera.setFarClip(2000000);

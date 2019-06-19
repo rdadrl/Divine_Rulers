@@ -9,7 +9,6 @@ import solarsystem.SolarSystem;
 import solarsystem.rocket.launch.RocketLauncher;
 import utils.Date;
 import utils.vector.Vector3D;
-//TODO: having the trajectory drawn thicker to be able to see it from further away
 public class TitanFocus3DRocketLaunch extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
