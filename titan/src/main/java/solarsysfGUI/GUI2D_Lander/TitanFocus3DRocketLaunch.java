@@ -12,7 +12,7 @@ import utils.vector.Vector3D;
 //TODO: Change "scale" of Visualizer, distance are currently not adapted for a launch
 //TODO: 22km seems to be deepspace, it should be closer to the planet
 //TODO: having the trajectory drawn thicker to be able to see it from further away
-public class LandingPhase3DRocketLaunch extends Application { //TODO: Should rename visualizer as used for launch and landing
+public class TitanFocus3DRocketLaunch extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {

@@ -127,7 +127,7 @@ public class TitanFocus3D extends Application {
         landingPad.setMaterial(new PhongMaterial(Color.DARKBLUE));
 
 
-        Sphere titan = new Sphere(3000);
+            Sphere titan = new Sphere(5149);
         titan.setTranslateY(3000);
         PhongMaterial titanMaterial = new PhongMaterial();
         titanMaterial.setDiffuseMap(new Image("textures/moonmap.jpg"));
