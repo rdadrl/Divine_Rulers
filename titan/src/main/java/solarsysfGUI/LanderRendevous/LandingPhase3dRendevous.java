@@ -110,8 +110,8 @@ public class LandingPhase3dRendevous extends Application {
         rocket.setTranslateY(-40);
 
 
-        Box rocket2 = new Box(200, 200, 200);
-        rocket2.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
+        Box rocket2 = new Box(100, 100, 100);
+        rocket2.setMaterial(new PhongMaterial(Color.RED));
         Rotate rotate2 = new Rotate();
         rotate2.setAxis(new Point3D(0,0,90));
         rocket2.getTransforms().add(rotate2);
