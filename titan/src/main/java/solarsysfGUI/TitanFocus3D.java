@@ -253,6 +253,7 @@ public class TitanFocus3D extends Application {
                         landingStage.setWidth(Screen.getPrimary().getBounds().getWidth());
                     }
                 }
+                if (key == KeyCode.P) pauseStatus = !pauseStatus;
             }
         });
 

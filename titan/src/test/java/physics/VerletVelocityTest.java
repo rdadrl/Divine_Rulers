@@ -7,8 +7,6 @@ import utils.Date;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
-
 /**
  *
  *
@@ -30,7 +28,7 @@ public class VerletVelocityTest {
 
 
         long timestep_seconds = 30;
-        sol_ODE.initializeAnimation(departDate, null);
+        sol_ODE.initializeAnimationWithPlanets(departDate, null);
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_ODE.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
         }
@@ -61,7 +59,7 @@ public class VerletVelocityTest {
 
 
         long timestep_seconds = 30;
-        sol_ODE.initializeAnimation(departDate, null);
+        sol_ODE.initializeAnimationWithPlanets(departDate, null);
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_ODE.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
         }
@@ -94,7 +92,7 @@ public class VerletVelocityTest {
 
 
         long timestep_seconds = 30;
-        sol_ODE.initializeAnimation(departDate, null);
+        sol_ODE.initializeAnimationWithPlanets(departDate, null);
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_ODE.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
         }

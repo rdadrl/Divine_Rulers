@@ -338,7 +338,7 @@ public class MainMenuTitanHit extends Application {
 
         ArrayList<Projectile> projectileInstances = new ArrayList<>(projectileList.values());
 
-        solarSystem.initializeAnimation(date, projectileInstances);
+        solarSystem.initializeAnimationWithPlanets(date, projectileInstances);
 
         final long startNanoTime = System.nanoTime();
         new AnimationTimer()
@@ -526,7 +526,7 @@ public class MainMenuTitanHit extends Application {
                 }
 
                     date = new Date(2002, 9, 18, 12, 0, 0);
-                solarSystem.initializeAnimation(date, new ArrayList<>(projectileList.values()));
+                solarSystem.initializeAnimationWithPlanets(date, new ArrayList<>(projectileList.values()));
             }
 
             @Override

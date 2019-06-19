@@ -38,6 +38,7 @@ import java.util.Map;
 public class MainMenu extends Application {
     Scene mainScene;
     StackPane globalRoot;
+
     @Override
     public void start(Stage primaryStage) {
         globalRoot = new StackPane();
@@ -180,7 +181,7 @@ public class MainMenu extends Application {
         return rocketGroup;
     }
     public static String buttonStyleCreator(int width, int height) {
-        return "-fx-background-color: \n" +
+        return  "-fx-background-color: \n" +
                 "        #090a0c,\n" +
                 "        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),\n" +
                 "        linear-gradient(#20262b, #191d22),\n" +

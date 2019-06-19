@@ -17,7 +17,6 @@ import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import physics.ODEsolver;
-import physics.RungeKutta4;
 import physics.VerletVelocity;
 import solarsystem.*;
 import solarsystem.SolarSystem;
@@ -214,7 +213,7 @@ public class RocketLaunchStage extends Application {
 
         ArrayList<Projectile> projectileInstances = new ArrayList<>(projectileList.values());
 
-        solarSystem.initializeAnimation(date, projectileInstances);
+        solarSystem.initializeAnimationWithPlanets(date, projectileInstances);
         class ODEupdater implements Runnable {
             private long lastUpdate = System.nanoTime();
 
