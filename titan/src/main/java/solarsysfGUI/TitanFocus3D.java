@@ -220,6 +220,19 @@ public class TitanFocus3D extends Application {
                 if (key == KeyCode.SPACE) goUp = true;
                 if (key == KeyCode.SHIFT) goDown = true;
 
+                if (key == KeyCode.R) {
+                    if (trail.getChildren().size() > 0) {
+                        Sphere trailStart = (Sphere) (trail.getChildren().get(0));
+                        trailStart.setRadius(trailStart.getRadius() * 0.8);
+                    }
+                }
+                if (key == KeyCode.T) {
+                    if (trail.getChildren().size() > 0) {
+                        Sphere trailStart = (Sphere) (trail.getChildren().get(0));
+                        trailStart.setRadius(trailStart.getRadius() * 1.2);
+                    }
+                }
+
                 if (key == KeyCode.F9) if (verletUpdateUnitInMs <= 10) {
                     verletUpdateUnitInMs = verletUpdateUnitInMs / 2;
                     verletUpdateUnitMultiplier = verletUpdateUnitMultiplier * 2;
@@ -350,7 +363,7 @@ public class TitanFocus3D extends Application {
                     trailDot.setTranslateY(rocket.getTranslateY());
                     trailDot.setTranslateX(rocket.getTranslateX());
                     trailDot.setTranslateZ(rocket.getTranslateZ());
-
+                    if (trail.getChildren().size() > 0) trailDot.radiusProperty().bind(((Sphere) trail.getChildren().get(0)).radiusProperty());
                     trail.getChildren().add(trailDot);
                 }
                 else waitFramesForTrail++;
