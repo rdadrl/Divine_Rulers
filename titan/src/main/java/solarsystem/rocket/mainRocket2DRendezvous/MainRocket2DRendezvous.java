@@ -9,6 +9,7 @@ import utils.Date;
 import utils.vector.Vector3D;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import static utils.MathUtil.G;
 
@@ -37,7 +38,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         this.centralVel = centralVel;
         this.thrusterImpulse = 0;//4000; // newtons per second TODO: Check value
         this.acceleration = new Vector3D();
-        this.toPlanet = (Planet) trajectory.getTarget();
+        this.toPlanet = (Planet) trajectory.getTargetBody();
     }
 
     @Override
@@ -55,61 +56,61 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
 
 
     public Vector3D phase1() {
-        //trajectory.getTarget().setCentralPos(new Vector3D(0,-1*trajectory.getTarget().getRadius()/2,0));
-        /**
+        //trajectory.getTargetBody().setCentralPos(new Vector3D(0,-1*trajectory.getTargetBody().getRadius()/2,0));
+
         if (isTangentialToTarget(this)) {
             // Bring the Rocket to it's elliptical orbit
-            double muh = G* (trajectory.getTarget().getMass() + this.mass); // https://en.wikipedia.org/wiki/Orbital_mechanics
-            this.trajectory.setSemiMajorAxis(((this.centralPos.substract(trajectory.getTarget().getCentralPos())).norm() + ((Planet)trajectory.getTarget()).getSphereOfInfluence())/2); // Astrobook page 61;-muh/(2*C); % Astrobook p. 62
-            this.centralVel = this.centralVel.unit().scale(sqrt((-muh/trajectory.getSemiMajorAxis() + 2*muh/centralPos.substract(trajectory.getTarget().getCentralPos()).norm()))); // Astrobook page 61 (reformulated formula)
-            this.trajectory.setPeriod(round(2*PI*sqrt(Math.pow(this.trajectory.getSemiMajorAxis(), 3)/muh))); // Astrobook p.37 (reformed)
+            double muh = G* (trajectory.getTargetBody().getMass() + this.mass); // https://en.wikipedia.org/wiki/Orbital_mechanics
+            this.trajectory.setSemiMajorAxis(((this.centralPos.substract(trajectory.getTargetBody().getCentralPos())).norm() + ((Planet)trajectory.getTargetBody()).getSphereOfInfluence())/2); // Astrobook page 61;-muh/(2*C); % Astrobook p. 62
+            Vector3D priorVel = this.centralVel;
+            this.centralVel = this.centralVel.unit().scale(Math.sqrt((-muh/trajectory.getSemiMajorAxis() + 2*muh/centralPos.substract(trajectory.getTargetBody().getCentralPos()).norm()))); // Astrobook page 61 (reformulated formula)
+            if (this.centralVel.norm() < priorVel.norm())  {
+                int i = 0;
+            }
+            this.trajectory.setPeriod(Math.round(2*Math.PI*Math.sqrt(Math.pow(this.trajectory.getSemiMajorAxis(), 3)/muh))); // Astrobook p.37 (reformed)
             this.departureTime = new Date(old_date);
             this.departureTime.add(Calendar.MILLISECOND, (int)(this.trajectory.getPeriod()*1000));
             this.departureVelocity = centralVel;
 
             // Construct a lander that is on it's transfer orbit
             double landerMass = 1000; // kg
-            muh = G* (trajectory.getTarget().getMass() + landerMass); // https://en.wikipedia.org/wiki/Orbital_mechanics
-            double semimajorAxis = ((getCentralPos().substract(this.trajectory.getTarget().getCentralPos())).norm() + ((Planet)this.trajectory.getTarget()).getSphereOfInfluence())/2; // Astrobook page 61
-            Vector3D velocity = getCentralVel().unit().scale(sqrt((-muh/semimajorAxis + 2*muh/(getCentralPos().substract(this.trajectory.getTarget().getCentralPos()).norm())))); // Astrobook page 61 (reformulated formula)
-            double period = 2*sqrt((pow(semimajorAxis,3)/muh)*(PI)); // probably in seconds Astrobook p.37 (reformed) // TODO: check whether this needs to be rounded
-            Trajectory trajectory = new Trajectory(this.trajectory.getTarget(), semimajorAxis, period);
-            lander = new LanderRendezvous(getCentralPos(), velocity, getDate(), trajectory);
+            muh = G* (trajectory.getTargetBody().getMass() + landerMass); // https://en.wikipedia.org/wiki/Orbital_mechanics
+            double semimajorAxis = ((getCentralPos().substract(this.trajectory.getTargetBody().getCentralPos())).norm() + ((Planet)this.trajectory.getTargetBody()).getSphereOfInfluence())/2; // Astrobook page 61
+            Vector3D velocity = getCentralVel().unit().scale(Math.sqrt((-muh/semimajorAxis + 2*muh/(getCentralPos().substract(this.trajectory.getTargetBody().getCentralPos()).norm())))); // Astrobook page 61 (reformulated formula)
+            double period = 2*Math.sqrt((Math.pow(semimajorAxis,3)/muh)*(Math.PI)); // probably in seconds Astrobook p.37 (reformed) // TODO: check whether this needs to be rounded
+            //Trajectory trajectory = new Trajectory(this.trajectory.getTargetBody(), semimajorAxis, period);
+            //lander = new LanderRendezvous(getCentralPos(), velocity, getDate(), trajectory);
             Date departureTime = new Date(old_date);
-            departureTime.add(Calendar.MILLISECOND, (int)(this.trajectory.getPeriod() - lander.getTrajectory().getPeriod()/2)*1000);
-            lander.setDepartureTime(departureTime);
-            solarSystem.addAnimatedObject(lander);
+            departureTime.add(Calendar.MILLISECOND, (int)(this.trajectory.getPeriod() - period/2)*1000);
+            //lander.setDepartureTime(departureTime);
+            //solarSystem.addAnimatedObject(lander);
 
             phase = 2;
-        }**/
+        }
 
-        Vector3D d = centralPos;//.substract(new Vector3D(0,1,0).scale(trajectory.getTarget().getRadius()*1e03));
+        Vector3D d = centralPos;//.substract(new Vector3D(0,1,0).scale(trajectory.getTargetBody().getRadius()*1e03));
         System.out.println(d);
-        //ArrayList<Planet> planets = new ArrayList<>();
-        //planets.add((Planet) trajectory.getTarget());
-        //Vector3D a_test = gravitationalForces(this, planets);
-        Vector3D a = d.scale(-G* trajectory.getTarget().getMass()/Math.pow(d.norm(),3));
+        Vector3D a = d.scale(-G* trajectory.getTargetBody().getMass()/Math.pow(d.norm(),3));
         System.out.println("Gravity: " + a);
         return a;
     }
 
     public Vector3D phase2() {
-        if (old_date.after(departureTime)) {
+        /**if (old_date.after(departureTime)) {
             trajectory.setPeriod(0); trajectory.setSemiMajorAxis(0);
             setCentralVel(departureVelocity);
-            solarSystem.removeAnimatedObject(lander.getName());
-        }
-        Vector3D d = centralPos.substract(trajectory.getTarget().getCentralPos());
-        return d.scale(G*trajectory.getTarget().getMass()/Math.pow(d.norm(),3));
+            //solarSystem.removeAnimatedObject(lander.getName());
+        }**/
+        Vector3D d = centralPos;//.substract(new Vector3D(0,1,0).scale(trajectory.getTargetBody().getRadius()*1e03));
+        System.out.println(d);
+        Vector3D a = d.scale(-G* trajectory.getTargetBody().getMass()/Math.pow(d.norm(),3));
+        System.out.println("Gravity: " + a);
+        return a;
     }
 
     public Vector3D phase3() {
-        Vector3D d = centralPos.substract(trajectory.getTarget().getCentralPos());
-        return d.scale(G*trajectory.getTarget().getMass()/Math.pow(d.norm(),3));
+        Vector3D d = centralPos.substract(trajectory.getTargetBody().getCentralPos());
+        return d.scale(G*trajectory.getTargetBody().getMass()/Math.pow(d.norm(),3));
     }
-
-
-
-
 
 }
