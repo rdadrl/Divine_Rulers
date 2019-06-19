@@ -58,7 +58,7 @@ public class RocketLaunchStage extends Application {
     private CelestialObject followObject;
 
     private int DistanceMultiplier = 40;
-    private double plntRadFact = (2.0/6371.0);
+    private double plntRadFact = (2.0/6371.0)/1000;
 
     private ODEsolver odEsolver = new VerletVelocity();
 

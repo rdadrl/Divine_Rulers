@@ -174,7 +174,7 @@ public abstract class Projectile extends CelestialObject {
 
         // if the distances is less than the radius of the planet, we collided
         // with the planet.
-        if(distance < planet.getRadius()*1000){
+        if(distance < planet.getRadius()){
             System.out.println("Crashed with: " + planet.getName());
             System.out.println("Dist: " + minDistanceAll + "\tVel: " + departureVelocity + "\tInc: " + Math.toDegrees(departureInclination) + "\tD_pos: " + diff);
             this.centralPos = planet.getCentralPos();

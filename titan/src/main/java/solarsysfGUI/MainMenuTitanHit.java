@@ -75,7 +75,7 @@ public class MainMenuTitanHit extends Application {
     //private int DistanceMultiplier = 1;
     //private double plntRadFact = 1000.0/MathUtil.AU;
     private int DistanceMultiplier = 40;
-    private double plntRadFact = (2.0/6371.0);
+    private double plntRadFact = (2.0/6371.0)/1000;
     private double AU = MathUtil.AU;
 
     @Override
