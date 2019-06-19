@@ -282,7 +282,8 @@ public class TitanFocus3D extends Application {
                 long differancePerAnimationFrameInMS = (currentN - lastFrame) / 1000000L;
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
                     rocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
-                    rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY() / 100);
+                    if(spaceCraftObj instanceof Lunarlander) rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY()/100);
+                    else rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY());
                     rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight() / 2D);
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(spaceCraftObj.getCentralPos().getZ()));
