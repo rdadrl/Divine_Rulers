@@ -104,8 +104,11 @@ public class RocketLauncher extends SpaceCraft {
 
         }
         double v=Math.sqrt(Math.pow(Vx,2)+Math.pow(Vy,2));
+
         double z_dot=g*Math.sin(z)/v-v*Math.sin(z)/(R+centralPos.getY());
-        acceleration.setZ(z_dot);
+        centralVel.setZ(z_dot);
+        acceleration.setZ(0);
+
     }
 
     public void computeG(){
