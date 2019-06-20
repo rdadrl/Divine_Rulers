@@ -1,3 +1,4 @@
+package xperiment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -7,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class JSONcompareTitan {
+public class JSONcompare {
     public static final Vector ZERO_VEC = new Vector(0,0,0);
 
     public static void main(String[] args) throws IOException {

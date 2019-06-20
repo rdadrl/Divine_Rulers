@@ -22,8 +22,15 @@ public class LambertSolver {
     private ArrayList<Vector3D[]> velocityVectors;
 
     public LambertSolver(double k, Vector3D r1, Vector3D r2, double tof) {
-        this(k, r1, r2, tof, 0, 35, 1e-8);
+        this(k, r1, r2, tof, true, 0, 35, 1e-8);
     }
+
+
+    public LambertSolver(double k, Vector3D r1, Vector3D r2, double tof, boolean prograde) {
+        this(k, r1, r2, tof, prograde, 0, 35, 1e-8);
+    }
+
+
 
     /**
      * @param r1 position from departure planet
@@ -31,11 +38,11 @@ public class LambertSolver {
      * @param tof time of flight
      * @param k gravitational parameter
      */
-    public LambertSolver(double k, Vector3D r1, Vector3D r2, double tof, double M, double numiter, double rtol) {
-        velocityVectors = izzo (k, r1, r2, tof, M, numiter, rtol);
+    public LambertSolver(double k, Vector3D r1, Vector3D r2, double tof, boolean prograde, double M,  double numiter, double rtol) {
+        velocityVectors = izzo (k, r1, r2, tof, prograde, M, numiter, rtol);
     }
 
-    static ArrayList<Vector3D[]> izzo(double k, Vector3D r1, Vector3D r2, double tof, double M, double numiter, double rtol) {
+    static ArrayList<Vector3D[]> izzo(double k, Vector3D r1, Vector3D r2, double tof, boolean prograde, double M, double numiter, double rtol) {
 
         // check the requirements
         if(tof <= 0) {
@@ -74,8 +81,12 @@ public class LambertSolver {
             i_t1 = i_h.cross(i_r1);
             i_t2 = i_h.cross(i_r2);
         }
-        //i_t1 = i_t1.unit();
-        //i_t2 = i_t2.unit();
+
+        if(!prograde){  //retrograde motion
+            ll = -ll;
+            i_t1 = i_t1.scale(-1);
+            i_t2 = i_t2.scale(-1);
+        }
 
         // Non dimensional time of flight
         double T = Math.sqrt((2.0 * k) / (s * s * s)) * tof;

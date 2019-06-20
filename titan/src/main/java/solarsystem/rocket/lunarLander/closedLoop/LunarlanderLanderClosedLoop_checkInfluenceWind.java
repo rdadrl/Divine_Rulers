@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
- * Rocket_temp lander closed loop. works in a 2D environment where a rocket tries to land on Titan.
+ * Rocket_temp lander closed loop. works in a 2D environment where a InterPlanetaryRocket tries to land on Titan.
  * Forces are still calculated as a 3D vector as we use the z component for the calculation of
  * the rotation vector.
  *
