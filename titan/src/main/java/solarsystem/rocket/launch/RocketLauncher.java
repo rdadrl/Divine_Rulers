@@ -82,10 +82,30 @@ public class RocketLauncher extends SpaceCraft {
 
     public void updateOrientation(){
         computeG();
-        double z=Math.atan(centralVel.getY()/centralVel.getX())-Math.PI/2;
-        double v=Math.sqrt(Math.pow(centralVel.getX(),2)+Math.pow(centralVel.getY(),2));
-        double z_doubledot=g*Math.sin(z)/v-v*Math.sin(z)/(R+centralPos.getY());
-        centralVel.setZ(z_doubledot);
+        double z;
+        double Vx=centralVel.getX();
+        double Vy=centralVel.getY();
+        if(Vx==0){
+            z=0;
+            System.out.println("Vx was 0:"+z);
+        }
+        else if(Vy==0){
+            if(Vx>0){
+                z=-1.5708; //-90°
+            }
+            else{
+                z=1.5708;
+            }
+            System.out.println("Vy was 0:"+z);
+        }
+        else{
+            z=Math.atan(centralVel.getY()/centralVel.getX())-Math.PI/2;
+            System.out.println("Entire formula was used:"+z);
+
+        }
+        double v=Math.sqrt(Math.pow(Vx,2)+Math.pow(Vy,2));
+        double z_dot=g*Math.sin(z)/v-v*Math.sin(z)/(R+centralPos.getY());
+        acceleration.setZ(z_dot);
     }
 
     public void computeG(){
