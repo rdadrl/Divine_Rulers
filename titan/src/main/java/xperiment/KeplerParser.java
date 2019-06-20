@@ -83,7 +83,7 @@ public class KeplerParser {
                         }
                         else System.out.printf(",\n\t\t{\n");
 
-                        System.out.println("\t\t\t\"date\": \"" + startingDate.toString() + "\",");
+                        System.out.println("\t\t\t\"date\": \"" + DATE_FORMAT.format(startingDate) + "\",");
                         if (printOrbital) {
                             System.out.println("\t\t\t\"orbital_pos\": " + Vector3DtoJSONObj(cartesian[0]) + ",");
                             System.out.println("\t\t\t\"orbital_vel\": " + Vector3DtoJSONObj(cartesian[1]) + ",");
