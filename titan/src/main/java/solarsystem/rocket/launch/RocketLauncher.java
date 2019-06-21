@@ -32,7 +32,7 @@ public class RocketLauncher extends SpaceCraft {
     public RocketLauncher(Vector3D centralPos,
                           Vector3D centralVel, Date date, Planet fromPlanet){
         super();
-        this.old_date = date;
+        this.current_date = date;
         this.fromPlanet = fromPlanet;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
@@ -138,7 +138,7 @@ public class RocketLauncher extends SpaceCraft {
     @Override
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date) {
         dt = differenceInSeconds(date); // get size of the time step
-        this.old_date = new Date(date);
+        this.current_date = new Date(date);
         if(!boost1_done){
             if(!boost1_started){
                 boost(1);

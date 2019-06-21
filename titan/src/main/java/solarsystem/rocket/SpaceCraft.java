@@ -41,7 +41,7 @@ public abstract class SpaceCraft extends Projectile {
 
     protected double differenceInSeconds(Date date) {
 
-        return (date.getTimeInMillis() - this.old_date.getTimeInMillis())/1000D;
+        return (date.getTimeInMillis() - this.current_date.getTimeInMillis())/1000D;
     }
 
 

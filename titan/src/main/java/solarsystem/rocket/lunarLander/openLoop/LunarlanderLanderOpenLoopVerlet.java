@@ -47,7 +47,7 @@ public class LunarlanderLanderOpenLoopVerlet extends Lunarlander {
         this.name = "OpenLoop Rocket_temp: ";
         this.xLandingPad = 0;
         this.mass = dryMass + fuelMass;
-        this.old_date = date;
+        this.current_date = date;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
         Fl = 0;
@@ -59,7 +59,7 @@ public class LunarlanderLanderOpenLoopVerlet extends Lunarlander {
     @Override
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date) {
         dt = differenceInSeconds(date); // get size of the time step
-        this.old_date = new Date(date);
+        this.current_date = new Date(date);
         if (!rot1_done) {
             // initialize rotation
             if(!rot1_init) {

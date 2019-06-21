@@ -32,7 +32,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         this.dryMass = 1000;//265000; // kg
         this.fuelMass = 1; //221500; // kg
         this.mass = this.dryMass + this.fuelMass;
-        this.old_date = date;
+        this.current_date = date;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
         this.thrusterImpulse = 0;//4000; // newtons per second TODO: Check value
@@ -63,7 +63,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             this.trajectory.setSemiMajorAxis(((this.centralPos.substract(trajectory.getTargetBody().getCentralPos())).norm() + ((Planet)trajectory.getTargetBody()).getSphereOfInfluence())/2); // Astrobook page 61;-muh/(2*C); % Astrobook p. 62
             this.centralVel = this.centralVel.unit().scale(sqrt((-muh/trajectory.getSemiMajorAxis() + 2*muh/centralPos.substract(trajectory.getTargetBody().getCentralPos()).norm()))); // Astrobook page 61 (reformulated formula)
             this.trajectory.setPeriod(round(2*PI*sqrt(Math.pow(this.trajectory.getSemiMajorAxis(), 3)/muh))); // Astrobook p.37 (reformed)
-            this.departureTime = new Date(old_date);
+            this.departureTime = new Date(current_date);
             this.departureTime.add(Calendar.MILLISECOND, (int)(this.trajectory.getPeriod()*1000));
             this.departureVelocity = centralVel;
 
@@ -75,7 +75,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             double period = 2*sqrt((pow(semimajorAxis,3)/muh)*(PI)); // probably in seconds Astrobook p.37 (reformed) // TODO: check whether this needs to be rounded
             Trajectory trajectory = new Trajectory(this.trajectory.getTargetBody(), semimajorAxis, period);
             lander = new LanderRendezvous(getCentralPos(), velocity, getDate(), trajectory);
-            Date departureTime = new Date(old_date);
+            Date departureTime = new Date(current_date);
             departureTime.add(Calendar.MILLISECOND, (int)(this.trajectory.getPeriod() - lander.getTrajectory().getPeriod()/2)*1000);
             lander.setDepartureTime(departureTime);
             solarSystem.addAnimatedObject(lander);
@@ -94,7 +94,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
     }
 
     public Vector3D phase2() {
-        if (old_date.after(departureTime)) {
+        if (current_date.after(departureTime)) {
             trajectory.setPeriod(0); trajectory.setSemiMajorAxis(0);
             setCentralVel(departureVelocity);
             solarSystem.removeAnimatedObject(lander.getName());
