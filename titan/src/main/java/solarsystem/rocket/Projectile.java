@@ -94,7 +94,7 @@ public abstract class Projectile extends CelestialObject {
         if(!crashed){
             // if the projectile hasn't crashed yet we will update the location as normal
             super.setCentralPos(newCentralPos);
-            checkClosestDistance();
+            if(toPlanet != null) checkClosestDistance();
         }else{
             // if the projectile crashe the location of the projectile whould be that of the crashed
             // planet.
@@ -157,9 +157,8 @@ public abstract class Projectile extends CelestialObject {
      */
     public void checkColisions() {
         if (crashed) return;
-        checkCollisionWithPlanet(fromPlanet);
-        checkCollisionWithPlanet(toPlanet);
-        checkCollisionWithPlanet(toPlanet);
+        if(fromPlanet != null) checkCollisionWithPlanet(fromPlanet);
+        if(toPlanet != null) checkCollisionWithPlanet(toPlanet);
     }
 
     /**
@@ -175,7 +174,7 @@ public abstract class Projectile extends CelestialObject {
 
         // if the distances is less than the radius of the planet, we collided
         // with the planet.
-        if(distance < planet.getRadius()*1000){
+        if(distance < planet.getRadius()){
             System.out.println("Crashed with: " + planet.getName());
             System.out.println("Dist: " + minDistanceAll + "\tVel: " + departureVelocity + "\tInc: " + Math.toDegrees(departureInclination) + "\tD_pos: " + diff);
             this.centralPos = planet.getCentralPos();

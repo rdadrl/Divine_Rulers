@@ -122,7 +122,6 @@ public class VerletVelocity implements ODEsolver {
             projectile.checkColisions();
         }
 
-
     }
 
     public Date getCurrentDate() {

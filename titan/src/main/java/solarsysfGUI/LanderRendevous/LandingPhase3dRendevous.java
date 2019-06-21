@@ -16,7 +16,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
@@ -50,7 +49,8 @@ public class LandingPhase3dRendevous extends Application {
     private int verletUpdateUnitMultiplier = 1;
     private int counter;
     // rocket vars
-    private SpaceCraft SpaceCraftObj;
+    private SpaceCraft MainSpaceCraftObj;
+    private SpaceCraft LunarLanderSpaceCraft;
     private ArrayList<SpaceCraft> obj;
 
     //HID Event flags
@@ -105,9 +105,20 @@ public class LandingPhase3dRendevous extends Application {
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
 
-        //rocket.setTranslateX(SpaceCraftObj.getCentralPos().getX());
+        //rocket.setTranslateX(MainSpaceCraftObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
+
+
+        Box rocket2 = new Box(100, 100, 100);
+        rocket2.setMaterial(new PhongMaterial(Color.RED));
+        Rotate rotate2 = new Rotate();
+        rotate2.setAxis(new Point3D(0,0,90));
+        rocket2.getTransforms().add(rotate2);
+
+        //rocket.setTranslateX(MainSpaceCraftObj.getCentralPos().getX());
+        rocket2.setTranslateX(20);
+        rocket2.setTranslateY(-40);
 
         Sphere titan = new Sphere(3000);
         //titan.setTranslateY(3000);
@@ -116,7 +127,7 @@ public class LandingPhase3dRendevous extends Application {
         titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
         titan.setMaterial(titanMaterial);
 
-        root.getChildren().addAll(titan, rocket, light);
+        root.getChildren().addAll(titan, rocket, light, rocket2);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
@@ -157,7 +168,7 @@ public class LandingPhase3dRendevous extends Application {
 
             public void run() {
                 while(!pauseStatus) {
-                    if (SpaceCraftObj.phaseFinished()) { //if landed
+                    if (MainSpaceCraftObj.phaseFinished()) { //if landed
                         System.out.println("Thanks for flying with Paredis Spacelines.");
                         pauseStatus = true;
                         oneMoreRun = true;
@@ -226,10 +237,18 @@ public class LandingPhase3dRendevous extends Application {
                     rocket.setHeight(rocket.getHeight() * 0.5);
                     rocket.setWidth(rocket.getWidth() * 0.5);
 
+                    rocket2.setHeight(rocket2.getHeight() * 0.5);
+                    rocket2.setWidth(rocket2.getWidth() * 0.5);
+
                 }
                 if (key == KeyCode.EQUALS){
                     rocket.setHeight(rocket.getHeight() * 1.25);
                     rocket.setWidth(rocket.getWidth() * 1.25);
+
+                    rocket2.setHeight(rocket2.getHeight() * 1.25);
+                    rocket2.setWidth(rocket2.getWidth() * 1.25);
+
+
 
                 }
             }
@@ -259,11 +278,21 @@ public class LandingPhase3dRendevous extends Application {
             {
                 long differancePerAnimationFrameInMS = (currentN - lastFrame) / 1000000L;
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
-                    rocket.setTranslateX(SpaceCraftObj.getCentralPos().getX()/1000D);
-                    rocket.setTranslateY(-SpaceCraftObj.getCentralPos().getY()/1000D);
+                    rocket.setTranslateX(MainSpaceCraftObj.getCentralPos().getX()/1000D);
+                    rocket.setTranslateY(-MainSpaceCraftObj.getCentralPos().getY()/1000D);
                     //rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight());
                     rocket.setTranslateZ(0);
-                    rotate.setAngle(-Math.toDegrees(SpaceCraftObj.getCentralPos().getZ()));
+                    rotate.setAngle(-Math.toDegrees(MainSpaceCraftObj.getCentralPos().getZ()));
+
+                    if(LunarLanderSpaceCraft != null) {
+                        rocket2.setTranslateX(LunarLanderSpaceCraft.getCentralPos().getX()/1000D);
+                        rocket2.setTranslateY(-LunarLanderSpaceCraft.getCentralPos().getY()/1000D);
+                        //rocket2.setTranslateY(rocket.getTranslateY() - rocket.getHeight());
+                        rocket2.setTranslateZ(0);
+                        rotate2.setAngle(-Math.toDegrees(LunarLanderSpaceCraft.getCentralPos().getZ()));
+                    }
+
+
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("LD " +
 //                            "X: " + landingDot.getTranslateX() +
 //                            ", Y: " + landingDot.getTranslateY() +
@@ -333,14 +362,25 @@ public class LandingPhase3dRendevous extends Application {
         landingStage.show();
     }
 
-    public LandingPhase3dRendevous(SpaceCraft SpaceCraftObj, Date date) throws Exception {
+    public LandingPhase3dRendevous(SpaceCraft MainSpaceCraftObj, Date date) throws Exception {
         this.date = date;
-        this.SpaceCraftObj = SpaceCraftObj;
+        this.MainSpaceCraftObj = MainSpaceCraftObj;
         startTime = date.getTimeInMillis();
         obj = new ArrayList<>();
-        obj.add(SpaceCraftObj);
+        obj.add(MainSpaceCraftObj);
         this.ODEsolver = new VerletVelocity(obj, date);
 
+        //push to start
+    }
+
+    public LandingPhase3dRendevous(ArrayList<SpaceCraft> SpaceCraftObjects, Date date) throws Exception {
+        this.date = date;
+        this.MainSpaceCraftObj = SpaceCraftObjects.get(0);
+        this.LunarLanderSpaceCraft = SpaceCraftObjects.get(1);
+        startTime = date.getTimeInMillis();
+        obj = new ArrayList<>();
+        obj.addAll(SpaceCraftObjects);
+        this.ODEsolver = new VerletVelocity(obj, date);
         //push to start
     }
 
@@ -354,12 +394,12 @@ public class LandingPhase3dRendevous extends Application {
         df.setMaximumFractionDigits(2);
         return  "fps\t\t: " + currentFPS + "\n" +
                 "sec\t\t: " + df.format((date.getTimeInMillis()-startTime)/1000D) + "\n" +
-                "y-pos\t: " + df.format(SpaceCraftObj.getCentralPos().getY()) + "\n" +
-                "y-vel\t: " + df.format(SpaceCraftObj.getCentralVel().getY()) + "\n" +
-                "x-pos\t: " + df.format(SpaceCraftObj.getCentralPos().getX()) + "\n" +
-                "x-vel\t: " + df.format(SpaceCraftObj.getCentralVel().getX()) + "\n" +
-                "t-pos\t: " + df.format(SpaceCraftObj.getCentralPos().getZ()) + "\n" +
-                "t-vel\t\t: " + df.format(SpaceCraftObj.getCentralVel().getZ()) + "\n" +
+                "y-pos\t: " + df.format(MainSpaceCraftObj.getCentralPos().getY()) + "\n" +
+                "y-vel\t: " + df.format(MainSpaceCraftObj.getCentralVel().getY()) + "\n" +
+                "x-pos\t: " + df.format(MainSpaceCraftObj.getCentralPos().getX()) + "\n" +
+                "x-vel\t: " + df.format(MainSpaceCraftObj.getCentralVel().getX()) + "\n" +
+                "t-pos\t: " + df.format(MainSpaceCraftObj.getCentralPos().getZ()) + "\n" +
+                "t-vel\t\t: " + df.format(MainSpaceCraftObj.getCentralVel().getZ()) + "\n" +
                 "speed\t: " + verletUpdateUnitMultiplier + "x";
     }
 }

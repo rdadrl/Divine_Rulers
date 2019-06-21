@@ -54,7 +54,7 @@ public abstract class SpaceCraft extends Projectile {
 
     public boolean isTangentialToTarget(SpaceCraft spaceCraft) {
 
-        Vector3D dUnit = (spaceCraft.getCentralPos().substract(spaceCraft.getTrajectory().getTargetBody().getCentralPos())).unit();
+        Vector3D dUnit = spaceCraft.getCentralPos().unit();
         Vector3D vUnit = spaceCraft.getCentralVel().unit();
         return ((vUnit.dot(dUnit) < 0.05) && (vUnit.dot(dUnit) > -0.05));
     }

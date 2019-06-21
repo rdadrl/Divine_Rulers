@@ -1,6 +1,5 @@
 package manouvres;
 
-import manouvres.LambertSolver;
 import org.junit.Test;
 import solarsystem.Planet;
 import solarsystem.SolarSystem;
@@ -62,7 +61,7 @@ public class LambertSolverTest {
         ArrayList<Projectile> proj = new ArrayList<>();
         proj.add(cannonBall);
 
-        sol_depart.initializeAnimation(departDate, proj);
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
         long timestep_seconds = 30;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_depart.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
@@ -132,7 +131,7 @@ public class LambertSolverTest {
 
         double tof = (arrivalDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
 
-        sol_reference.initializeAnimation(refDate, null);
+        sol_reference.initializeAnimationWithPlanets(refDate, null);
         long timestep_seconds = 30;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_reference.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
@@ -163,7 +162,7 @@ public class LambertSolverTest {
         ArrayList<Projectile> proj = new ArrayList<>();
         proj.add(cannonBall);
 
-        sol_depart.initializeAnimation(departDate, proj);
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
         HashSet<Integer> update_for_counter = alongPositionUpdates(tof, timestep_seconds, updatesAlongTheWay);
         int counter = 0;
         Vector3D changedVelAdd = new Vector3D();
@@ -174,6 +173,7 @@ public class LambertSolverTest {
                 double distanceToSaturn = saturn.getCentralPos().substract(cannonBall.getCentralPos()).length();
                 if(distanceToSaturn < saturn.getSphereOfInfluence()){
                     System.out.println("In sphere of SATURN");
+
                 }
             }
             if(update_for_counter.contains(counter)) {
@@ -235,7 +235,7 @@ public class LambertSolverTest {
 
         double tof = (arrivalDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
 
-        sol_reference.initializeAnimation(refDate, null);
+        sol_reference.initializeAnimationWithPlanets(refDate, null);
         long timestep_seconds = 30;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_reference.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
@@ -266,7 +266,7 @@ public class LambertSolverTest {
         ArrayList<Projectile> proj = new ArrayList<>();
         proj.add(cannonBall);
 
-        sol_depart.initializeAnimation(departDate, proj);
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
         HashSet<Integer> update_for_counter = alongPositionUpdates(tof, timestep_seconds, updatesAlongTheWay);
         int counter = 0;
         Vector3D changedVelAdd = new Vector3D();
@@ -280,12 +280,26 @@ public class LambertSolverTest {
                     System.out.println("In sphere of SATURN");
                     System.out.println(tof_left);
                     inSphereSaturn = true;
-                    Vector3D r1_saturnPer = saturn.getCentralPos().substract(cannonBall.getCentralPos());
-                    Vector3D r2_saturnPer = saturn.getCentralPos().substract(r2);
+                    System.out.println("Sat: " + saturn.getCentralPos());
+                    System.out.println("Tit_n: " + sol_depart.getPlanets().getTitan().getCentralPos());
+                    System.out.println("Tit_p: " + r2);
+                    System.out.println("Canno: " + cannonBall.getCentralPos());
+                    System.out.println();
+                    System.out.println("r_Sat: " + saturn.getCentralPos().substract(saturn.getCentralPos()));
+                    System.out.println("r_Tit_n: " + sol_depart.getPlanets().getTitan().getCentralPos().substract(saturn.getCentralPos()));
+                    System.out.println("r_Tit_p: " + r2.substract(saturn.getCentralPos()));
+                    System.out.println("r_Canno: " + cannonBall.getCentralPos().substract(saturn.getCentralPos()));
+
+                    System.out.println();
+                    Vector3D r1_saturnPer = cannonBall.getCentralPos().substract(saturn.getCentralPos());
+                    Vector3D r2_saturnPer = r2.substract(saturn.getCentralPos());
                     double mu_saturn = saturn.getMass() * MathUtil.G;
+
+
+
                     LambertSolver lambertSolver_half = new LambertSolver(mu_saturn, r1_saturnPer, r2_saturnPer, tof_left);
                     Vector3D[] vel_half = lambertSolver_half.getVelocityVectors().get(0);
-                    changedVelAdd = changedVelAdd.add(cannonBall.getCentralVel().substract(vel_half[0]).absolute());
+                    changedVelAdd = changedVelAdd.add(cannonBall.getCentralVel().substract(vel_half[0]));
                     cannonBall.setCentralVel(vel_half[0]);
                 }
             }
@@ -349,7 +363,7 @@ public class LambertSolverTest {
 
         double tof = (arrivalDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
 
-        sol_reference.initializeAnimation(refDate, null);
+        sol_reference.initializeAnimationWithPlanets(refDate, null);
         long timestep_seconds = 30;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_reference.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
@@ -380,7 +394,7 @@ public class LambertSolverTest {
         ArrayList<Projectile> proj = new ArrayList<>();
         proj.add(cannonBall);
 
-        sol_depart.initializeAnimation(departDate, proj);
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_depart.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
         }
@@ -430,7 +444,7 @@ public class LambertSolverTest {
 
         double tof = (arrivalDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
 
-        sol_reference.initializeAnimation(refDate, null);
+        sol_reference.initializeAnimationWithPlanets(refDate, null);
         long timestep_seconds = 30;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_reference.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
@@ -461,7 +475,7 @@ public class LambertSolverTest {
         ArrayList<Projectile> proj = new ArrayList<>();
         proj.add(cannonBall);
 
-        sol_depart.initializeAnimation(departDate, proj);
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
         boolean updated = false;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_depart.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
@@ -518,7 +532,7 @@ public class LambertSolverTest {
 
         double tof = (arrivalDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
 
-        sol_reference.initializeAnimation(refDate, null);
+        sol_reference.initializeAnimationWithPlanets(refDate, null);
         long timestep_seconds = 30;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_reference.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
@@ -549,7 +563,7 @@ public class LambertSolverTest {
         ArrayList<Projectile> proj = new ArrayList<>();
         proj.add(cannonBall);
 
-        sol_depart.initializeAnimation(departDate, proj);
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
         boolean updated = false;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_depart.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
@@ -625,7 +639,7 @@ public class LambertSolverTest {
         ArrayList<Projectile> proj = new ArrayList<>();
         proj.add(cannonBall);
 
-        sol_depart.initializeAnimation(departDate, proj);
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
         long timestep_seconds = 30;
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_depart.updateAnimation(timestep_seconds, TimeUnit.SECONDS);

@@ -45,7 +45,7 @@ public abstract class CelestialObject implements ODEsolvable {
      * @return radius of celestial object
      */
     public double getRadius() {
-        return radius;
+        return radius * 1000;
     }
 
     /**

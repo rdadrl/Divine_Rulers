@@ -34,41 +34,36 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
         this.centralVel = centralVel;
         this.thrusterImpulse = 4000; // newtons per second TODO: Check value
         this.acceleration = new Vector3D();
-        this.toPlanet = (Planet) trajectory.getTargetBody();
     }
 
     @Override
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date) {
         acceleration = new Vector3D();
         switch (this.phase) {
-            case 1: super.acceleration = phase1(); break;
-            case 2: super.acceleration = phase2(); break;
-            case 3: super.acceleration = phase3(); break;
+            case 1: phase1(); break;
+            case 2: phase2(); break;
+            case 3: phase3(); break;
         }
-        //Vector3D accTemp = acceleration;
-        //int i = 1;
+        Vector3D d = centralPos;
+        super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));
     }
 
-    private Vector3D phase1() {
+    private void phase1() {
         if (getCentralPos().norm() < 250000 && isTangentialToTarget(this)) { // 200000 is the expected altitude at perigee
             centralVel = new Vector3D(0,0,0);
             phase = 2;
         }
-        Vector3D d = centralPos.substract(trajectory.getTargetBody().getCentralPos());
-        return d.scale(G*trajectory.getTargetBody().getMass()/Math.pow(d.norm(),3));
     }
 
-    private Vector3D phase2() {
+    private void phase2() {
         if (old_date.after(departureTime)) {
             centralVel = departureVelocity;
             phase = 3;
         }
-        return new Vector3D(0,0,0);
     }
 
-    private Vector3D phase3() {
-        Vector3D d = centralPos.substract(trajectory.getTargetBody().getCentralPos());
-        return d.scale(G*trajectory.getTargetBody().getMass()/Math.pow(d.norm(),3));
+    private void phase3() {
+
     }
 
     public void setDepartureTime(Date date) { this.departureTime = departureTime; }

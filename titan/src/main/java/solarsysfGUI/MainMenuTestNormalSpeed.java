@@ -323,7 +323,7 @@ public class MainMenuTestNormalSpeed extends Application {
 
         ArrayList<Projectile> projectileInstances = new ArrayList<>(projectileList.values());
 
-        solarSystem.initializeAnimation(date, projectileInstances);
+        solarSystem.initializeAnimationWithPlanets(date, projectileInstances);
 
 
         final long startNanoTime = System.nanoTime();

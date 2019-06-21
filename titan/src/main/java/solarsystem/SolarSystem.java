@@ -99,12 +99,24 @@ public class SolarSystem {
      * @param projectiles Additional projectiles such as CannonBalls or Rockets that need to be
      *                    part of the animation
      */
-    public void initializeAnimation(Date date, ArrayList<Projectile> projectiles){
+    public void initializeAnimationWithPlanets(Date date, ArrayList<Projectile> projectiles){
         allAnimatedObjects = new ArrayList<>(getPlanets().getAll());
         if(projectiles != null) allAnimatedObjects.addAll(projectiles);
         this.projectiles = projectiles;
         ODEsolver.initialize(this.allAnimatedObjects, date);
     }
+
+    public void initializeAnimationWithoutPlanets(Date date, ArrayList<CelestialObject> objects) {
+        allAnimatedObjects = new ArrayList<>(objects);
+        this.projectiles = new ArrayList<>();
+        for(CelestialObject c: objects) {
+            if(c instanceof Projectile) {
+                projectiles.add((Projectile) c);
+            }
+        }
+        ODEsolver.initialize(this.allAnimatedObjects, date);
+    }
+
 
     /**
      * @param dt the timestep amount
