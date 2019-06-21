@@ -26,7 +26,7 @@ public abstract class Lunarlander extends SpaceCraft {
     protected final double Z0 = 0.0024;
     protected final double Z1 = 10;
     protected final double Z2 = 100;
-    protected double A_conts = 0.22;
+    protected double A_conts = 0.11;
 
     protected Vector3D centralJerk = new Vector3D();
 

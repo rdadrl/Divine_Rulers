@@ -33,7 +33,7 @@ public class LandingPhase extends Application {
     private ODEsolver ODEsolver;
     private final int MAX_ANIMATION_FPS =30;
     private int currentFPS;
-    // rocket vars
+    // InterPlanetaryRocket vars
     private double MAX_POSSIBLE_FUEL_AMOUNT;
     private Lunarlander lunarlanderObj;
     private FlameFxViewer mainThrusterIV;
@@ -53,7 +53,7 @@ public class LandingPhase extends Application {
 
         //our code down below:
         //Lunarlander:
-        ImageView rocket = new ImageView(new Image(new FileInputStream("./src/main/resources/rocket.png")));
+        ImageView rocket = new ImageView(new Image(new FileInputStream("./src/main/resources/InterPlanetaryRocket.png")));
         rocket.setPreserveRatio(true);
         rocket.setFitWidth(100);
 
@@ -84,7 +84,7 @@ public class LandingPhase extends Application {
 
         fuel_icon.toFront(); //have this icon to front.
 
-        //rocket thruster flame
+        //InterPlanetaryRocket thruster flame
         mainThrusterIV = new FlameFxViewer();
         mainThrusterIV.setPreserveRatio(true);
         mainThrusterIV.setFitWidth(MAX_MAIN_THRUSTER_WIDTH);
@@ -144,7 +144,7 @@ public class LandingPhase extends Application {
                     if (newmTIVwidth != (int) mainThrusterIV.getFitWidth()) mainThrusterIV.setFitWidth(newmTIVwidth);
                     mainThrusterIV.setAnimationSpeed(Math.max(SLOWEST_MAIN_THRUSTER_ANIMATION, (int) (FASTEST_MAIN_THRUSTER_ANIMATION * lunarlanderObj.getMainThrusterForceAsPercentage())));
                     mainThrusterIV.setLayoutX(rocket.getLayoutX() + (rocket.getFitWidth() / 2) - (mainThrusterIV.getFitWidth() / 2));
-                    //mainThrusterIV.setLayoutY(rocket.getLayoutY() + 150); unnecessary for now...
+                    //mainThrusterIV.setLayoutY(InterPlanetaryRocket.getLayoutY() + 150); unnecessary for now...
                     if (DEBUG) debugText.setText(constructDebugText());
                     currentFPS = (int) (1000 / differancePerAnimationFrameInMS);
                     lastFrame= currentN;

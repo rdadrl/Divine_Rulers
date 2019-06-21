@@ -51,7 +51,7 @@ public class TitanFocus3D extends Application {
     private double verletUpdateUnitInMs = 10;
     private int verletUpdateUnitMultiplier = 1;
     private int counter;
-    // rocket vars
+    // InterPlanetaryRocket vars
     private SpaceCraft spaceCraftObj;
     private ArrayList<SpaceCraft> obj;
 
@@ -81,7 +81,7 @@ public class TitanFocus3D extends Application {
     Group trail = new Group();
     PhongMaterial trailMaterial;
 
-    //Something is VEEERY wrong with titan, or rocket. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
+    //Something is VEEERY wrong with titan, or InterPlanetaryRocket. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
     @Override
     public void start(Stage landingStage) throws Exception {
         //add any fx componenents to this root group.
@@ -111,7 +111,7 @@ public class TitanFocus3D extends Application {
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
 
-        //rocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
+        //InterPlanetaryRocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
 
@@ -123,7 +123,7 @@ public class TitanFocus3D extends Application {
         landingPad.setMaterial(new PhongMaterial(Color.DARKBLUE));
 
 
-            Sphere titan = new Sphere(2574);
+            Sphere titan = new Sphere(3000);
         titan.setTranslateY(3000);
         PhongMaterial titanMaterial = new PhongMaterial();
         titanMaterial.setDiffuseMap(new Image("textures/moonmap.jpg"));
@@ -303,9 +303,9 @@ public class TitanFocus3D extends Application {
 //                            ", Z: " + landingDot.getTranslateZ()
 //                    );
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("RK " +
-//                            "X: " + rocket.getTranslateX() +
-//                            ", Y: " + rocket.getTranslateY() +
-//                            ", Z: " + rocket.getTranslateZ()
+//                            "X: " + InterPlanetaryRocket.getTranslateX() +
+//                            ", Y: " + InterPlanetaryRocket.getTranslateY() +
+//                            ", Z: " + InterPlanetaryRocket.getTranslateZ()
 //                    );
                     if (DEBUG) debugText.setText(constructDebugText());
                     currentFPS = (int) (1000 / differancePerAnimationFrameInMS);

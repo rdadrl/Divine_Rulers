@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * This is a clean rocket launching stage, to be introduced functionalities
+ * This is a clean InterPlanetaryRocket launching stage, to be introduced functionalities
  */
 public class RocketLaunchStage extends Application {
     // running variables

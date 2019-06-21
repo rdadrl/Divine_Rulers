@@ -7,6 +7,7 @@ import solarsystem.rocket.Projectile;
 import solarsystem.rocket.cannonBall.CannonBall;
 import utils.Date;
 import utils.MathUtil;
+import utils.vector.Vector;
 import utils.vector.Vector3D;
 
 import java.io.IOException;
@@ -109,8 +110,8 @@ public class LambertSolverTest {
     }
 
     @Test
-    public void Titan_1000Update() throws IOException {
-        TitanTest2_alongwayUpdate_sphereSaturn(1000, toPlanet);
+    public void Titan_50Update() throws IOException {
+        TitanTest2_alongwayUpdate_sphereSaturn(50, toPlanet);
     }
 
     @Test
@@ -267,7 +268,7 @@ public class LambertSolverTest {
         proj.add(cannonBall);
 
         sol_depart.initializeAnimationWithPlanets(departDate, proj);
-        HashSet<Integer> update_for_counter = alongPositionUpdates(tof, timestep_seconds, updatesAlongTheWay);
+        HashSet<Integer> update_for_counter = new HashSet<>();
         int counter = 0;
         Vector3D changedVelAdd = new Vector3D();
         boolean inSphereSaturn = false;
@@ -276,32 +277,43 @@ public class LambertSolverTest {
             if(toPlanetName.equals("Titan")){
                 Planet saturn = tit_dep.getCentralBody();
                 double distanceToSaturn = saturn.getCentralPos().substract(cannonBall.getCentralPos()).length();
-                if(!inSphereSaturn && distanceToSaturn < saturn.getSphereOfInfluence()){
-                    System.out.println("In sphere of SATURN");
+                if(!inSphereSaturn && distanceToSaturn < saturn.getSphereOfInfluence() * 0.8) {
+                    update_for_counter = alongPositionUpdates(tof_left, timestep_seconds, updatesAlongTheWay);
+                    counter = 0;
+                    update_for_counter.add(0);
+                    System.out.println("In sphere of SATURN: " + cannonBall.getCentralPos().substract(saturn.getCentralPos()).length());
                     System.out.println(tof_left);
                     inSphereSaturn = true;
-                    System.out.println("Sat: " + saturn.getCentralPos());
-                    System.out.println("Tit_n: " + sol_depart.getPlanets().getTitan().getCentralPos());
-                    System.out.println("Tit_p: " + r2);
-                    System.out.println("Canno: " + cannonBall.getCentralPos());
-                    System.out.println();
-                    System.out.println("r_Sat: " + saturn.getCentralPos().substract(saturn.getCentralPos()));
-                    System.out.println("r_Tit_n: " + sol_depart.getPlanets().getTitan().getCentralPos().substract(saturn.getCentralPos()));
-                    System.out.println("r_Tit_p: " + r2.substract(saturn.getCentralPos()));
-                    System.out.println("r_Canno: " + cannonBall.getCentralPos().substract(saturn.getCentralPos()));
-
+                }
+                if(inSphereSaturn && update_for_counter.contains(counter)){
+//                    System.out.println("Sat: " + saturn.getCentralPos());
+//                    System.out.println("Tit_n: " + sol_depart.getPlanets().getTitan().getCentralPos());
+//                    System.out.println("Tit_p: " + r2);
+//                    System.out.println("Canno: " + cannonBall.getCentralPos());
+//                    System.out.println();
+//                    System.out.println("r_Sat: " + saturn.getCentralPos().substract(saturn.getCentralPos()));
+//                    System.out.println("r_Tit_n: " + sol_depart.getPlanets().getTitan().getCentralPos().substract(saturn.getCentralPos()));
+//                    System.out.println("r_Tit_p: " + r2.substract(saturn.getCentralPos()));
+//                    System.out.println("r_Canno: " + cannonBall.getCentralPos().substract(saturn.getCentralPos()));
+//                    System.out.println();
                     System.out.println();
                     Vector3D r1_saturnPer = cannonBall.getCentralPos().substract(saturn.getCentralPos());
                     Vector3D r2_saturnPer = r2.substract(saturn.getCentralPos());
                     double mu_saturn = saturn.getMass() * MathUtil.G;
 
-
-
-                    LambertSolver lambertSolver_half = new LambertSolver(mu_saturn, r1_saturnPer, r2_saturnPer, tof_left);
+                    //LambertSolver lambertSolver_half2 = new LambertSolver(mu_saturn, r1_saturnPer, r2_saturnPer, tof_left);
+                    LambertSolver lambertSolver_half = new LambertSolver(mu_saturn, r1_saturnPer, r2_saturnPer, tof_left, false);
                     Vector3D[] vel_half = lambertSolver_half.getVelocityVectors().get(0);
+
+                    System.out.println(tit_dep.getCentralPos().substract(cannonBall.getCentralPos()).length());
+                    System.out.println("cur vel: " + cannonBall.getCentralVel());
+                    System.out.println("new vel: " + vel_half[0]);
                     changedVelAdd = changedVelAdd.add(cannonBall.getCentralVel().substract(vel_half[0]));
+
+
                     cannonBall.setCentralVel(vel_half[0]);
                 }
+
             }
 //            if(update_for_counter.contains(counter)) {
 //                Vector3D r1_half = cannonBall.getCentralPos();
@@ -325,18 +337,18 @@ public class LambertSolverTest {
 
         System.out.println();
 
-        System.out.println(toPlanetName + " pos: " + tit_arr_pos);
-        System.out.println("Cannon ball pos: " + can_arr_pos);
-        System.out.println("Distance: " + tit_arr_pos.substract(can_arr_pos).length());
-        System.out.println("Diff: " + tit_arr_pos.substract(can_arr_pos));
-
-        System.out.println();
+//        System.out.println(toPlanetName + " pos: " + tit_arr_pos);
+//        System.out.println("Cannon ball pos: " + can_arr_pos);
+//        System.out.println("Distance: " + tit_arr_pos.substract(can_arr_pos).length());
+//        System.out.println("Diff: " + tit_arr_pos.substract(can_arr_pos));
+//        System.out.println("Dist Sat: " + can_arr_pos.substract(sol_depart.getPlanets().getSaturn().getCentralPos()).length());
 
         System.out.println(toPlanetName + " pred: " + r2);
         System.out.println("Cannon ball pos: " + can_arr_pos);
         System.out.println("Diff: " + r2.substract(can_arr_pos));
         System.out.println("Distance: " + r2.substract(can_arr_pos).length());
         System.out.println("Sphere of influence: " + tit_arr.getSphereOfInfluence());
+        System.out.println("Distance: " + r2.substract(can_arr_pos).length());
 
         System.out.println();
 

@@ -40,12 +40,12 @@ public class LunarlanderLanderClosedLoop_advancedWind_goodTest {
         for (int i = 1; i <= 7; i++) {
             System.out.println(i);
             LunarlanderLanderClosedLoop_advancedWind_good rocket = landTestWindSpecificSpeed(0, i);
-            Assert.assertTrue(rocket.getCentralPos().getY() < 0.1);
-            Assert.assertTrue(rocket.getCentralPos().getX() < 0.1);
-            Assert.assertTrue(rocket.getCentralPos().getZ() < 0.02);
-            Assert.assertTrue(rocket.getCentralVel().getY() < 0.1);
-            Assert.assertTrue(rocket.getCentralVel().getX() < 0.1);
-            Assert.assertTrue(rocket.getCentralVel().getZ() < 0.01);
+            Assert.assertTrue(rocket.getCentralPos().absolute().getY() < 0.1);
+            Assert.assertTrue(rocket.getCentralPos().absolute().getX() < 0.1);
+            Assert.assertTrue(rocket.getCentralPos().absolute().getZ() < 0.02);
+            Assert.assertTrue(rocket.getCentralVel().absolute().getY() < 0.1);
+            Assert.assertTrue(rocket.getCentralVel().absolute().getX() < 0.1);
+            Assert.assertTrue(rocket.getCentralVel().absolute().getZ() < 0.01);
         }
     }
 
@@ -222,16 +222,16 @@ public class LunarlanderLanderClosedLoop_advancedWind_goodTest {
                 t_acc.add(rocket.getAccelerationSmooth().getZ());
                 Ft_list.add(rocket.getMainThrusterForce());
                 Fl_list.add(rocket.getSideThrusterForce());
-                //x_jerk_avg.add(rocket.getAverageJerkX());
+                //x_jerk_avg.add(InterPlanetaryRocket.getAverageJerkX());
                 t_10.add(rocket.getTotalTime());
-                //x_acc_avg.add(rocket.getAverageAccX());
+                //x_acc_avg.add(InterPlanetaryRocket.getAverageAccX());
                 cur_wind.add(rocket.getCurrentWindSpeed());
 
             }
             if (PRINT) {
                 if (i % PRINT_INTERVAL == 0) {
                     rocket.printStatus();
-                    //if(i < 1000) System.out.println(rocket.totTime + ", " + rocket.getCentralJerk().getX());
+                    //if(i < 1000) System.out.println(InterPlanetaryRocket.totTime + ", " + InterPlanetaryRocket.getCentralJerk().getX());
                 }
             }
 
@@ -241,28 +241,28 @@ public class LunarlanderLanderClosedLoop_advancedWind_goodTest {
         if (CHART) {
             double Hl = rocket.phase2Y_time;
 
-//            createChart(t, x_jerk_avg, rocket.getMeanWindSpeed() + "_x_jerk_avg_z", -0.01, 0.01, Hl);
-//            createChart(t, x_jerk_avg, rocket.getMeanWindSpeed() + "_x_jerk_avg", 0, 0, Hl);
-//            createChart(t, x_acc_avg, rocket.getMeanWindSpeed() + "_x_acc_avg", 0, 0, Hl);
+//            createChart(t, x_jerk_avg, InterPlanetaryRocket.getMeanWindSpeed() + "_x_jerk_avg_z", -0.01, 0.01, Hl);
+//            createChart(t, x_jerk_avg, InterPlanetaryRocket.getMeanWindSpeed() + "_x_jerk_avg", 0, 0, Hl);
+//            createChart(t, x_acc_avg, InterPlanetaryRocket.getMeanWindSpeed() + "_x_acc_avg", 0, 0, Hl);
 
-//            createChart(t, x_jerk_avg, rocket.getMeanWindSpeed() + "_x_jerk_avg_z_max", -0.2, 0.2, Hl);
+//            createChart(t, x_jerk_avg, InterPlanetaryRocket.getMeanWindSpeed() + "_x_jerk_avg_z_max", -0.2, 0.2, Hl);
             createChart(t, x_pos, rocket.getMeanWindSpeed() + "_x_pos_z", -20, 20, Hl);
-//            createChart(t, x_vel, rocket.getMeanWindSpeed() + "_x_vel_z", -0.5, 0.5, Hl);
-//            createChart(t, x_acc, rocket.getMeanWindSpeed() + "_x_acc_z", -0.05, 0.05, Hl);
-//            createChart(t, x_jerk, rocket.getMeanWindSpeed() + "_x_jerk_z", -0.01, 0.01, Hl);
+//            createChart(t, x_vel, InterPlanetaryRocket.getMeanWindSpeed() + "_x_vel_z", -0.5, 0.5, Hl);
+//            createChart(t, x_acc, InterPlanetaryRocket.getMeanWindSpeed() + "_x_acc_z", -0.05, 0.05, Hl);
+//            createChart(t, x_jerk, InterPlanetaryRocket.getMeanWindSpeed() + "_x_jerk_z", -0.01, 0.01, Hl);
             createChart(t, x_pos, rocket.getMeanWindSpeed() + "_x_pos", 0, 0, Hl);
             createChart(t, x_vel, rocket.getMeanWindSpeed() + "_x_vel", 0, 0, Hl);
-//            createChart(t, x_acc, rocket.getMeanWindSpeed() + "_x_acc", 0, 0, Hl);
-//            createChart(t, x_jerk, rocket.getMeanWindSpeed() + "_x_jerk", 0, 0, Hl);
+//            createChart(t, x_acc, InterPlanetaryRocket.getMeanWindSpeed() + "_x_acc", 0, 0, Hl);
+//            createChart(t, x_jerk, InterPlanetaryRocket.getMeanWindSpeed() + "_x_jerk", 0, 0, Hl);
             createChart(t, y_pos, rocket.getMeanWindSpeed() + "_y_pos", 0, 0, Hl);
             createChart(t, y_vel, rocket.getMeanWindSpeed() + "_y_vel", 0, 0, Hl);
-//            createChart(t, y_acc, rocket.getMeanWindSpeed() + "_y_acc", 0, 0, Hl);
-//            createChart(t, y_jerk, rocket.getMeanWindSpeed() + "_y_jerk",0, 0, Hl);
+//            createChart(t, y_acc, InterPlanetaryRocket.getMeanWindSpeed() + "_y_acc", 0, 0, Hl);
+//            createChart(t, y_jerk, InterPlanetaryRocket.getMeanWindSpeed() + "_y_jerk",0, 0, Hl);
             createChart(t, t_pos, rocket.getMeanWindSpeed() + "_t_pos", 0, 0, Hl);
-//            createChart(t, t_vel, rocket.getMeanWindSpeed() + "_t_vel",0, 0, Hl);
-//            createChart(t, t_acc, rocket.getMeanWindSpeed() + "_t_acc",0, 0, Hl);
+//            createChart(t, t_vel, InterPlanetaryRocket.getMeanWindSpeed() + "_t_vel",0, 0, Hl);
+//            createChart(t, t_acc, InterPlanetaryRocket.getMeanWindSpeed() + "_t_acc",0, 0, Hl);
             createChart(t, Ft_list, rocket.getMeanWindSpeed() + "_Ft", 0, 0, Hl);
-//            createChart(t, Fl_list, rocket.getMeanWindSpeed() + "_Fl",0, 0, Hl);
+//            createChart(t, Fl_list, InterPlanetaryRocket.getMeanWindSpeed() + "_Fl",0, 0, Hl);
             createChart(cur_wind, y_pos, rocket.getMeanWindSpeed() + "_windSpeed");
             createChart(x_pos, y_pos, rocket.getMeanWindSpeed() + "_XY");
         }

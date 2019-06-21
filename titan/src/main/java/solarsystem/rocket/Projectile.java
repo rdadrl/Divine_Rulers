@@ -5,7 +5,7 @@ import solarsystem.Planet;
 import utils.vector.Vector3D;
 
 /**
- * A projectile class which is used as a building block for all projectiles i.e., rocket and
+ * A projectile class which is used as a building block for all projectiles i.e., InterPlanetaryRocket and
  * cannonballs.
  *
  */

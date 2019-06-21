@@ -1,9 +1,16 @@
 package xperiment;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Horizons2JSON {
-    public static void main (String args[]) throws IOException {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+    private static final SimpleDateFormat DATE_TO_READ_FORMAT = new SimpleDateFormat("yyyy-MMM-dd", Locale.US);
+
+    public static void main (String args[]) throws IOException, ParseException {
         File horizonsData = null;
 
         if (args.length == 1) {
@@ -32,7 +39,8 @@ public class Horizons2JSON {
 
                         if (reading) {
                             //2451544.500000000 = A.D. 2000-Jan-01 00:00:00.0000 TDB
-                            String date = line.split("=")[1].trim();
+                            String date = line.split("=")[1].trim().split(" ")[1].trim();
+                            date = DATE_FORMAT.format(DATE_TO_READ_FORMAT.parse(date));
                             String central_pos = reader.readLine();
                             String central_vel = reader.readLine();
                             //Skip last line
