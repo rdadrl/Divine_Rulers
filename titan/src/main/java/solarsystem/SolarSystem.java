@@ -72,7 +72,9 @@ public class SolarSystem {
         this.allAnimatedObjects = allAnimatedObjects;
     }
 
-    public void addAnimatedObject(CelestialObject animatedObject) { allAnimatedObjects.add(animatedObject); }
+    public void addAnimatedObject(CelestialObject animatedObject) {
+
+        allAnimatedObjects.add(animatedObject); }
 
     public void removeAnimatedObject(String name) {
         for (CelestialObject o : allAnimatedObjects) {

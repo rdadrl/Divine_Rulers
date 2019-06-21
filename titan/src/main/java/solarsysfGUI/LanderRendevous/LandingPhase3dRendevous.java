@@ -48,7 +48,7 @@ public class LandingPhase3dRendevous extends Application {
     private double verletUpdateUnitInMs = 10;
     private int verletUpdateUnitMultiplier = 1;
     private int counter;
-    // InterPlanetaryRocket vars
+    // rocket vars
     private SpaceCraft MainSpaceCraftObj;
     private SpaceCraft LunarLanderSpaceCraft;
     private ArrayList<SpaceCraft> obj;
@@ -76,7 +76,7 @@ public class LandingPhase3dRendevous extends Application {
     private int goDownDelta = 50;
 
 
-    //Something is VEEERY wrong with titan, or InterPlanetaryRocket. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
+    //Something is VEEERY wrong with titan, or rocket. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
     @Override
     public void start(Stage landingStage) throws Exception {
         //add any fx componenents to this root group.
@@ -105,7 +105,7 @@ public class LandingPhase3dRendevous extends Application {
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
 
-        //InterPlanetaryRocket.setTranslateX(MainSpaceCraftObj.getCentralPos().getX());
+        //rocket.setTranslateX(MainSpaceCraftObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
 
@@ -116,7 +116,7 @@ public class LandingPhase3dRendevous extends Application {
         rotate2.setAxis(new Point3D(0,0,90));
         rocket2.getTransforms().add(rotate2);
 
-        //InterPlanetaryRocket.setTranslateX(MainSpaceCraftObj.getCentralPos().getX());
+        //rocket.setTranslateX(MainSpaceCraftObj.getCentralPos().getX());
         rocket2.setTranslateX(20);
         rocket2.setTranslateY(-40);
 
@@ -280,24 +280,28 @@ public class LandingPhase3dRendevous extends Application {
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
                     rocket.setTranslateX(MainSpaceCraftObj.getCentralPos().getX()/1000D);
                     rocket.setTranslateY(-MainSpaceCraftObj.getCentralPos().getY()/1000D);
-                    //InterPlanetaryRocket.setTranslateY(InterPlanetaryRocket.getTranslateY() - InterPlanetaryRocket.getHeight());
+                    //rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight());
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(MainSpaceCraftObj.getCentralPos().getZ()));
 
-                    rocket2.setTranslateX(LunarLanderSpaceCraft.getCentralPos().getX()/1000D);
-                    rocket2.setTranslateY(-LunarLanderSpaceCraft.getCentralPos().getY()/1000D);
-                    //rocket2.setTranslateY(InterPlanetaryRocket.getTranslateY() - InterPlanetaryRocket.getHeight());
-                    rocket2.setTranslateZ(0);
-                    rotate2.setAngle(-Math.toDegrees(LunarLanderSpaceCraft.getCentralPos().getZ()));
+                    if(LunarLanderSpaceCraft != null) {
+                        rocket2.setTranslateX(LunarLanderSpaceCraft.getCentralPos().getX()/1000D);
+                        rocket2.setTranslateY(-LunarLanderSpaceCraft.getCentralPos().getY()/1000D);
+                        //rocket2.setTranslateY(rocket.getTranslateY() - rocket.getHeight());
+                        rocket2.setTranslateZ(0);
+                        rotate2.setAngle(-Math.toDegrees(LunarLanderSpaceCraft.getCentralPos().getZ()));
+                    }
+
+
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("LD " +
 //                            "X: " + landingDot.getTranslateX() +
 //                            ", Y: " + landingDot.getTranslateY() +
 //                            ", Z: " + landingDot.getTranslateZ()
 //                    );
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("RK " +
-//                            "X: " + InterPlanetaryRocket.getTranslateX() +
-//                            ", Y: " + InterPlanetaryRocket.getTranslateY() +
-//                            ", Z: " + InterPlanetaryRocket.getTranslateZ()
+//                            "X: " + rocket.getTranslateX() +
+//                            ", Y: " + rocket.getTranslateY() +
+//                            ", Z: " + rocket.getTranslateZ()
 //                    );
                     if (DEBUG) debugText.setText(constructDebugText());
                     currentFPS = (int) (1000 / differancePerAnimationFrameInMS);
