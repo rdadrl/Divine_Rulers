@@ -60,6 +60,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             double muh = G* (trajectory.getCentralBodyMass() + this.mass); // https://en.wikipedia.org/wiki/Orbital_mechanics
             this.trajectory.setSemiMajorAxis(this.centralPos.norm() + 0.5*(trajectory.getCentralBodySphereOfInfluence())); // Astrobook page 61;-muh/(2*C); % Astrobook p. 62
             Vector3D priorVel = this.centralVel;
+            this.departureVelocity = centralVel;
             this.centralVel = this.centralVel.unit().scale(Math.sqrt((-muh/trajectory.getSemiMajorAxis() + 2*muh/centralPos.norm()))); // Astrobook page 61 (reformulated formula)
             if (this.centralVel.norm() < priorVel.norm())  {
                 int i = 0;
@@ -68,7 +69,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             this.trajectory.setPeriod(Math.round(2*Math.PI*Math.sqrt(Math.pow(this.trajectory.getSemiMajorAxis(), 3)/muh))); // Astrobook p.37 (reformed)
             this.departureTime = new Date(old_date);
             this.departureTime.add(Calendar.MILLISECOND, (int)(this.trajectory.getPeriod()*1000));
-            this.departureVelocity = centralVel;
+
 
             //Construct a lander that is on it's transfer orbit
             //double landerMass = 1000; // kg
@@ -91,7 +92,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             trajectory.setPeriod(0); trajectory.setSemiMajorAxis(0);
             setCentralVel(departureVelocity);
             phase = 3;
-            System.out.println("is being called");
+            System.out.println("Phase 2 is being called");
 //            solarSystem.removeAnimatedObject(lander.getName());
         }
     }

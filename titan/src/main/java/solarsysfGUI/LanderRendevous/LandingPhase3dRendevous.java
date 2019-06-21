@@ -174,7 +174,7 @@ public class LandingPhase3dRendevous extends Application {
                         oneMoreRun = true;
                     }
                     else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
-                        vVref.updateLocation(1, TimeUnit.SECONDS);
+                        vVref.updateLocation(1, TimeUnit.SECONDS); // TODO: Change back to TimeUnit.SECONDS);
                         lastUpdate = System.nanoTime();
                     }
                 }
