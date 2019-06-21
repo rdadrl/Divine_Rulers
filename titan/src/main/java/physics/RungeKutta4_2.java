@@ -156,7 +156,7 @@ public class RungeKutta4_2 {
         O = O + coff[1];
         B = B + coff[2];
         h = h + coff[3];
-        v = h + coff[4];
+        v = v + coff[4];
         return new double[] {m, O, B, h, v};
     }
 
