@@ -68,7 +68,9 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             this.trajectory.setPeriod(Math.round(2*Math.PI*Math.sqrt(Math.pow(this.trajectory.getSemiMajorAxis(), 3)/muh))); // Astrobook p.37 (reformed)
             this.departureTime = new Date(current_date);
             this.departureTime.add(Calendar.MILLISECOND, (int)(this.trajectory.getPeriod()*1000));
-            this.departureVelocity = centralVel;
+            this.endPhase2 = departureTime.getTimeInMillis();
+            this.departureVelocity = priorVel;
+
 
             //Construct a lander that is on it's transfer orbit
             //double landerMass = 1000; // kg
@@ -82,15 +84,17 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             //departureTime.add(Calendar.MILLISECOND, (int) (this.trajectory.getPeriod() - period/2)*1000);
 
             phase = 2;
+
+            System.out.println("Phase 2 is being called: " + current_date.getTimeInMillis());
         }
     }
 
     public void phase2() {
         if (current_date.getTimeInMillis() > endPhase2) {
             trajectory.setPeriod(0); trajectory.setSemiMajorAxis(0);
-            setCentralVel(departureVelocity);
+            setCentralVel(departureVelocity.scale(1.1));
             phase = 3;
-            System.out.println("is being called");
+            System.out.println("Phase 3 is being called: " + current_date.getTimeInMillis());
 //            solarSystem.removeAnimatedObject(lander.getName());
         }
     }

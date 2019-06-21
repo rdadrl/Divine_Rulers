@@ -206,7 +206,9 @@ public class LandingPhase3dRendevous extends Application {
                     verletUpdateUnitInMs = verletUpdateUnitInMs * 2D;
                     verletUpdateUnitMultiplier = verletUpdateUnitMultiplier / 2;
                 }
-                if (key == KeyCode.P) pauseStatus = !pauseStatus;
+                if (key == KeyCode.P){
+                    pauseStatus = !pauseStatus;
+                }
             }
         });
 
