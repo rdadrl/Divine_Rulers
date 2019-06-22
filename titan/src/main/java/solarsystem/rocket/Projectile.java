@@ -91,15 +91,9 @@ public abstract class Projectile extends CelestialObject {
     public void setCentralPos(Vector3D newCentralPos) {
         oldCentralPos = centralPos;
         centralPos = newCentralPos;
-        if(!crashed){
-            // if the projectile hasn't crashed yet we will update the location as normal
-            super.setCentralPos(newCentralPos);
-            if(toPlanet != null) checkClosestDistance();
-        }else{
-            // if the projectile crashe the location of the projectile whould be that of the crashed
-            // planet.
-            super.setCentralPos(crashedPlanet.getCentralPos());
-        }
+        // if the projectile hasn't crashed yet we will update the location as normal
+        super.setCentralPos(newCentralPos);
+        if(toPlanet != null) checkClosestDistance();
     }
 
 
