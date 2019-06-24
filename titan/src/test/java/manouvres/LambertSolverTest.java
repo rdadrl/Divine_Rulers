@@ -251,15 +251,16 @@ public class LambertSolverTest {
 
         double mu = sol_depart.getPlanets().getSun().getMass() * MathUtil.G;
         Vector3D r1 = cannonBall.getCentralPos();
-        System.out.println(r1);
+        System.out.println("r1: " + r1);
         Vector3D r2 = tit_arr.getCentralPos();
-        System.out.println(r2);
+        System.out.println("r2: " + r2);
+        System.out.println("E_S: " + sol_depart.getPlanets().getEarth().getCentralPos());
 
         LambertSolver lambertSolver = new LambertSolver(mu, r1, r2, tof);
 
         Vector3D[] vel = lambertSolver.getVelocityVectors().get(0);
-        System.out.println(vel[0]);
-        System.out.println(vel[1]);
+        System.out.println("v1: " + vel[0]);
+        System.out.println("v2: " + vel[1]);
 
         cannonBall.setStartVelocityVector(vel[0]);
 

@@ -23,6 +23,7 @@ public abstract class Falcon9Imaginary extends SpaceCraft {
             Second Stage Kerosene weight        :  32300kg
          */
         fuelMass = 287400 + 123500 + 75200 + 32300;
+        this.mass = fuelMass + dryMass;
 
         /*
             Sea level   : 282
@@ -30,7 +31,8 @@ public abstract class Falcon9Imaginary extends SpaceCraft {
             Most of the time rocket will spend it's life at space,
             assumed more inclined towards vacumm impulse
          */
-        thrusterImpulse = 305;
+        //TODO: check this value, i multiplied it by 1000 as it is often in kn
+        thrusterImpulse = 305 * 1000;
 
         /*
             Literally no data about this, some guy calculated it:

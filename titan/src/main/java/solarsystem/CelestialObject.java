@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 /**
  * An interface for any celestial object which have to move through space. Any object such as a
- * planet, InterPlanetaryRocket or cannonball upon which the acceleration of the universe apply need to inherit this
+ * planet, InterPlanetaryRocketToTitan or cannonball upon which the acceleration of the universe apply need to inherit this
  * class.
  */
 public abstract class CelestialObject implements ODEsolvable {

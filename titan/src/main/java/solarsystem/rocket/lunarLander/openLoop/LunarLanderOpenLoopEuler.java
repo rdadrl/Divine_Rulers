@@ -42,7 +42,7 @@ public class LunarLanderOpenLoopEuler extends Projectile {
         //rotation to have x position equal 0
         double theta;
         double xRocket=centralPos.getX();
-        //Angle depends if landing pad is on the left or right of the InterPlanetaryRocket
+        //Angle depends if landing pad is on the left or right of the InterPlanetaryRocketToTitan
         if(xRocket>xLandingPad){
             theta=0.785398; //45° in radians
         }
@@ -72,7 +72,7 @@ public class LunarLanderOpenLoopEuler extends Projectile {
         verticalLanding();
     }
 
-    /*Rotation is in 2 phases, 1st phase to rotate the InterPlanetaryRocket in the desired angle
+    /*Rotation is in 2 phases, 1st phase to rotate the InterPlanetaryRocketToTitan in the desired angle
     and second phase to stop at that angle. We use opposite side thrusters to do so
      */
     public void makeRotation(double theta){
@@ -143,7 +143,7 @@ public class LunarLanderOpenLoopEuler extends Projectile {
         // speed formula : double theta_dot=theta_dot+theta_doubledot*t;
     }
 
-    //first phase for the InterPlanetaryRocket getting closer to the x coordinate, the InterPlanetaryRocket accelerates
+    //first phase for the InterPlanetaryRocketToTitan getting closer to the x coordinate, the InterPlanetaryRocketToTitan accelerates
     public void setXAccelerationPhase1(double t){
         System.out.println("Phase 1 X displacement started");
         //updating acceleration
@@ -175,7 +175,7 @@ public class LunarLanderOpenLoopEuler extends Projectile {
         acceleration.setX(0);
     }
 
-    /*first phase for the InterPlanetaryRocket getting closer to the x coordinate, the InterPlanetaryRocket deccerlerates
+    /*first phase for the InterPlanetaryRocketToTitan getting closer to the x coordinate, the InterPlanetaryRocketToTitan deccerlerates
     to arrive at x=0 with Vx=0
      */
     public void setXAccelerationPhase2(double theta){

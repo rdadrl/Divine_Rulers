@@ -7,6 +7,7 @@ import javafx.scene.*;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -21,6 +22,7 @@ import physics.VerletVelocity;
 import solarsystem.*;
 import solarsystem.SolarSystem;
 import solarsystem.rocket.Projectile;
+import solarsystem.rocket.mainRocket.InterPlanetaryRocketToTitanFlyByJupiter;
 import utils.Date;
 import utils.MathUtil;
 import utils.vector.Vector3D;
@@ -31,19 +33,19 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * This is a clean InterPlanetaryRocket launching stage, to be introduced functionalities
+ * This is a clean InterPlanetaryRocketToTitan launching stage, to be introduced functionalities
  */
 public class RocketLaunchStage extends Application {
     // running variables
     private boolean pauseStatus = false;
 
     // Timing variables
-    private Date date = new Date(2015, 0, 26);
-    private Date pauseDate = new Date(2019, 0, 28);
+    private Date date;
+    private Date pauseDate = new Date(2029, 0, 28);
     private boolean pausedForDate = false;
     private final long dt = 30;
     private final TimeUnit timeUnit = TimeUnit.SECONDS;
-    private final double UPDATE_FREQUENCY_IN_MS = 0.001;
+    private double UPDATE_FREQUENCY_IN_MS = 0.1;
     // GUI variables
     private Scene mainScene;
     private Group root;
@@ -57,14 +59,15 @@ public class RocketLaunchStage extends Application {
     private CelestialObject followObject;
 
     private int DistanceMultiplier = 40;
-    private double plntRadFact = (2.0/6371.0)/1000;
+    private double plntRadFact = (2.0/6371.0);
 
     private ODEsolver odEsolver = new VerletVelocity();
 
     @Override
     public void start(Stage primaryStage) {
         try {
-            solarSystem = new SolarSystem();
+            solarSystem = setParamatersForVisualization();
+            date = solarSystem.getCurrentDate();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,7 +82,13 @@ public class RocketLaunchStage extends Application {
         CelestialObject uranusObj = solarSystem.getPlanets().getUranus();
         CelestialObject neptuneObj = solarSystem.getPlanets().getNeptune();
         CelestialObject venusObj = solarSystem.getPlanets().getVenus();
-        followObject = sunObj; //set followup object as sun (the middle planet)
+        for (Projectile projObj: solarSystem.getProjectiles()) {
+            Sphere proj = createGUIobject(projObj, null, null);
+            followObject = projObj;
+            projectileList.put(proj, projObj);
+        }
+
+//        followObject = sunObj; //set followup object as sun (the middle planet)
 
         //Create the planet spheres
         Sphere sun = createGUIobject(sunObj, new Image("textures/sunmap.jpg"), null);
@@ -122,8 +131,6 @@ public class RocketLaunchStage extends Application {
             pointLight.setTranslateZ(0);
             ambientLight = new AmbientLight();
         }
-
-        projectileList = new HashMap<>();
 
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -201,19 +208,23 @@ public class RocketLaunchStage extends Application {
                     case DIGIT1: DistanceMultiplier = 40; plntRadFact = (1.0/6371.0); camera.setTranslateZ(-100); break;
                     case DIGIT2: DistanceMultiplier = 1; plntRadFact = (1000.0/MathUtil.AU); camera.setTranslateZ(-0.02); break;
 
+                    case F7: UPDATE_FREQUENCY_IN_MS = UPDATE_FREQUENCY_IN_MS*2D;
+                    case F9: UPDATE_FREQUENCY_IN_MS = UPDATE_FREQUENCY_IN_MS/2D;
+
+
                 }
             }
         });
 
-        ArrayList<CelestialObject> allObj =
-                new ArrayList<>(projectileList.values());
-        allObj.addAll(solarSystem.getPlanets().getAll());
-        solarSystem.setAllAnimatedObjects(allObj);
-        solarSystem.setODEsolver(odEsolver);
+//        ArrayList<CelestialObject> allObj =
+//                new ArrayList<>(projectileList.values());
+//        allObj.addAll(solarSystem.getPlanets().getAll());
+//        solarSystem.setAllAnimatedObjects(allObj);
+//        solarSystem.setODEsolver(odEsolver);
+//
+//        ArrayList<Projectile> projectileInstances = new ArrayList<>(projectileList.values());
 
-        ArrayList<Projectile> projectileInstances = new ArrayList<>(projectileList.values());
-
-        solarSystem.initializeAnimationWithPlanets(date, projectileInstances);
+//        solarSystem.initializeAnimationWithPlanets(date, projectileInstances);
         class ODEupdater implements Runnable {
             private long lastUpdate = System.nanoTime();
 
@@ -238,7 +249,7 @@ public class RocketLaunchStage extends Application {
 
                 //have to update the sun manually because it's enormous
                 coordinate = sunObj.getCentralPos().substract(followObject.getCentralPos());
-                sun.setRadius(sunObj.getRadius() * plntRadFact/50.0);
+                sun.setRadius(sunObj.getRadius() / 1000 * plntRadFact/50.0);
                 sun.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
                 sun.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
                 sun.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
@@ -258,7 +269,9 @@ public class RocketLaunchStage extends Application {
                 //Update projectile positions & check whether it's close enough to titan to activate landing phase
                 for(Sphere guiObject: projectileList.keySet()){
                     updateGUIobject(guiObject, projectileList.get(guiObject));
-                    if (projectileList.get(guiObject).getClosestDistanceThisProjectile() <= 1.0171236527952513E8 * 1.1) { //i love to play with this variable, and you will too.
+
+                    if (projectileList.get(guiObject).phaseFinished()) { //i love to play with this variable, and you will too.
+                        pauseStatus = true;
                         System.out.println("Initiate the landing phase capt'!");
                         this.stop();
                         try {
@@ -294,7 +307,7 @@ public class RocketLaunchStage extends Application {
 
     private Sphere createGUIobject(CelestialObject object, Image diffuseMap, Image bumpMap){
         Rotate rotate = new Rotate(90, 0, 0, 0, Rotate.X_AXIS);
-        Sphere guiOb = new Sphere(object.getRadius() * plntRadFact);
+        Sphere guiOb = new Sphere(object.getRadius() /1000 * plntRadFact);
         guiOb.getTransforms().add(rotate);
         PhongMaterial guiMat = new PhongMaterial();
         //if no texture, apply purple as diffmap
@@ -318,13 +331,20 @@ public class RocketLaunchStage extends Application {
         });
         guiOb.setOnMouseExited(e -> identifierLabel.setText(""));
 
+        guiOb.setOnMouseClicked(new EventHandler<MouseEvent> () {
+            @Override
+            public void handle(MouseEvent t) {
+                followObject = object;
+            }
+        });
+
         return guiOb;
     }
 
     private void updateGUIobject(Sphere guiObject, CelestialObject cObject){
         Vector3D coordinate = cObject.getCentralPos();
         coordinate = coordinate.substract(followObject.getCentralPos());
-        guiObject.setRadius(cObject.getRadius() * plntRadFact);
+        guiObject.setRadius(cObject.getRadius() /1000 * plntRadFact);
         guiObject.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
         guiObject.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
         guiObject.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
@@ -332,6 +352,57 @@ public class RocketLaunchStage extends Application {
     }
 
     private void updateRadius(Sphere guiObject, CelestialObject cObject) {
-        guiObject.setRadius(cObject.getRadius() * plntRadFact);
+        guiObject.setRadius(cObject.getRadius()/1000 * plntRadFact);
+    }
+
+    private SolarSystem setParamatersForVisualization() throws IOException {
+        Date departDate = new Date(2018, 0, 18);
+        Date refDate = new Date(departDate);
+        SolarSystem sol_depart = new SolarSystem();
+        sol_depart.setPositionsPlanetsAtDateKepler(departDate);
+
+        Date flybyDate = new Date(2020, 2, 12);
+        Date arrivalDate = new Date(2026, 9, 10);
+        pauseDate = new Date(arrivalDate);
+        SolarSystem sol_reference = new SolarSystem();
+        sol_reference.setPositionsPlanetsAtDateKepler(refDate);
+
+        double tof = (arrivalDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
+        double tof_flyby = (flybyDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
+        long timestep_seconds = 30;
+//        Vector3D flybyPos = null;
+//        Vector3D flybyVel = null;
+//
+//        sol_reference.initializeAnimationWithPlanets(refDate, null);
+//        for(double tof_cur = 0; tof_cur < tof; tof_cur = tof_cur + timestep_seconds){
+//            sol_reference.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
+//            if(flybyPos == null && tof_cur > tof_flyby){
+//                flybyPos = sol_reference.getPlanets().getJupiter().getCentralPos();
+//                flybyVel = sol_reference.getPlanets().getJupiter().getCentralVel();
+//            }
+//        }
+
+        Planet tit_arr = sol_reference.getPlanets().getTitan();
+        Planet tit_dep = sol_depart.getPlanets().getTitan();
+        Planet earth_dep = sol_depart.getPlanets().getEarth();
+        Planet jupiter_dep = sol_depart.getPlanets().getJupiter();
+        //double mass, Planet fromPlanet, Planet toPlanet, Date current_date, Vector3D departurePos, Vector3D destinationPos, Date arrivalDate ;
+
+        Vector3D arrivalPos = new Vector3D(1.3735128425635854E12, 2.792784080558467E11, -6.002744211162953E10);
+//        Vector3D arrivalPos =        tit_arr.getCentralPos();
+
+        Vector3D flybyPos = new Vector3D(1.5715795415164874E11, -7.625355088251364E11, -3.49797418664907E8);
+        Vector3D flybyVel = new Vector3D(12642.297961295031, 3251.850250468635, -296.43196830395976);
+        double sphereOfInfluenceJup = sol_reference.getPlanets().getJupiter().getSphereOfInfluence();
+        flybyPos = flybyPos.add(flybyVel.unit().scale(sphereOfInfluenceJup * - 0.8));
+        Vector3D startVel = earth_dep.getCentralVel();
+        //Planet fromPlanet, Planet Jupiter, Planet toPlanet, Date current_date, Date jupiter_date, Date arrival_date, Vector3D departurePos, Vector3D flybyPos, Vector3D arrivalPos
+        InterPlanetaryRocketToTitanFlyByJupiter rocket = new InterPlanetaryRocketToTitanFlyByJupiter(earth_dep, jupiter_dep, tit_dep, departDate, flybyDate, arrivalDate, null, flybyPos, arrivalPos);
+
+        ArrayList<Projectile> proj = new ArrayList<>();
+        proj.add(rocket);
+        sol_depart.setODEsolver(odEsolver);
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
+        return sol_depart;
     }
 }

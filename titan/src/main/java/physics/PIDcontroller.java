@@ -127,6 +127,10 @@ public class PIDcontroller {
         totalError_pos = 0;
     }
 
+    public void setTotalError_pos(double totalError_pos) {
+        this.totalError_pos = totalError_pos;
+    }
+
     public void reduceTotalError(double percentage){
         totalError_pos = totalError_pos *percentage;
     }
