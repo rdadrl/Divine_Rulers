@@ -7,6 +7,7 @@ import solarsystem.Trajectory;
 import utils.Date;
 import utils.vector.Vector3D;
 
+import javax.sound.midi.Soundbank;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -23,8 +24,9 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
     public void initializeCartesianCoordinates(Date date) { }
 
     public MainRocket2DRendezvous(double length, Vector3D centralPos,
-                                  Vector3D centralVel, Date date, Trajectory trajectory) {
+                                  Vector3D centralVel, Date date, Trajectory trajectory, LanderRendezvous lander) {
         super();
+        this.lander = lander;
         this.trajectory = trajectory;
         this.name = "mainRocket2DRendezvous";
         this.radius = length;
@@ -74,34 +76,35 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             this.departureVelocity = priorVel;
 
 
-            //Construct a lander that is on it's transfer orbit
-            //double landerMass = 1000; // kg
-            //muh = G* (trajectory.getCentralBodyMass() + landerMass); // https://en.wikipedia.org/wiki/Orbital_mechanics
-            //double semimajorAxis = (getCentralPos().norm() + (trajectory.getCentralBodySphereOfInfluence())/2); // Astrobook page 61
-            //Vector3D velocity = getCentralVel().unit().scale(Math.sqrt((-muh/semimajorAxis + 2*muh/(getCentralPos().norm())))); // Astrobook page 61 (reformulated formula)
-            //double period = 2*Math.sqrt((Math.pow(semimajorAxis,3)/muh)*(Math.PI)); // probably in seconds Astrobook p.37 (reformed) // TODO: check whether this needs to be rounded
-            //Trajectory trajectory = new Trajectory(this.trajectory.getTargetBody(), semimajorAxis, period);
-            //lander = new LanderRendezvous(getCentralPos(), velocity, getDate(), trajectory);
-            //Date departureTime = new Date(current_date);
-            //departureTime.add(Calendar.MILLISECOND, (int) (this.trajectory.getPeriod() - period/2)*1000);
-
+            //Put the lander that is on it's transfer orbit
+            double landerMass = 1000; // kg
+            muh = G* (trajectory.getCentralBodyMass() + landerMass); // https://en.wikipedia.org/wiki/Orbital_mechanics
+            double semimajorAxis = (centralPos.norm() + 400e3)/2;//(trajectory.getCentralBodySphereOfInfluence())/2); // Astrobook page 61
+            Vector3D velocity = getCentralVel().unit().scale(Math.sqrt((-muh/semimajorAxis + 2*muh/(centralPos.norm())))); // Astrobook page 61 (reformulated formula)
+            double period = 2*Math.sqrt((Math.pow(semimajorAxis,3)/muh)*(Math.PI)); // probably in seconds Astrobook p.37 (reformed) // TODO: check whether this needs to be rounded
+            Trajectory trajectory = new Trajectory(this.trajectory.getCentralBodyMass(), this.trajectory.getCentralBodySphereOfInfluence(), semimajorAxis, period);
+            lander.setTrajectory(trajectory);
+            lander.setDepartureTimeInMillis(this.departureTime.getTimeInMillis()-(long)(1e3*period/2));
+            lander.setCentralVel(velocity);
             phase = 2;
 
             System.out.println("Phase 2 is being called: " + current_date.getTimeInMillis());
         }
     }
 
-    public void phase2() {
-        if (current_date.getTimeInMillis() > endPhase2) {
+    private void phase2() {
+        if (current_date.after(departureTime)) {
+            System.out.println("Rocket time to leave " + current_date.getTimeInMillis());
             trajectory.setPeriod(0); trajectory.setSemiMajorAxis(0);
-            setCentralVel(departureVelocity.scale(1.1));
+            centralVel = departureVelocity.scale(1);
+            lander.setTrajectory(trajectory);
+            lander.setCentralPos(centralPos);
+            lander.setCentralVel(centralVel);
             phase = 3;
-            System.out.println("Phase 3 is being called: " + current_date.getTimeInMillis());
-//            solarSystem.removeAnimatedObject(lander.getName());
         }
     }
 
-    public void phase3() {
+    private void phase3() {
 
     }
 
