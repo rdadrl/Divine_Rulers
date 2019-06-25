@@ -56,12 +56,12 @@ public class KeplerToCartesian {
         }while(Math.abs(deltaE) > EPSILON);
 
 
-        /* true anomanaly calclulation if necessary
+
         double vt = 2 * Math.atan2(
                 Math.sqrt(1.0 + e) * sinD(E / 2D),
                 Math.sqrt(1.0 - e) * cosD(E / 2D));
         vt = Math.toDegrees(vt);
-        */
+
 
 
         // Step 4

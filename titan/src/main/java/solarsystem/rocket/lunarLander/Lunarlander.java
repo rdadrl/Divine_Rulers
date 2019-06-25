@@ -1,11 +1,8 @@
 package solarsystem.rocket.lunarLander;
 
-import solarsystem.rocket.Projectile;
 import solarsystem.rocket.SpaceCraft;
 import utils.Date;
 import utils.vector.Vector3D;
-
-import java.math.BigDecimal;
 
 /**
  *
@@ -45,11 +42,11 @@ public abstract class Lunarlander extends SpaceCraft {
 
     protected double differenceInSeconds(Date date) {
 
-        return (date.getTimeInMillis() - this.old_date.getTimeInMillis())/1000D;
+        return (date.getTimeInMillis() - this.current_date.getTimeInMillis())/1000D;
     }
 
     protected long differenceInMiliSeconds(Date date) {
-        return (date.getTimeInMillis() - this.old_date.getTimeInMillis());
+        return (date.getTimeInMillis() - this.current_date.getTimeInMillis());
     }
 
     public double getFuelMass() {

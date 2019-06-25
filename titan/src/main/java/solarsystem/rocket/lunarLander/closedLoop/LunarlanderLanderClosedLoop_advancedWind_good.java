@@ -62,7 +62,7 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
         this.name = "Rocket_temp: " + counter;
         this.radius = length;
         this.mass = dryMass + fuelMass;
-        this.old_date = date;
+        this.current_date = date;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
         this.stochasticWind = stochasticWind;
@@ -124,7 +124,7 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
         increment = new BigDecimal(differenceInMiliSeconds(new_date)).divide(new BigDecimal(1000));
         dt = increment.doubleValue();
         double time = dt;// get size of the time step
-        this.old_date = new Date(new_date);
+        this.current_date = new Date(new_date);
         if(dt!= 0) updateController();
 
         // Ft = Ft + ((mass*g)/Math.cos(centralPos.getZ()));

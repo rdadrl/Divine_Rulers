@@ -3,7 +3,6 @@ package solarsysfGUI.LanderRendevous;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import physics.RungeKutta4;
-import solarsystem.SolarSystem;
 import solarsystem.Trajectory;
 import solarsystem.rocket.mainRocket2DRendezvous.MainRocket2DRendezvous;
 import utils.Date;

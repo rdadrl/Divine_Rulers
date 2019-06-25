@@ -47,6 +47,7 @@ public class RungeKutta4_2 {
         dfs = new Vector3D[bodies.size()][2];
     }
 
+//    @Override
     public void initialize(ArrayList<? extends ODEsolvable> bodies, Date date) {
         this.currentDate = date;
         this.bodies = bodies;
@@ -187,7 +188,7 @@ public class RungeKutta4_2 {
 //        }
 //    }
 
-
+//    @Override
 //    public void updateLocation(long time, TimeUnit unit) {
 //
 //        time = TimeUnit.MILLISECONDS.convert(time, unit); //convert to seconds
@@ -196,4 +197,3 @@ public class RungeKutta4_2 {
 //        rk4sim(bodies, dfs, dt);
 //    }
 }
-

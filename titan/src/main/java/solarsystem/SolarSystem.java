@@ -95,7 +95,7 @@ public class SolarSystem {
 
     /**
      * Initialize an animation with all the planets present
-     * @param date Date of initialization old_date
+     * @param date Date of initialization current_date
      * @param projectiles Additional projectiles such as CannonBalls or Rockets that need to be
      *                    part of the animation
      */

@@ -18,14 +18,17 @@ public class KeplerToCartesianTest {
     private static boolean PRINT = true;
     private final double AU = MathUtil.AU;
 
+
+
     @Test
-    public void Earth200020002() throws IOException {
-        Date date = new Date(2000, 0, 1, 0, 0, 0);
+    public void Earth1994() throws IOException {
+        Date date = new Date(2000, 0, 1, 12, 0,
+                0);
 
         /*
         SolarSystem solarSystem = new SolarSystem();
         Planet saturn = solarSystem.getPlanets().getSaturn();
-        Vector3D coordinate = saturn.getCentralPos(old_date);
+        Vector3D coordinate = saturn.getCentralPos(current_date);
         System.out.println("\nSaturn");
         System.out.println("X: " + coordinate.getX());
         System.out.println("Y: " + coordinate.getY());
@@ -33,7 +36,39 @@ public class KeplerToCartesianTest {
 
 
         Planet venus = solarSystem.getPlanets().getVenus();
-        coordinate = venus.getCentralPos(old_date);
+        coordinate = venus.getCentralPos(current_date);
+        System.out.println("\nVenus");
+        System.out.println("X: " + coordinate.getX());
+        System.out.println("Y: " + coordinate.getY());
+        System.out.println("Z: " + coordinate.getZ());
+        */
+        SolarSystem solarSystem = new SolarSystem();
+        Planet earth = solarSystem.getPlanets().getEarth();
+        Vector3D coordinate = earth.getCentralPosAtDate(date);
+        if(PRINT){
+            printPosVel(earth.getName(), coordinate.scale(1D/MathUtil.AU), date);
+        }
+//        assertEquals( -0.16856286531223225,coordinate.getX()/AU, 1e-4);
+//        assertEquals(0.968758969709345,coordinate.getY()/AU, 1e-4);
+//        assertEquals(-2.558653782299318E-7, coordinate.getZ()/AU, 1e-4);
+    }
+
+    @Test
+    public void Earth200020002() throws IOException {
+        Date date = new Date(2000, 0, 1, 0, 0, 0);
+
+        /*
+        SolarSystem solarSystem = new SolarSystem();
+        Planet saturn = solarSystem.getPlanets().getSaturn();
+        Vector3D coordinate = saturn.getCentralPos(current_date);
+        System.out.println("\nSaturn");
+        System.out.println("X: " + coordinate.getX());
+        System.out.println("Y: " + coordinate.getY());
+        System.out.println("Z: " + coordinate.getZ());
+
+
+        Planet venus = solarSystem.getPlanets().getVenus();
+        coordinate = venus.getCentralPos(current_date);
         System.out.println("\nVenus");
         System.out.println("X: " + coordinate.getX());
         System.out.println("Y: " + coordinate.getY());
@@ -75,7 +110,7 @@ public class KeplerToCartesianTest {
         /*
         SolarSystem solarSystem = new SolarSystem();
         Planet saturn = solarSystem.getPlanets().getSaturn();
-        Vector3D HEEPos = saturn.getCentralPos(old_date);
+        Vector3D HEEPos = saturn.getCentralPos(current_date);
         System.out.println("\nSaturn");
         System.out.println("X: " + HEEPos.getX());
         System.out.println("Y: " + HEEPos.getY());
@@ -83,7 +118,7 @@ public class KeplerToCartesianTest {
 
 
         Planet venus = solarSystem.getPlanets().getVenus();
-        HEEPos = venus.getCentralPos(old_date);
+        HEEPos = venus.getCentralPos(current_date);
         System.out.println("\nVenus");
         System.out.println("X: " + HEEPos.getX());
         System.out.println("Y: " + HEEPos.getY());
@@ -153,7 +188,7 @@ public class KeplerToCartesianTest {
             Vector3D HEEPos = planet.getCentralPosAtDate(date);
             Vector3D OrbPos = planet.getOrbitalPosAtDate(date);
             if(PRINT){
-                //printXYZ(planet.getName(), OrbPos, old_date);
+                //printXYZ(planet.getName(), OrbPos, current_date);
                 printXYZ(planet.getName(), HEEPos, date);
                 //System.out.println();
             }
@@ -170,7 +205,7 @@ public class KeplerToCartesianTest {
         Vector3D HEEPos = planet.getCentralPosAtDate(date);
         Vector3D OrbPos = planet.getOrbitalPosAtDate(date);
         if(PRINT){
-            //printXYZ(planet.getName(), OrbPos, old_date);
+            //printXYZ(planet.getName(), OrbPos, current_date);
             printXYZ(planet.getName(), HEEPos, date);
             //System.out.println();
         }

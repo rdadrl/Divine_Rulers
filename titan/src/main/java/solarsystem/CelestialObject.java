@@ -21,7 +21,7 @@ public abstract class CelestialObject implements ODEsolvable {
     @JsonProperty("radius")
     protected double radius;      // in km
 
-    protected Date old_date;   // Date of the current
+    protected Date current_date;   // Date of the current
     protected Vector3D centralPos = new Vector3D(); // Coordinate with the sun as a center.
     protected Vector3D centralVel = new Vector3D(); // Velocity vector with sun in the center
     protected Vector3D acceleration;
@@ -54,7 +54,7 @@ public abstract class CelestialObject implements ODEsolvable {
      * @return acceleration
      */
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date){
-        this.old_date = date;
+        this.current_date = date;
         Vector3D forces = gravitationalForces(this, objectsInSpace);
         acceleration = forces.scale(1D/mass);
     }
@@ -86,10 +86,10 @@ public abstract class CelestialObject implements ODEsolvable {
     }
 
     /**
-     * @return old_date associated with the variable
+     * @return current_date associated with the variable
      */
     public Date getDate() {
-        return old_date;
+        return current_date;
     }
 
     public abstract void initializeCartesianCoordinates(Date date);

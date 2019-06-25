@@ -29,7 +29,7 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
         this.dryMass = 265000; // kg
         this.fuelMass = 221500; // kg
         this.mass = this.dryMass + this.fuelMass;
-        this.old_date = date;
+        this.current_date = date;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
         this.thrusterImpulse = 4000; // newtons per second TODO: Check value
@@ -44,6 +44,7 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
             case 2: phase2(); break;
             case 3: phase3(); break;
         }
+
         Vector3D d = centralPos;
         super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));
     }
@@ -57,7 +58,7 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
     }
 
     private void phase2() {
-        if (old_date.after(departureTime)) {
+        if (current_date.after(departureTime)) {
             centralVel = departureVelocity;
             phase = 3;
         }
