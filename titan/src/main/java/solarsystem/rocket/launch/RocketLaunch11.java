@@ -4,6 +4,7 @@ import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
+import solarsystem.CelestialObject;
 import solarsystem.Planet;
 import solarsystem.SolarSystem;
 import solarsystem.rocket.SpaceCraft;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 import static utils.MathUtil.G;
 
-public class RocketLaunch8 extends SpaceCraft {
+public class RocketLaunch11 extends SpaceCraft {
     private double[] mOBhv=new double[5];
 
     private double[] ispParts;
@@ -30,6 +31,8 @@ public class RocketLaunch8 extends SpaceCraft {
 
     private final double GEO = 3.58*Math.pow(10,7);
     private final double VELGEO = 3076;
+    private final double LEO = 2*Math.pow(10,6);
+    private final double VELLEO = 9400;
     private final double M; // 5.972*Math.pow(10,24);
     private final double R; // 6371000;
     private final double g0; //9.81
@@ -38,26 +41,22 @@ public class RocketLaunch8 extends SpaceCraft {
     private double theta;
     private double beta;
     private double v;
-    private int i = 0;
 
     private double totalTime;
 
-    private boolean shutdown;
-
-    public RocketLaunch8(Vector3D centralPos,
-                         Vector3D centralVel, Date date, Planet fromPlanet){
+    public RocketLaunch11(Vector3D centralPos,
+                          Vector3D centralVel, Date date, Planet fromPlanet){
         super();
         this.h=0;
         this.theta=0;
         this.beta=Math.pow(10,-6)*2.7786;
-        this.v=10;
+        this.v=1;
         this.dt=0.01;
         this.current_date = date;
         this.fromPlanet = fromPlanet;
         this.centralPos = centralPos;
         this.centralVel = centralVel;
         this.totalTime = 0;
-        this.shutdown = false;
         M=fromPlanet.getMass();
         R=fromPlanet.getRadius();
         g0=G*M/Math.pow(R,2);//9.81;
@@ -67,7 +66,7 @@ public class RocketLaunch8 extends SpaceCraft {
         double Merlin1D=914000;
         double firstPhaseFt=Merlin1D*27;
         //2nd stage is Ft made by one Merlin 1C
-        double secondPhaseFt=1200000;
+        double secondPhaseFt=970000;
         maxFt= new double[]{firstPhaseFt,secondPhaseFt};
         double firstPhaseIsp=312;
         double secondPhaseIsp=348;
@@ -115,7 +114,11 @@ public class RocketLaunch8 extends SpaceCraft {
         return v;
     }
 
-    public void setAcceleration() {
+    @Override
+    public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date date) {
+        if(totalTime>=540 &&totalTime<543){
+            beta=0.1;
+        }
         mOBhv = rk4();
         mass = mOBhv[0];
         h = mOBhv[3];
@@ -123,6 +126,14 @@ public class RocketLaunch8 extends SpaceCraft {
         beta = mOBhv[2];
         v = mOBhv[4];
         totalTime+=dt;
+        double v_doubledots=Ft/mass-g0*R/(R+mOBhv[3])*Math.cos(mOBhv[2]);
+        double y_doubledots=v_doubledots*Math.cos(mOBhv[2]);
+        double x_doubledots=v_doubledots*Math.sin(mOBhv[2]);
+        double z_dot=g0*R/Math.pow((R+mOBhv[3]),2)*Math.sin(mOBhv[2])/mOBhv[4]-mOBhv[4]*Math.sin(mOBhv[2])/(R+mOBhv[3]);
+        acceleration.setX(x_doubledots);
+        acceleration.setY(y_doubledots);
+        acceleration.setZ(0);
+        centralPos.setZ(-beta);
     }
 
     public double[] deriv(double[] y) {
@@ -132,22 +143,39 @@ public class RocketLaunch8 extends SpaceCraft {
         g = g0*Math.pow(R/(R+y[3]),2);
         double vhor = y[4]*Math.sin(y[2]);
         double vver = y[4]*Math.cos(y[2]);
-        if (y[0] >= (mass_rocketParts[0]+mass_rocketParts[1]+mass_rocketParts[2]+mass_propellant[1]) && totalTime <= 175){
+        if (y[0] >= (mass_rocketParts[0]+mass_rocketParts[1]+mass_rocketParts[2]+mass_propellant[1]) && totalTime <= 185){
             Ft = maxFt[0];
             Isp = ispParts[0];
             doty[0] = -(Ft/(Isp * g0));
         }
-        else if(y[0] <= (mass_rocketParts[0]+mass_rocketParts[1]+mass_rocketParts[2]+mass_propellant[1]) && totalTime <= 175){
+        else if(y[0] <= (mass_rocketParts[0]+mass_rocketParts[1]+mass_rocketParts[2]+mass_propellant[1]) && totalTime <= 185){
             doty[0] = 0;
             Ft =0;
             y[0] = mass_rocketParts[1]+mass_rocketParts[2]+mass_propellant[1];
         }
-        else if (y[0] >=  mass_rocketParts[1]+mass_rocketParts[2] && totalTime >= 175){
+        else if (y[0] >=  mass_rocketParts[1]+mass_rocketParts[2] && totalTime >= 185){
             Ft = maxFt[1];
             Isp = ispParts[1];
             doty[0] = -(Ft/(Isp * g0));
+            if(totalTime>220){
+                Ft = maxFt[1]*0.5;
+                doty[0] = -(Ft/(Isp * g0));
+                if(totalTime>310){
+                    doty[0] = 0;
+                    Ft=0;
+                }
+                if(y[3]>=LEO){
+                    Ft = maxFt[1];
+                    Isp = ispParts[1];
+                    doty[0] = -(Ft/(Isp * g0));
+                    if(y[4]>=VELLEO){
+                        doty[0] = 0;
+                        Ft = 0;
+                    }
+                }
+            }
         }
-        else if (y[0] <= mass_rocketParts[1]+mass_rocketParts[2] && totalTime >= 175){
+        else if (y[0] <= mass_rocketParts[1]+mass_rocketParts[2] && totalTime >= 185){
             doty[0] = 0;
             Ft = 0;
             y[0] = mass_rocketParts[2];
@@ -188,13 +216,6 @@ public class RocketLaunch8 extends SpaceCraft {
            // dy[i] = dt/6*(k1[i] + 2*(k2[i] + k3[i]) + k4[i]);
             dy[i] = dt*k1[i];
         }
-        i ++;
-        if(i%1000 == 0){
-            double Fg = -g * mass;
-            double F = Fg+ Ft;
-            System.out.println("t: " + i*dt + ", mass: " + mass + ", theta: " + theta + ", beta: " + beta + ", h: " + h + ", v: " +  v + ", a: " + (F/mass) + ", Ft: " + Ft + ", Fg: " + Fg + ", netF: " + F);
-        }
-
 
         return dy;
     }
@@ -221,44 +242,6 @@ public class RocketLaunch8 extends SpaceCraft {
     @Override
     public void setCentralPos(Vector3D newCentralPos) {
         this.centralPos=newCentralPos;
-    }
-
-    public static void main(String[] args){
-        try{
-        SolarSystem solarSystem = new SolarSystem(); //Solar System Instance
-        Date date = new Date(2000, 0, 1, 0, 0, 0);
-        Planet earth = solarSystem.getPlanets().getEarth();
-        RocketLaunch8 rocket=new RocketLaunch8(new Vector3D(0,0,0), new Vector3D(0,0,0),date,earth);
-        ArrayList xData = new ArrayList();
-        ArrayList yData = new ArrayList();
-        for (int i=0; i < (15000/ 0.01); i++) {
-            rocket.setAcceleration();
-            if(i%10==0){
-                xData.add(rocket.getTime());
-                yData.add(rocket.getH());
-            }
-            if(i==50000){
-                System.out.println("Hello");
-            }
-        }
-
-            // Create Chart
-            XYChart chart = QuickChart.getChart("h(t)", "t", "h", "h(t)", xData, yData);
-
-            // Show it
-            new SwingWrapper(chart).displayChart();
-
-            try{
-                BitmapEncoder.saveBitmap(chart, "./h6(t)", BitmapEncoder.BitmapFormat.PNG);
-            }
-            catch(IOException e){
-                System.out.println("fail");
-            }
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

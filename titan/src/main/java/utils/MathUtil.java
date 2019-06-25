@@ -61,8 +61,8 @@ public class MathUtil {
     //TODO: rewrite
 
     /**
-     * Function the check whether there is a collision between the InterPlanetaryRocket/cannonball and
-     * a planet. We check whether the line between the InterPlanetaryRocket at position x(t) and x(t + dt)
+     * Function the check whether there is a collision between the InterPlanetaryRocketToTitan/cannonball and
+     * a planet. We check whether the line between the InterPlanetaryRocketToTitan at position x(t) and x(t + dt)
      * intersects the spehere
      * https://stackoverflow.com/questions/5883169/intersection-between-a-line-and-a-sphere
      * @param fromPos starting position
@@ -120,7 +120,7 @@ public class MathUtil {
         else
         {
             return new Point3D[]{solution1, solution2}; // line intersect on two points
-            //TODO: figure out which point it the InterPlanetaryRocket crashed.
+            //TODO: figure out which point it the InterPlanetaryRocketToTitan crashed.
         }
     }
 }

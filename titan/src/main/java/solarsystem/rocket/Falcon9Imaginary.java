@@ -1,5 +1,7 @@
 package solarsystem.rocket;
 
+import solarsystem.Trajectory;
+
 
 //Not the most realistic Falcon Heavy spacecraft; but the values should get us to titan and back
 //with some extra fuel we are carrying (we really have to carry alot of fuel)
@@ -21,14 +23,15 @@ public abstract class Falcon9Imaginary extends SpaceCraft {
             Second Stage Kerosene weight        :  32300kg
          */
         fuelMass = (287400 + 123500) * 3 + 75200 + 32300;
-
+        this.mass = fuelMass + dryMass;
         /*
             Sea level   : 282
             Vacuum      : 311
             Most of the time rocket will spend it's life at space,
             assumed more inclined towards vacumm impulse
          */
-        thrusterImpulse = 305 * 1000; //305 kN per kg per second
+        //TODO: check this value, i multiplied it by 1000 as it is often in kn
+        thrusterImpulse = 305 * 100;
 
         /*
             Literally no data about this, some guy calculated it:
@@ -44,7 +47,7 @@ public abstract class Falcon9Imaginary extends SpaceCraft {
     public void dumpStageOne() {
         if (fuelMass >= 75200 + 32300) fuelMass = (287400 + 123500) * 3 + 75200 + 32300;
         dryMass = 4000 + 1700;
-
+        this.mass = fuelMass + dryMass;
         maxFtPropulsion = 934 * 1000;
         thrusterImpulse = 397 * 1000;
     }

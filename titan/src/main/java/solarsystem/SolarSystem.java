@@ -161,4 +161,8 @@ public class SolarSystem {
     public Date getCurrentDate() {
         return currentDate;
     }
+
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
+    }
 }
