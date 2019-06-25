@@ -77,10 +77,10 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
 
 
             //Put the lander that is on it's transfer orbit
-            double landerMass = 1000; // kg
+            double landerMass = 1e3; // kg
             muh = G* (trajectory.getCentralBodyMass() + landerMass); // https://en.wikipedia.org/wiki/Orbital_mechanics
-            double semimajorAxis = (centralPos.norm() + 400e3)/2;//(trajectory.getCentralBodySphereOfInfluence())/2); // Astrobook page 61
-            Vector3D velocity = getCentralVel().unit().scale(Math.sqrt((-muh/semimajorAxis + 2*muh/(centralPos.norm())))); // Astrobook page 61 (reformulated formula)
+            double semimajorAxis = (centralPos.norm() + 1000e3)/2;//(trajectory.getCentralBodySphereOfInfluence())/2); // Astrobook page 61
+            Vector3D velocity = getCentralVel().unit().scale(Math.sqrt(muh*(2/centralPos.norm() - 1/semimajorAxis)));//Math.sqrt((-muh/semimajorAxis + 2*muh/(centralPos.norm())))); // Astrobook page 61 (reformulated formula)
             double period = 2*Math.sqrt((Math.pow(semimajorAxis,3)/muh)*(Math.PI)); // probably in seconds Astrobook p.37 (reformed) // TODO: check whether this needs to be rounded
             Trajectory trajectory = new Trajectory(this.trajectory.getCentralBodyMass(), this.trajectory.getCentralBodySphereOfInfluence(), semimajorAxis, period);
             lander.setTrajectory(trajectory);
