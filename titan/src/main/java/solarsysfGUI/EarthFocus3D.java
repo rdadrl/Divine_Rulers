@@ -106,7 +106,7 @@ public class EarthFocus3D extends Application {
         light.setColor(Color.LIGHTGOLDENRODYELLOW);
 
         //Titan & Lunarlander:
-        Box rocket = new Box(20, 100, 20);
+        Box rocket = new Box(200, 1000, 200);
         rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
         Rotate rotate = new Rotate();
         rotate.setAxis(new Point3D(0,0,90));
@@ -306,7 +306,7 @@ public class EarthFocus3D extends Application {
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
                     rocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
                     if(spaceCraftObj instanceof Lunarlander) rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY()/100);
-                    else rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY());
+                    else rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY()/100);
                     rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight() / 2D);
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(spaceCraftObj.getCentralPos().getZ()));
