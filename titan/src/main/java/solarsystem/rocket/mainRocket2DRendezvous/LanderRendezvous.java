@@ -44,12 +44,14 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
             case 2: phase2(); break;
             case 3: phase3(); break;
         }
+
         Vector3D d = centralPos;
         super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));
     }
 
     private void phase1() {
         if (getCentralPos().norm() < 250000 && isTangentialToTarget(this)) { // 200000 is the expected altitude at perigee
+            System.out.println("");
             centralVel = new Vector3D(0,0,0);
             phase = 2;
         }

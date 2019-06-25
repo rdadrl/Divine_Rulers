@@ -3,7 +3,6 @@ package solarsysfGUI.LanderRendevous;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import physics.RungeKutta4;
-import solarsystem.SolarSystem;
 import solarsystem.Trajectory;
 import solarsystem.rocket.mainRocket2DRendezvous.MainRocket2DRendezvous;
 import utils.Date;
@@ -20,7 +19,7 @@ public class LandingPhase3DLauncherRendezvous extends Application {
             Vector3D initialPos = new Vector3D(-0.7071, 0.7071,0);
             initialPos = initialPos.scale(1.3*sphereOfInfluence);
             //initialPos = initialPos.add((new Vector3D(0,-1,0)).scale(solarSystem.getPlanets().getTitan().getRadius()*1e03));
-            Vector3D initialVel = new Vector3D(0,-1,0).scale(5e02);
+            Vector3D initialVel = new Vector3D(0,-1,0).scale(6e02);
             Trajectory trajectory = new Trajectory(titanMass, sphereOfInfluence, 0, 0);
 
             MainRocket2DRendezvous rocket = new MainRocket2DRendezvous(100000000, initialPos,

@@ -36,6 +36,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         this.centralVel = centralVel;
         this.thrusterImpulse = 0;//4000; // newtons per second TODO: Check value
         this.acceleration = new Vector3D();
+
     }
 
     @Override
@@ -47,6 +48,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             case 2: phase2(); break;
             case 3: phase3(); break;
         }
+
         Vector3D d = centralPos;
         super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));
     }
