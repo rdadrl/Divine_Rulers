@@ -19,6 +19,11 @@ import static org.junit.Assert.*;
  */
 public class InterPlanetaryRocketToTitanFlyByJupiterTest {
     @Test
+    public void day2() throws IOException {
+        TitanTest2_alongwayUpdate(2);
+    }
+
+    @Test
     public void day7() throws IOException {
         TitanTest2_alongwayUpdate(7);
     }
@@ -53,7 +58,7 @@ public class InterPlanetaryRocketToTitanFlyByJupiterTest {
         sol_depart.setPositionsPlanetsAtDateKepler(departDate);
 
         Date flybyDate = new Date(2020, 2, 12);
-        Date arrivalDate = new Date(2026, 9, day);
+        Date arrivalDate = new Date(2026, 2, day);
         SolarSystem sol_reference = new SolarSystem();
         sol_reference.setPositionsPlanetsAtDateKepler(refDate);
 
@@ -63,12 +68,14 @@ public class InterPlanetaryRocketToTitanFlyByJupiterTest {
         double tof_flyby = (flybyDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
         long timestep_seconds = 30;
         Vector3D flybyPos = null;
+        Vector3D flybyVel = null;
 
         sol_reference.initializeAnimationWithPlanets(refDate, null);
         for(double tof_cur = 0; tof_cur < tof; tof_cur = tof_cur + timestep_seconds){
             sol_reference.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
             if(flybyPos == null && tof_cur > tof_flyby){
                 flybyPos = sol_reference.getPlanets().getJupiter().getCentralPos();
+                flybyVel = sol_reference.getPlanets().getJupiter().getCentralVel();
             }
         }
 
@@ -82,7 +89,7 @@ public class InterPlanetaryRocketToTitanFlyByJupiterTest {
 //        Vector3D arrivalPos = new Vector3D(1.3753660133497722E12, 2.772361116911658E11, -5.947866486590089E10);
 //        Vector3D flybyPos = new Vector3D(1.5715795415164874E11, -7.625355088251364E11, -3.49797418664907E8);
         double sphereOfInfluenceJup = sol_reference.getPlanets().getJupiter().getSphereOfInfluence();
-        flybyPos = flybyPos.add(flybyPos.unit().scale(sphereOfInfluenceJup* 1.3));
+        flybyPos = flybyPos.add(flybyVel.unit().scale(sphereOfInfluenceJup * - 0.8));
         Vector3D startVel = earth_dep.getCentralVel();
         //Planet fromPlanet, Planet Jupiter, Planet toPlanet, Date current_date, Date jupiter_date, Date arrival_date, Vector3D departurePos, Vector3D flybyPos, Vector3D arrivalPos
         InterPlanetaryRocketToTitanFlyByJupiter rocket = new InterPlanetaryRocketToTitanFlyByJupiter(earth_dep, jupiter_dep, tit_dep, departDate, flybyDate, arrivalDate, null, flybyPos, arrivalPos);

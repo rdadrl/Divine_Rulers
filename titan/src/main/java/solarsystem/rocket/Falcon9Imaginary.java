@@ -32,7 +32,7 @@ public abstract class Falcon9Imaginary extends SpaceCraft {
             assumed more inclined towards vacumm impulse
          */
         //TODO: check this value, i multiplied it by 1000 as it is often in kn
-        thrusterImpulse = 305 * 1000;
+        thrusterImpulse = 305 * 100;
 
         /*
             Literally no data about this, some guy calculated it:

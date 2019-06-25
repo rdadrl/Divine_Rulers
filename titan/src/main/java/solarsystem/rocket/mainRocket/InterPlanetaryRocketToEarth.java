@@ -6,10 +6,8 @@ import physics.PIDcontroller;
 import solarsystem.CelestialObject;
 import solarsystem.Planet;
 import solarsystem.rocket.Falcon9Imaginary;
-import solarsystem.rocket.SpaceCraft;
 import utils.Date;
 import utils.MathUtil;
-import utils.vector.Vector;
 import utils.vector.Vector3D;
 
 import java.math.BigDecimal;
@@ -20,7 +18,7 @@ import java.util.HashSet;
  *
  *
  */
-public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODEsolvable {
+public class InterPlanetaryRocketToEarth extends Falcon9Imaginary implements ODEsolvable {
     private Vector3D velSetPoint;
     private Vector3D startingPos;
     private Vector3D destinationPos;
@@ -30,17 +28,17 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
     private BigDecimal time_increment;
     private int counter; //counter
 
-    private double sphereOfInfluence_secondBody;
     private boolean impulseManouvre;
-    private HashSet<Integer> impulseTimes;
-    private boolean two_stagedMission;
-    private boolean inSphereSaturn;
+    private HashSet<Integer> impulseTimes;;
+    private boolean inSphereEarth;
 
+    private boolean impulseMomentsInitialized;
+    private boolean velocityInitialize;
     private HashSet<Integer> impulseMoments = new HashSet<>();
     private int amount_impulseUpdates_alongTheWay;
 
     private Planet Sun;
-    private Planet Saturn;
+    private Planet Earth;
 
     private PIDcontroller x_control;
     private PIDcontroller y_control;
@@ -55,12 +53,13 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
 
 
 
-    public InterPlanetaryRocketToTitan(double mass, Planet fromPlanet, Planet toPlanet, Date current_date, Vector3D departurePos, Vector3D departureVel, Vector3D destinationPos, Date arrivalDate) {
+    public InterPlanetaryRocketToEarth(double mass, Planet fromPlanet, Planet toPlanet, Date current_date, Vector3D departurePos, Vector3D departureVel, Vector3D destinationPos, Date arrivalDate) {
 //        this.mass = mass;
         super();
         this.radius = 2000;
         this.fromPlanet = fromPlanet;
         this.toPlanet = toPlanet;
+        this.Earth = toPlanet;
         this.current_date = current_date;
         if(departurePos != null) {
             this.centralPos = departurePos;
@@ -72,24 +71,17 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
         this.arrivalDate = new Date(arrivalDate);
         this.timeOfFlight = (arrivalDate.getTimeInMillis() - current_date.getTimeInMillis())/1000D;
 
-        if(!toPlanet.getCentralBody().getName().equals("Sun")){
-            two_stagedMission = true;
-            Saturn = toPlanet.getCentralBody();
-            if(toPlanet.getCentralBody().getCentralBody().getName().equals("Sun")){
-                Sun = toPlanet.getCentralBody().getCentralBody();
-            }else{
-                throw new IllegalArgumentException("The sun either needs to be the main central body, or the central body of the central body");
-            }
-        }else{
-            Sun = toPlanet.getCentralBody();
-        }
+
+        Sun = toPlanet.getCentralBody();
+
         calculateLambertTrajectoryPhase1();
 //        centralVel = velSetPoint;
 
-        amount_impulseUpdates_alongTheWay = 50;
+        amount_impulseUpdates_alongTheWay = 10;
+
     }
 
-    public InterPlanetaryRocketToTitan(double mass, Planet fromPlanet,
+    public InterPlanetaryRocketToEarth(double mass, Planet fromPlanet,
                                        Planet toPlanet, Date date) {
         this.mass = mass;
         this.fromPlanet = fromPlanet;
@@ -103,6 +95,8 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
         time_increment = new BigDecimal(differenceInMiliSeconds(new_date)).divide(new BigDecimal(1000));
         dt = time_increment.doubleValue(); //dt in seconds
         this.current_date = new Date(new_date);
+
+        //if we are at the arrival date set the phase finished boolean for outside checkup.
         if(current_date.getTimeInMillis() > arrivalDate.getTimeInMillis()) {
             phaseFinished = true;
         }
@@ -116,9 +110,8 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
             return;
         }
 
-
-        if(inSphereSaturn && impulseMoments.contains(counter)){
-            calculateLambertTrajectoryPhase2();
+        if(impulseMoments.contains(counter)){
+            calculateLambertTrajectoryPhase1();
 //            centralVel = velSetPoint;
         }
 
@@ -163,15 +156,17 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
 
     @Override
     public void setCentralPos(Vector3D newCentralPos) {
-        double distanceToSaturn = Saturn.getCentralPos().substract(this.getCentralPos()).length();
+        double distanceToEarth = Earth.getCentralPos().substract(this.getCentralPos()).length();
         double tof_left = (arrivalDate.getTimeInMillis() - current_date.getTimeInMillis())/1000D;
-        if(!inSphereSaturn && distanceToSaturn < Saturn.getSphereOfInfluence() * 0.8) {
+        if(dt != 0 && !impulseMomentsInitialized) {
+            // the times we have to recalculate Lambert
             impulseMoments = alongPositionUpdates(tof_left, dt, amount_impulseUpdates_alongTheWay);
-            counter = 0;
-            impulseMoments.add(0);
-            System.out.println("In sphere of SATURN: " + this.getCentralPos().substract(Saturn.getCentralPos()).length());
+            impulseMomentsInitialized = true;
+        }
+        if(!inSphereEarth && distanceToEarth < Earth.getSphereOfInfluence() * 1.0) {
+            System.out.println("In sphere of Earth: " + this.getCentralPos().substract(Earth.getCentralPos()).length());
             System.out.println(tof_left);
-            inSphereSaturn = true;
+            inSphereEarth = true;
         }
 
         this.centralPos = newCentralPos;
@@ -181,14 +176,15 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
     public void initializeCartesianCoordinates(Date date) {}
 
     private void calculateLambertTrajectoryPhase1() {
+//        System.out.println("recalculate lambert");
         double tof_left = (arrivalDate.getTimeInMillis() - current_date.getTimeInMillis())/1000D;
 
         Vector3D r1_saturnPer = centralPos.substract(Sun.getCentralPos());
         Vector3D r2_saturnPer = destinationPos.substract(Sun.getCentralPos());
         double mu_centralPos = Sun.getMass() * MathUtil.G;
 
-        LambertSolver lambertSolver_prog = new LambertSolver(mu_centralPos, r1_saturnPer, r2_saturnPer, tof_left, true);
-        LambertSolver lambertSolver_ret = new LambertSolver(mu_centralPos, r1_saturnPer, r2_saturnPer, tof_left, false);
+        LambertSolver lambertSolver_prog = new LambertSolver(mu_centralPos, r1_saturnPer, r2_saturnPer, tof_left, false);
+        LambertSolver lambertSolver_ret = new LambertSolver(mu_centralPos, r1_saturnPer, r2_saturnPer, tof_left, true);
         Vector3D[] vel_prog = lambertSolver_prog.getVelocityVectors().get(0);
         Vector3D[] vel_ret = lambertSolver_ret.getVelocityVectors().get(0);
 
@@ -202,13 +198,17 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
         velSetPoint = vel_prog[0];
 
         // add the escape velocity of earth to the current velocity in the right direction (assumption)
+        if(!velocityInitialize) {
+            Vector3D setP1 = new Vector3D(velSetPoint);
+            Vector3D curV1 = new Vector3D(centralVel);
+            Vector3D diff1 = setP1.substract(curV1);
 
-        Vector3D setP1 = new Vector3D(velSetPoint);
-        Vector3D curV1 = new Vector3D(centralVel);
-        Vector3D diff1 = setP1.substract(curV1);
+            Vector3D escapeVel = diff1.unit().scale(11000);
+            centralVel = centralVel.add(escapeVel);
+            velocityInitialize = true;
 
-        Vector3D escapeVel = diff1.unit().scale(11000);
-        centralVel = centralVel.add(escapeVel);
+        }
+
 
         Vector3D setP = new Vector3D(velSetPoint);
         Vector3D curV = new Vector3D(centralVel);
@@ -218,31 +218,14 @@ public class InterPlanetaryRocketToTitan extends Falcon9Imaginary implements ODE
         initializePIDcontrolers();
     }
 
-    private void calculateLambertTrajectoryPhase2() {
-        double tof_left = (arrivalDate.getTimeInMillis() - current_date.getTimeInMillis())/1000D;
 
-        Vector3D r1_saturnPer = centralPos.substract(Saturn.getCentralPos());
-        Vector3D r2_saturnPer = destinationPos.substract(Saturn.getCentralPos());
-        double mu_centralPos = Saturn.getMass() * MathUtil.G;
-
-//        LambertSolver lambertSolver_prog = new LambertSolver(mu_centralPos, r1_saturnPer, r2_saturnPer, tof_left, true);
-        LambertSolver lambertSolver_ret = new LambertSolver(mu_centralPos, r1_saturnPer, r2_saturnPer, tof_left, false);
-        Vector3D[] vel_ret = lambertSolver_ret.getVelocityVectors().get(0);
-
-//        System.out.println(destinationPos.substract(this.getCentralPos()).length());
-//        System.out.println("cur vel: " + this.getCentralVel());
-//        System.out.println("new vel: " + vel_ret[0]);
-        velSetPoint = vel_ret[0];
-        impulseManouvre = true;
-        initializePIDcontrolers();
-    }
 
 
 
     private void setPositionOutsideOfInfluenceDepartPlanet() {
         Vector3D departPos = fromPlanet.getCentralPos();
         // add the radius vector and put it outside the sphere of influence
-        Vector3D addRadX = fromPlanet.getCentralPos().unit().scale((fromPlanet.getSphereOfInfluence()));
+        Vector3D addRadX = fromPlanet.getCentralPos().unit().scale((-1*fromPlanet.getSphereOfInfluence()));
         centralPos = departPos.add(addRadX);
     }
 

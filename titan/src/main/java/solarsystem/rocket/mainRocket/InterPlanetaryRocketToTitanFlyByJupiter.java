@@ -36,6 +36,8 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
     private boolean inSphereSaturn;
     private boolean inSphereTitan;
 
+    private boolean initializeVelocity;
+
     private HashSet<Integer> impulseMoments = new HashSet<>();
     private int  amount_impulseUpdates_alongTheWayPhase2;
     private int amount_impulseUpdates_alongTheWayPhase3;
@@ -97,8 +99,9 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
         calculateLambertTrajectoryPhase1();
 //        centralVel = velSetPoint;
 
+
         amount_impulseUpdates_alongTheWayPhase2 = 5;
-        amount_impulseUpdates_alongTheWayPhase3 = 200;
+        amount_impulseUpdates_alongTheWayPhase3 = 100;
     }
 
     public InterPlanetaryRocketToTitanFlyByJupiter(double mass, Planet fromPlanet,
@@ -144,7 +147,7 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
             netForce = netForce + Ft;
         }
 
-        if(impulseManouvre && centralVel.substract(velSetPoint).length()<1.0){
+        if(impulseManouvre && centralVel.substract(velSetPoint).length()<10.0){
             impulseManouvre = false;
             System.out.println("NF: " + netForce);
         }
@@ -232,6 +235,8 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
 
         Vector3D r1 = centralPos;
         Vector3D r2 = jupiter_pos;
+//        Vector3D r1 = centralPos.substract(Sun.getCentralPos());
+//        Vector3D r2 = jupiter_pos.substract(Sun.getCentralPos());
         double mu_centralPos = Sun.getMass() * MathUtil.G;
 
         LambertSolver lambertSolver_prog = new LambertSolver(mu_centralPos, r1, r2, tof_left, true);
@@ -250,12 +255,17 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
 
         // add the escape velocity of earth to the current velocity in the right direction (assumption)
 
-        Vector3D setP1 = new Vector3D(velSetPoint);
-        Vector3D curV1 = new Vector3D(centralVel);
-        Vector3D diff1 = setP1.substract(curV1);
 
-        Vector3D escapeVel = diff1.unit().scale(11000);
-        centralVel = centralVel.add(escapeVel);
+
+        if(!initializeVelocity) {
+            Vector3D setP1 = new Vector3D(velSetPoint);
+            Vector3D curV1 = new Vector3D(centralVel);
+            Vector3D diff1 = setP1.substract(curV1);
+            Vector3D escapeVel = diff1.unit().scale(11000);
+            centralVel = centralVel.add(escapeVel);
+            initializeVelocity = true;
+        }
+
 
         Vector3D setP = new Vector3D(velSetPoint);
         Vector3D curV = new Vector3D(centralVel);
@@ -270,6 +280,8 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
 
         Vector3D r1_saturnPer = centralPos;
         Vector3D r2_saturnPer = destinationPos;
+//        Vector3D r1_saturnPer = centralPos.substract(Sun.getCentralPos());
+//        Vector3D r2_saturnPer = jupiter_pos.substract(Sun.getCentralPos());
         double mu_centralPos = Sun.getMass() * MathUtil.G;
 
         LambertSolver lambertSolver_prog = new LambertSolver(mu_centralPos, r1_saturnPer, r2_saturnPer, tof_left, true);
@@ -303,9 +315,11 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
         Vector3D[] vel_prog = lambertSolver_prog.getVelocityVectors().get(0);
         Vector3D[] vel_ret = lambertSolver_ret.getVelocityVectors().get(0);
 
+        Vector3D c_vel = centralVel;
         Vector3D vel_start_prog = vel_prog[0];
         double error_prog = centralVel.substract(vel_start_prog).length();
         Vector3D vel_start_ret = vel_ret[0];
+        Vector3D diff = centralVel.substract(vel_start_ret);
         double error_ret = centralVel.substract(vel_start_ret).length();
 
         if(error_prog<error_ret) {
