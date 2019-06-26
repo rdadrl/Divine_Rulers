@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-/**
- *
- *
+/*
+    rk4 method for approximating the position and velocity of the celestial bodies under newton gravitational force
  */
 public class RungeKutta4 implements ODEsolver {
     private Date currentDate;
@@ -53,7 +52,9 @@ public class RungeKutta4 implements ODEsolver {
         }
         dfs = new Vector3D[bodies.size()][2];
     }
-
+    /*
+        the derivative function specific to the problem of determining the position and velocity
+     */
     public Vector3D[] deriv(Vector3D[] y, Vector3D acceleration, double dt) {
         Vector3D[] doty = new Vector3D[2];
         doty[0] = y[1].scale(dt);
@@ -61,7 +62,13 @@ public class RungeKutta4 implements ODEsolver {
         return doty;
     }
 
-
+    /*
+        predict the future value based on the slope and coefficient
+        @param y, the start value
+        @param k, the increment
+        @param coff, the coefficent or the intermediate time step
+        @return the 3D vector array for position and velocity
+     */
     public static Vector3D[] predict(Vector3D[] y, Vector3D[] k, double coff) {
         Vector3D[] p = new Vector3D[2];
         for(int i = 0; i < y.length; i++) {
@@ -112,6 +119,7 @@ public class RungeKutta4 implements ODEsolver {
      * @param n number of steps
      */
     public void rk4sim(ArrayList<? extends ODEsolvable> bodies, Vector3D[][] kav, double dt) {
+        //the increment is precalculated before updating the whole celestial bodies
         for(int i = 0; i < bodies.size(); i++) {
             if(bodies.get(i)!=null) {
                 ODEsolvable planet = bodies.get(i);
@@ -120,6 +128,7 @@ public class RungeKutta4 implements ODEsolver {
             }
         }
 
+        //updating the celestial body position and velocity at the next time step
         for(int i = 0; i < bodies.size(); i++) {
             if(bodies.get(i) != null) {
                 ODEsolvable planet = bodies.get(i);
