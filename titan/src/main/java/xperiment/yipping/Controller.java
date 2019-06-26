@@ -1,4 +1,4 @@
-package yipping;
+package xperiment.yipping;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +8,6 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import utils.vector.Vector;
 import utils.vector.Vector3D;
 
 public class Controller {

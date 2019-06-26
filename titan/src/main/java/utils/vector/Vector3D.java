@@ -1,7 +1,7 @@
 package utils.vector;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import yipping.Constant;
+import xperiment.yipping.Constant;
 import javafx.geometry.Point3D;
 
 import java.util.Random;

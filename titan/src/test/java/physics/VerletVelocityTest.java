@@ -1,5 +1,6 @@
 package physics;
 
+import org.junit.Assert;
 import org.junit.Test;
 import solarsystem.SolarSystem;
 import utils.Date;
@@ -9,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- *
+ * Some test cases to check verlet velocity. Only one assertion is used as an extra check
  */
 public class VerletVelocityTest {
 
@@ -35,6 +36,7 @@ public class VerletVelocityTest {
 
         System.out.println("ODE date: " + departDate);
         System.out.println("\t pos: " + sol_ODE.getPlanets().getEarth().getCentralPos());
+        Assert.assertEquals(-2.718401807204254E10, sol_ODE.getPlanets().getEarth().getCentralPos().getX(), 1e-13);
         System.out.println("\t vel: " + sol_ODE.getPlanets().getEarth().getCentralVel());
         System.out.println("Ref date: " + refDate);
         System.out.println("\t pos: " + sol_kepler.getPlanets().getEarth().getCentralPos());

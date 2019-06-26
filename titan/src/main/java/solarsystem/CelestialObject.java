@@ -73,14 +73,24 @@ public abstract class CelestialObject implements ODEsolvable {
         return centralPos;
     }
 
+    /**
+     * set position coordinates based upon HEE coordinate system
+     * @param centralPos position vector
+     */
     public void setCentralPos(Vector3D centralPos){
         this.centralPos = centralPos;
     }
 
+    /**
+     * @return velocity coordinate (HEE coordinate system)
+     */
     public Vector3D getCentralVel(){
         return centralVel;
     }
 
+    /**
+     * @param centralVel set velocity coordinate (HEE coordinate system)
+     */
     public void setCentralVel(Vector3D centralVel){
         this.centralVel = centralVel;
     }
@@ -95,8 +105,6 @@ public abstract class CelestialObject implements ODEsolvable {
     public abstract void initializeCartesianCoordinates(Date date);
 
     /**
-     * TODO: discuss whether we want to ignore the gravitational force the
-     * cannonballs have on each other
      *
      * Calculate the gravitational acceleration upon an object
      * @param refOb object upon which the gravitation acceleration are calculated

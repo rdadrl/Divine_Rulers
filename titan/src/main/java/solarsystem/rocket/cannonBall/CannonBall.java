@@ -46,7 +46,6 @@ public class CannonBall extends Projectile {
      */
     @Override
     public void initializeCartesianCoordinates(Date date) {
-        //TODO: find the right starting parameters. Put cannonball outside of sphere of influence?
         // Make our cannon leave from the outside of the planet.
         centralPos = fromPlanet.getCentralPosAtDate(date);
         // add the radius vector and put it outside the sphere of influence

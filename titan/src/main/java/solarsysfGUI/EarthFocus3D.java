@@ -34,14 +34,14 @@ import java.util.concurrent.TimeUnit;
 
 public class EarthFocus3D extends Application {
 
-    // yipping variables
+    // xperiment.yipping variables
     private Scene mainScene;
     private StackPane globalRoot;
     private Group root;
     private int scnW = 800;
     private int scnH = 600;
     private final boolean DEBUG = true;
-    private boolean pauseStatus = false; //play/pause animations and yipping updates
+    private boolean pauseStatus = false; //play/pause animations and xperiment.yipping updates
     private boolean oneMoreRun = false;
     private Label debugText;
     private Date date;
@@ -295,7 +295,7 @@ public class EarthFocus3D extends Application {
                 yRotate.setAngle((xDelta / (scnW / 2D)) * CAMERA_MAX_ANGLE);
             }
         });
-        //animations and updates to the yipping elements:
+        //animations and updates to the xperiment.yipping elements:
         new AnimationTimer()
         {
             int waitFramesForTrail = 0;

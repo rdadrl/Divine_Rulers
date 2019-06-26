@@ -11,8 +11,7 @@ import java.util.Calendar;
 import static org.junit.Assert.*;
 
 /**
- *
- *
+ * Test to check if the output of kepler to cartesian test. Saturn 2002 has one assertion check
  */
 public class KeplerToCartesianTest {
     private static boolean PRINT = true;
@@ -106,24 +105,6 @@ public class KeplerToCartesianTest {
     @Test
     public void Saturn200020002() throws IOException {
         Date date = new Date(2000, 0, 1, 0, 0, 0);
-
-        /*
-        SolarSystem solarSystem = new SolarSystem();
-        Planet saturn = solarSystem.getPlanets().getSaturn();
-        Vector3D HEEPos = saturn.getCentralPos(current_date);
-        System.out.println("\nSaturn");
-        System.out.println("X: " + HEEPos.getX());
-        System.out.println("Y: " + HEEPos.getY());
-        System.out.println("Z: " + HEEPos.getZ());
-
-
-        Planet venus = solarSystem.getPlanets().getVenus();
-        HEEPos = venus.getCentralPos(current_date);
-        System.out.println("\nVenus");
-        System.out.println("X: " + HEEPos.getX());
-        System.out.println("Y: " + HEEPos.getY());
-        System.out.println("Z: " + HEEPos.getZ());
-        */
         SolarSystem solarSystem = new SolarSystem();
         Planet saturn = solarSystem.getPlanets().getSaturn();
 
@@ -132,9 +113,7 @@ public class KeplerToCartesianTest {
         if(PRINT){
             printPosVel(saturn.getName(), HEEPos, HEEVel, date);
         }
-        //assertEquals(HEEPos.getX(), -0.16856286531223225, 1e-4);
-        //assertEquals(HEEPos.getY(), 0.968758969709345, 1e-4);
-        //assertEquals(HEEPos.getZ(), -2.558653782299318E-7, 1e-4);
+
 
         date.add(Calendar.YEAR, 1);
         HEEPos = saturn.getCentralPosAtDate(date);
@@ -142,9 +121,9 @@ public class KeplerToCartesianTest {
         if(PRINT){
             printPosVel(saturn.getName(), HEEPos, HEEVel, date);
         }
-        //assertEquals(HEEPos.getX(), 0.19012537726450277, 1e-4);
-        //assertEquals(HEEPos.getY(), -0.9987660639452812, 1e-4);
-        //assertEquals(HEEPos.getZ(), 2.5252586100770815E-6, 1e-4);
+        assertEquals(HEEPos.getX(), 7.028544600974777E11, 1e-4);
+        assertEquals(HEEPos.getY(), 1.1650955790288943E12, 1e-4);
+        assertEquals(HEEPos.getZ(), -4.824991029302601E10, 1e-4);
 
         date.add(Calendar.YEAR, 1);
         HEEPos = saturn.getCentralPosAtDate(date);

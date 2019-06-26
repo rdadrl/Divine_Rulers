@@ -50,7 +50,7 @@ public class MainMenuTestNormalSpeed_RK4 extends Application {
     private final double INCLINATION_MAX = 2.55;
 
 
-    // yipping variables
+    // xperiment.yipping variables
     private Scene mainScene;
     private Group root;
     private boolean goNorth, goSouth, goEast, goWest;

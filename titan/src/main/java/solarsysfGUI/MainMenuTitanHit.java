@@ -61,7 +61,7 @@ public class MainMenuTitanHit extends Application {
     /* best after 7 iterations:
     CannonBall{name=Cannonball 92, centralPos=Vector3D{x=-1.0570517163860454E11, y=2.2914777583720522E12, z=-4.6055303485114795E8}, centralVel=Vector3D{x=-9139.74286856186, y=80090.62247665382, z=-39.4550353777163}, startVel=90271.04152758735, startInc=0.41869017625824423}		}
      */
-    // yipping variables
+    // xperiment.yipping variables
     private Scene mainScene;
     private Group root;
     private boolean goNorth, goSouth, goEast, goWest;

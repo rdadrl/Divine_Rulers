@@ -9,8 +9,7 @@ import java.io.IOException;
 
 
 /**
- *
- *
+ * Run check on the solar system.
  */
 public class SolarSystemTest {
     @Test

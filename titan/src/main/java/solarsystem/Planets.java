@@ -112,6 +112,11 @@ public class Planets {
         return all;
     }
 
+    /**
+     * allow to get a planet object based upon the name of that planet
+     * @param name name of the planet
+     * @return planet object representing the named planet
+     */
     public Planet planetByName(String name) {
         if(hashMap == null) {
             hashMap = new HashMap<>();

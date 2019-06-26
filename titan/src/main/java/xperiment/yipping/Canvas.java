@@ -1,4 +1,4 @@
-package yipping;
+package xperiment.yipping;
 
 import java.awt.Color;
 import java.awt.Dimension;

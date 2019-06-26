@@ -1,4 +1,4 @@
-package yipping;
+package xperiment.yipping;
 
 import java.io.IOException;
 

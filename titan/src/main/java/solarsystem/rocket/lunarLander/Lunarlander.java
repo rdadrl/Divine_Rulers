@@ -5,21 +5,21 @@ import utils.Date;
 import utils.vector.Vector3D;
 
 /**
- *
- *
+ * A lunar lander abstract class.
  */
 public abstract class Lunarlander extends SpaceCraft {
-    protected double g = 1.352; // m / s^2
+    protected double g = 1.352; // m / s^2  gravity on Titan
     protected double sidearea = 25.0; // m^2
     protected double airDensity = 5.0; // kg/m^2
 
-    protected boolean stochasticWind;
+    protected boolean stochasticWind; // whether stochastic wind should be applied.
     protected boolean advancedWind;
-    protected double meanWindSpeed;
-    protected double currentWindSpeed;
-    protected double windAcc;
+    protected double meanWindSpeed; // overall mean wind speed
+    protected double currentWindSpeed; // current wind speed after noise has been applied
+    protected double windAcc; // acceleration caused by wind
 
 
+    // parameters used for the stochastic wind module, see paper for explanation
     protected final double Z0 = 0.0024;
     protected final double Z1 = 10;
     protected final double Z2 = 100;
@@ -40,18 +40,30 @@ public abstract class Lunarlander extends SpaceCraft {
         super.thrusterImpulse = 3000; // ns/kg;
     }
 
+    /**
+     * way to estimate the dt in seconds
+     */
     protected double differenceInSeconds(Date date) {
 
         return (date.getTimeInMillis() - this.current_date.getTimeInMillis())/1000D;
     }
-
+    /**
+     * way to estimate the dt in miliseconds
+     */
     protected long differenceInMiliSeconds(Date date) {
         return (date.getTimeInMillis() - this.current_date.getTimeInMillis());
     }
 
+    /**
+     * @return fuell mass of the rocket
+     */
     public double getFuelMass() {
         return fuelMass;
     }
+
+    /**
+     * @return percentage of main thrust used
+     */
     public double getMainThrusterForceAsPercentage() {
         return Ft/maxFtPropulsion;
     }
@@ -68,11 +80,6 @@ public abstract class Lunarlander extends SpaceCraft {
     protected void setCentralJerk(Vector3D oldAcc, Vector3D newACC, double dt){
 
         centralJerk = (newACC.substract(oldAcc).scale(1/dt));
-//        System.out.println("TotTime: " + totTime);
-//        System.out.println("OCV: " + oldAcc.getX());
-//        System.out.println("NCV: " + newACC.getX());
-//        System.out.println("SUBTR: " + newACC.substract(oldAcc).getX());
-//        System.out.println("CJ: " + centralJerk.getX() + "\n");
     }
 
     public Vector3D getCentralJerk() {
@@ -94,6 +101,9 @@ public abstract class Lunarlander extends SpaceCraft {
     public void initializeCartesianCoordinates(Date date){}
 
 
+    /**
+     * calculate the change mass of a spacecraft due to usage of thrust.
+     */
     public void calculateMass() {
         double totalThrust = Math.abs(Ft) + Math.abs(Fl);
         double fuelMassLoss = (totalThrust/thrusterImpulse) * dt;

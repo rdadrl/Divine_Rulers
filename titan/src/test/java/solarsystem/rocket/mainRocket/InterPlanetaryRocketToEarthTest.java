@@ -12,14 +12,13 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
+ * A class to test the results of an interplanetary mission from earth to Titan.
  */
 public class InterPlanetaryRocketToEarthTest {
 
     @Test
-    public void TitanTest2_alongwayUpdate() throws IOException {
-
+    public void toEarthWeGo() throws IOException {
+        // Date based upon the NASA trajectory search.
         Date departDate = new Date(2028, 9, 12);
         Date refDate = new Date(departDate);
         SolarSystem sol_depart = new SolarSystem();
@@ -44,37 +43,14 @@ public class InterPlanetaryRocketToEarthTest {
 
         Vector3D arrivalPos = eart_ref.getCentralPos();
         Vector3D startVel = titArr.getCentralVel();
-//        double escapeVel_val = 11000;
-//        Vector3D escapeVel = startVel.unit().scale(11000);
-////        startVel = startVel.add(escapeVel);
-//        double mass, Planet fromPlanet, Planet toPlanet, Date current_date, Vector3D departurePos, Vector3D departureVel, Vector3D destinationPos, Date arrivalDate
         InterPlanetaryRocketToEarth rocket = new InterPlanetaryRocketToEarth(1000, titArr, eartDep, departDate, null, startVel, arrivalPos, arrivalDate);
         rocket.stageTwo();
         rocket.setFuelMass_t0(93053.31074034973);
 
-//
-//        double mu = sol_depart.getPlanets().getSun().getMass() * MathUtil.G;
-//        Vector3D r1 = rocket.getCentralPos();
-//        System.out.println(r1);
-//        Vector3D r2 = eart_ref.getCentralPos();
-//        System.out.println(r2);
-//
-//        LambertSolver lambertSolver = new LambertSolver(mu, r1, r2, tof);
-//
-//        Vector3D[] vel = lambertSolver.getVelocityVectors().get(0);
-//        System.out.println(vel[0]);
-//        System.out.println(vel[1]);
-//
-//        rocket.setStartVelocityVector(vel[0]);
-//
-//        System.out.println(rocket.getCentralVel());
         ArrayList<Projectile> proj = new ArrayList<>();
         proj.add(rocket);
 //
         sol_depart.initializeAnimationWithPlanets(departDate, proj);
-//        HashSet<Integer> update_for_counter = alongPositionUpdates(tof, timestep_seconds, updatesAlongTheWay);
-//        int counter = 0;
-//        Vector3D changedVelAdd = new Vector3D();
         for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
             sol_depart.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
         }

@@ -27,7 +27,7 @@ public class Planet extends CelestialObject {
     @JsonProperty("orbital_properties")
     private PlanetOrbitalProperties planetOrbitalProperties;
 
-    private double sphereOfInfluence = -1;
+    private double sphereOfInfluence = -1; // initialize to -1 to be able to check for bugs
     private Vector3D orbitalPos = new Vector3D(); // Coordinate in the orbital plane AU
     private Vector3D orbitalVel = new Vector3D(); // Velocity vector in the orbital plane AU/day
 
@@ -44,8 +44,8 @@ public class Planet extends CelestialObject {
         else{this.current_date = new Date(date);}
 
         Vector3D[] cartesian = KeplerToCartesian.getCartesianCoordinates(this, date);
-        orbitalPos = cartesian[0];
-        orbitalVel = cartesian[1];
+        orbitalPos = cartesian[0]; // position in orbital plane
+        orbitalVel = cartesian[1]; // velocity in orbital plane
         centralPos = cartesian[2];
         centralVel = cartesian[3];
     }

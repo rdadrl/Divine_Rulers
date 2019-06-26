@@ -8,8 +8,7 @@ import utils.Date;
 import java.math.BigDecimal;
 
 /**
- *
- *
+ * A abstract spacecraft method. All spacecrafts should extend this class
  */
 public abstract class SpaceCraft extends Projectile {
     protected BigDecimal totTime = new BigDecimal("0.0");

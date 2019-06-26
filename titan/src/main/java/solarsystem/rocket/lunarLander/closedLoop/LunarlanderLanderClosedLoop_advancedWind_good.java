@@ -21,12 +21,12 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
     private boolean advancedWind = true;
 
     private PIDcontroller pidYdiff_far;
-    private double getCutoffClose_x = 10000.0;
-    private double cutoffClose_y = 10000.0;
+    private double getCutoffClose_x = 10000.0; // start of the second x phase
+    private double cutoffClose_y = 10000.0; // start of the second phase based upon the y coordinate
     private double cutoffClose_yVel = -100.0;
-//    private double cutoffClose_x = 5000.0;
+
     private double cutoffFinal = 5;
-//    private double cutoffJerk = 0.01;
+
     private PIDcontroller pidYdiff_close, pidXdiff_close, pidXdiff_far, pidRot_far, pidRot_close, max_pidRot, min_pidRot, pidXdiff_far_MT;
     private double rotMax = 1.5; // maximum rotation of 90 degrees.
 
@@ -35,6 +35,8 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
     private double oldxVel = 0;
     private double oldxPos = 0;
 
+
+    // boolean representing the different phases, use to acitvate the correct phase at the desired time
     private boolean phase2X = false;
     double phase2X_time = 0;
     private boolean phase3X = false;
@@ -99,19 +101,24 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
         this(length, centralPos, centralVel, date, stochasticWind, -99);
     }
 
+    /**
+     * set acceleration method used by the ODE solver to solve for velocity and position respectively
+     * @param objectsInSpace arraylist of all the objects that apply a force to
+     * @param new_date
+     */
     @Override
     public void setAcceleration(ArrayList<? extends CelestialObject> objectsInSpace, Date new_date){
 
+        // keep track of the time spend, current date etc.
         increment = new BigDecimal(differenceInMiliSeconds(new_date)).divide(new BigDecimal(1000));
         dt = increment.doubleValue();
-        double time = dt;// get size of the time step
         this.current_date = new Date(new_date);
+
+        // attain the right Ft and Fl based upon the controller
         if(dt!= 0) updateController();
 
-        // Ft = Ft + ((mass*g)/Math.cos(centralPos.getZ()));
-
-        // IF WE WANT TO USE PID TO TRACK WE NEED TO CHECK WITH THE POSITION AT TIME T-1;
-
+        // only do gravity control when we are close to the surface, as we need to be extra precise there to land
+        // within the required margins
         Ft = Math.min(Ft, maxFtPropulsion);
         if(phase2Y){
             Ft = Math.max(Ft, ((mass*g)/Math.cos(centralPos.getZ())));
@@ -120,17 +127,21 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
             Ft = Math.max(Ft, 0);
         }
 
+        // make sure that Ft and Fl are within the maximum and minimum thrust abilitlies
         Ft = Math.min(Ft, maxFtPropulsion);
         Fl = Math.min(Fl, maxFlPropulsion);
         Fl = Math.max(Fl, -maxFlPropulsion);
 
 
+        // recalculate the mass of the spacecraft a
         calculateMass();
+
         acceleration = new Vector3D(); // 3d acceleration where x and y are the positions and z is the angle
         // theta.
         double theta = centralPos.getZ();
         //page 2
 
+        // attain and set the desired acceleration.
         double xacc = ((Fl * Math.cos(theta) - Ft * Math.sin(theta))/mass);
         double yacc = ((Fl * Math.sin(theta) + Ft * Math.cos(theta))/mass) - g;
         double tacc = Fl*4/J;
@@ -139,13 +150,17 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
         acceleration.setY(yacc);
         acceleration.setZ(tacc);
 
+
+        // aply stochastic wind if desired.
+
         if(stochasticWind) {
             if(advancedWind) applyAdvancedWindForce();
-            else applySimpleWindForce();
+            else applySimpleWindForce(); // we also have a simple windforce generator.
         }
 
 
-
+        // this is to smoothen out the acceleration provided by the rocket. It's main purpuse is for the graphical
+        // representation of the acceleration, to get a good overview of the acceleration used.
         newAcceleration_smooth = newAcceleration_smooth.add(acceleration);
         newAcceleration_avg_absolute = newAcceleration_avg_absolute.add(acceleration.absolute());
         if(i%100==0) {
@@ -161,66 +176,45 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
             newAcceleration_avg_absolute = new Vector3D();
         }
 
+        // update time and counter.
         totTime = totTime.add(increment);
         i++;
 //        System.out.println("T: " + totTime + ", A: " + acceleration);
     }
 
     private void updateController() {
+        // get the associated errors needed for the PID controller
         double yError = centralPos.getY();
         double xError = centralPos.getX();
         double xError_vel = centralVel.getX();
         double tError = centralPos.getZ();
 
-//        if(Math.abs(centralVel.getX())<0.3){
-//            double t = totTime.doubleValue();
-//            double v = centralVel.getX();
-//            double a = oldAcceleration_smooth.getX();
-//            double j = centralJerk.getX();
-//            if(totTime.doubleValue()%0.5 == 0){
-//                double tt = totTime.doubleValue();
-//            }
-//            if(totTime.doubleValue()>300.0){
-//                double tt = totTime.doubleValue();
-//            }
-//
-//        }
+        // For each phase we need to use the appropriate PID controller (different phases have different values for
+        // P, and D.
         if(!phase2X && totTime.doubleValue() > 50.0){
             double curxVel = centralVel.getX();
             double curxPos = centralPos.getX();
 
-                //if(curxVel * oldxVel < 0 || (Math.abs(curxVel) < 0.05 && Math.abs(oldxVel) < Math.abs(curxVel))) {
-                //if(Math.abs(centralVel.getX())<0.5 && Math.abs(oldAcceleration_smooth.getX())<0.5 && Math.abs(centralJerk.getX())<0.5){
-//            System.out.println(curxPos*oldxPos < 0);
-//            if(((Math.abs(curxVel) < 0.1|| curxVel * oldxVel < 0) && Math.abs(oldAcceleration_smooth.getX())<0.02)){
-                //if(totTime.doubleValue()>320.0){
-//            if((jerk_average_x.average()<0.01)||curxPos*oldxPos<0.0 ){
+
             if(centralPos.getY() < getCutoffClose_x){
                 phase2X = true;
                 phase2X_time = totTime.doubleValue();
-//                printStatus();
             }
             oldxVel = curxVel;
             oldxPos = curxPos;
         }
-//        if(totTime.doubleValue() == 300.0) {
-//            System.out.println(totTime.doubleValue());
-//            System.out.println("CP: " + centralPos.getX() );
-//            System.out.println("CV: " + centralVel.getX() );
-//            System.out.println("CA: " + acceleration.getX() );
-//            System.out.println("CJ: " + centralJerk.getX() );
-//        }
+
+        // check if we have to start phase 2Y
         if(!phase2Y && (centralPos.getY() < cutoffClose_y) && (centralVel.getY() > cutoffClose_yVel)) {
             phase2Y = true;
             phase2Y_time = totTime.doubleValue();
         }
-
+        // check if we have to start phase 3X
         if(!phase3X && (centralPos.getY() < 5)) {
             phase3X = true;
-            //pidXdiff_close.reduceTotalError(0.5);
         }
 
-
+        // Calculate the correct x impulse that is being pass to the inner loop controller of the angle
         double xImpulse;
         if(!phase2X){
             xImpulse = pidXdiff_far.calculateOutput(xError, xError_vel, dt);
@@ -229,11 +223,12 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
             xImpulse = pidXdiff_far.calculateOutput(xError,xError_vel, dt);
         }
 
+
         double tImpulse;
+        // check if the last phase needs to be started. To end up with a spacecraft orientated horizontally.
         if(!phase3 && ((centralPos.getY()-landedAltitude)/-centralVel.getY()) < cutoffFinal){
             phase3 = true;
             phase3_time = totTime.doubleValue();
-//            printStatus();
         }
 
         if(phase3){
@@ -245,22 +240,20 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
             rotateController(tImpulse, pidRot_far);
 
         }
+
+        // Get the desired Ft_y and Fl values.
         double Ft_y;
         if(!phase2Y){
             Ft_y = pidYdiff_far.calculateOutput(yError, dt);
         }else{
             Ft_y = pidYdiff_close.calculateOutput(yError, dt);
         }
-        double a = Ft/Math.cos(centralPos.getZ());
-        double b = ((mass*g)/Math.cos(centralPos.getZ()));
         Ft_y = Ft_y/Math.cos(centralPos.getZ()) + ((mass*g)/Math.cos(centralPos.getZ()));
 
 
-
-        //if(i%100 == 0 ) System.out.println("Y: " + Ft_y + ", X: " + Ft_x);
-
-
-
+        // Last we need to do some controlling of the angele. This is because a large x displacement will result
+        // in a spinning of the lunar lander, which is something we have to avoid. Therefore, we put a controller
+        // the desired end points to counteract this.
         if(Math.abs(centralPos.getZ())>0.8) {
             double Ft_x =  Math.abs(centralPos.getZ()) * Math.abs(pidXdiff_far_MT.calculateOutput(xError, dt));
             Ft = Math.max(Ft_y, Ft_x);
@@ -274,17 +267,14 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
 
     }
 
+    /**
+     * method to calulate the desired Fl force of the side thrusters.
+     */
     private void rotateController(double tImpulse, PIDcontroller pidRot){
         double Fl_main = pidRot.calculateOutput(tImpulse, dt);
         double tpos = centralPos.getZ();
         double tvel = centralVel.getZ();
-//            if(i%10 == 0){
-//                System.out.println("t: " + totTime.doubleValue());
-//                System.out.println("t_pos: " + centralPos.getZ());
-//                System.out.println("t_vel: " + centralVel.getZ());
-//                System.out.println("t_acc: " + acceleration.getZ());
-//                System.out.println("Fl main: " + Fl_main);
-//            }
+
         if(tvel > 0) {
             double Fl_max = -max_pidRot.calculateOutput(tpos, tvel, dt);
             Fl = Math.min(Fl_main, Fl_max);
@@ -302,11 +292,16 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
     }
 
 
-
+    /**
+     * @return smoothend out acceleration
+     */
     public Vector3D getAccelerationSmooth() {
         return oldAcceleration_smooth;
     }
 
+    /**
+     * @return the jerk of the spacecraft
+     */
     public double getAverageJerkX(){
         return  jerk_average_x.average();
     }

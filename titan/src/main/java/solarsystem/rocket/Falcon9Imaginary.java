@@ -6,6 +6,7 @@ import solarsystem.Trajectory;
 //Not the most realistic Falcon Heavy spacecraft; but the values should get us to titan and back
 //with some extra fuel we are carrying (we really have to carry alot of fuel)
 public abstract class Falcon9Imaginary extends SpaceCraft {
+    protected double g = 274 ; // gravity for the sun
     public Falcon9Imaginary() {
         /*
             Center core + 2 boosters dry weight : 22200kg

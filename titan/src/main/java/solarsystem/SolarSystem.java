@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
+ * A CONTROLLER CLASS
+ * A class representing all the different components of the whole solarsystem. This class has a reference to all the planets,
+ * and allows for the rocket objects to be added. Furthermore, it is able to manage the simulation of the solar system through
+ * the ODE solvers
  */
 public class SolarSystem {
     private Planets planets;
@@ -42,6 +44,9 @@ public class SolarSystem {
         ODEsolver = odEsolver;
     }
 
+    /**
+     * @param ODEsolver ode solver wanted for the numerical simulator
+     */
     public void setODEsolver(ODEsolver ODEsolver) {
         this.ODEsolver = ODEsolver;
     }
@@ -64,18 +69,30 @@ public class SolarSystem {
         return planets;
     }
 
+    /**
+     * @return the objects that will be animated by the numerical integrator
+     */
     public ArrayList<? extends CelestialObject> getAllAnimatedObjects() {
         return allAnimatedObjects;
     }
 
+    /**
+     * @param allAnimatedObjects set the objects that will be animated by the numerical integrator
+     */
     public void setAllAnimatedObjects(ArrayList<CelestialObject> allAnimatedObjects) {
         this.allAnimatedObjects = allAnimatedObjects;
     }
 
+    /**
+     * @param animatedObject add object to the animated objecst
+     */
     public void addAnimatedObject(CelestialObject animatedObject) {
 
         allAnimatedObjects.add(animatedObject); }
 
+    /**
+     * @param name object to be removed from the animated objects
+     */
     public void removeAnimatedObject(String name) {
         for (CelestialObject o : allAnimatedObjects) {
             if (o.getName().equals(name)) allAnimatedObjects.remove(o);
@@ -158,10 +175,16 @@ public class SolarSystem {
     }
 
 
+    /**
+     * @return current date of te solarsystem
+     */
     public Date getCurrentDate() {
         return currentDate;
     }
 
+    /**
+     * @return projectiles that are currently in the solarsystem.
+     */
     public ArrayList<Projectile> getProjectiles() {
         return projectiles;
     }

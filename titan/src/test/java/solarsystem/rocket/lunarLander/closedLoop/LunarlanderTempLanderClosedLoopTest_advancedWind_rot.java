@@ -56,7 +56,7 @@ public class LunarlanderTempLanderClosedLoopTest_advancedWind_rot {
         PRINT = false;
         for (int i = 1; i <= 7; i++) {
             System.out.println("TC:" + i);
-            for (int j = -7; j<= 7; j++){
+            for (int j = -4; j<= 4; j++){
                 System.out.println("\tWIND:" + j);
                 LunarlanderLanderClosedLoop_advancedWind_good rocket = landTestWindSpecificSpeed(j, i);
                 Assert.assertTrue(Math.abs(rocket.getCentralPos().getY()) < 0.1);

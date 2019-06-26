@@ -68,7 +68,7 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
     public InterPlanetaryRocketToTitanFlyByJupiter(Planet fromPlanet, Planet Jupiter, Planet toPlanet, Date current_date, Date jupiter_date, Date arrival_date, Vector3D departurePos, Vector3D flybyPos, Vector3D arrivalPos) {
 //        this.mass = mass;
         super();
-        this.g = 274; //gravity sun
+        super.g = 274; //gravity sun
         this.radius = 2000;
         this.fromPlanet = fromPlanet;
         this.Jupiter = Jupiter;
