@@ -93,6 +93,7 @@ public class InterPlanetaryRocketToTitanFlyByJupiterTest {
         Vector3D startVel = earth_dep.getCentralVel();
         //Planet fromPlanet, Planet Jupiter, Planet toPlanet, Date current_date, Date jupiter_date, Date arrival_date, Vector3D departurePos, Vector3D flybyPos, Vector3D arrivalPos
         InterPlanetaryRocketToTitanFlyByJupiter rocket = new InterPlanetaryRocketToTitanFlyByJupiter(earth_dep, jupiter_dep, tit_dep, departDate, flybyDate, arrivalDate, null, flybyPos, arrivalPos);
+        rocket.stageTwo();
 
 
         ArrayList<Projectile> proj = new ArrayList<>();
@@ -124,7 +125,9 @@ public class InterPlanetaryRocketToTitanFlyByJupiterTest {
 
         System.out.println();
 
+        System.out.println("fuel start: " + rocket.getFuelMass_t0());
         System.out.println("fuel left: " + rocket.getFuelMass());
+        System.out.println("fuell used: " + rocket.getFuellUsed());
 
     }
 

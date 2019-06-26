@@ -15,6 +15,7 @@ public abstract class SpaceCraft extends Projectile {
     protected BigDecimal totTime = new BigDecimal("0.0");
     protected double dryMass; //kg
     protected double fuelMass; // kg
+    protected double fuelMass_t0; //kg
     protected double J; //moment of inertia kg m^2
     protected double maxFtPropulsion; //newton
     protected double maxFlPropulsion; //newton
@@ -72,5 +73,19 @@ public abstract class SpaceCraft extends Projectile {
 
     public double getDryMass() {
         return dryMass;
+    }
+
+    public void setFuelMass_t0(double fuelMass_t0) {
+        this.fuelMass_t0 = fuelMass_t0;
+        this.fuelMass = fuelMass_t0;
+        this.mass = fuelMass + dryMass;
+    }
+
+    public double getFuelMass_t0() {
+        return fuelMass_t0;
+    }
+
+    public double getFuellUsed() {
+        return fuelMass_t0 - fuelMass;
     }
 }

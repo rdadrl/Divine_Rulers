@@ -81,7 +81,7 @@ public class LunarlanderTempLanderClosedLoopTest_advancedWind_rot {
     public void landerTestWind() {
         if(CHART) createFolderDate();
         if(CSV) logResultsToCSVFile ();
-        landTestWindSpecificSpeed(10, testCase);
+        landTestWindSpecificSpeed(-10, testCase);
     }
 
     @Test
@@ -118,8 +118,8 @@ public class LunarlanderTempLanderClosedLoopTest_advancedWind_rot {
     private LunarlanderLanderClosedLoop_advancedWind_good landerSpecs1(double windSpeed) {
         Date date = new Date(2000,0,1,0,0,0);
         LunarlanderLanderClosedLoop_advancedWind_good rocket = new LunarlanderLanderClosedLoop_advancedWind_good(100, new Vector3D(900, 150000
-                ,0.04),
-                new Vector3D(0,-600,0.01),date, true, windSpeed);
+                ,0),
+                new Vector3D(0,0,0),date, true, windSpeed);
         runODE(rocket, date);
         return rocket;
     }

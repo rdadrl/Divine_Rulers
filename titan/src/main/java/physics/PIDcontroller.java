@@ -1,6 +1,7 @@
 package physics;
 
 /**
+ * A class that represents a PID controller
  * http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-reset-windup/
  * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.867.4513&rep=rep1&type=pdf
  */

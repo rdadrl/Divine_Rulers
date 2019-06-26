@@ -23,6 +23,7 @@ public abstract class Falcon9Imaginary extends SpaceCraft {
             Second Stage Kerosene weight        :  32300kg
          */
         fuelMass = (287400 + 123500) * 3 + 75200 + 32300;
+        fuelMass_t0 = fuelMass;
         this.mass = fuelMass + dryMass;
         /*
             Sea level   : 282
@@ -31,7 +32,7 @@ public abstract class Falcon9Imaginary extends SpaceCraft {
             assumed more inclined towards vacumm impulse
          */
         //TODO: check this value, i multiplied it by 1000 as it is often in kn
-        thrusterImpulse = 305 * 100;
+        thrusterImpulse = 305 * g;
 
         /*
             Literally no data about this, some guy calculated it:
@@ -46,9 +47,19 @@ public abstract class Falcon9Imaginary extends SpaceCraft {
     }
     public void dumpStageOne() {
         if (fuelMass >= 75200 + 32300) fuelMass = (287400 + 123500) * 3 + 75200 + 32300;
+        fuelMass_t0 = fuelMass;
         dryMass = 4000 + 1700;
         this.mass = fuelMass + dryMass;
         maxFtPropulsion = 934 * 1000;
-        thrusterImpulse = 397 * 1000;
+        thrusterImpulse = 397 * g;
+    }
+
+    public void stageTwo() {
+        fuelMass = 75200 + 32300;
+        fuelMass_t0 = fuelMass;
+        dryMass = 4000 + 1700;
+        this.mass = fuelMass + dryMass;
+        maxFtPropulsion = 934 * 1000;
+        thrusterImpulse = 397 * g;
     }
 }

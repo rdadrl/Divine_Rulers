@@ -49,6 +49,8 @@ public class InterPlanetaryRocketToEarthTest {
 ////        startVel = startVel.add(escapeVel);
 //        double mass, Planet fromPlanet, Planet toPlanet, Date current_date, Vector3D departurePos, Vector3D departureVel, Vector3D destinationPos, Date arrivalDate
         InterPlanetaryRocketToEarth rocket = new InterPlanetaryRocketToEarth(1000, titArr, eartDep, departDate, null, startVel, arrivalPos, arrivalDate);
+        rocket.stageTwo();
+        rocket.setFuelMass_t0(93053.31074034973);
 
 //
 //        double mu = sol_depart.getPlanets().getSun().getMass() * MathUtil.G;
@@ -105,6 +107,7 @@ public class InterPlanetaryRocketToEarthTest {
         System.out.println();
 
         System.out.println("fuel left: " + rocket.getFuelMass());
+        System.out.println("fuel used: " + rocket.getFuellUsed());
 
     }
 

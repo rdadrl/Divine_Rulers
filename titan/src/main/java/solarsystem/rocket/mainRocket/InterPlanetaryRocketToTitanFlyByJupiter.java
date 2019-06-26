@@ -68,6 +68,7 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
     public InterPlanetaryRocketToTitanFlyByJupiter(Planet fromPlanet, Planet Jupiter, Planet toPlanet, Date current_date, Date jupiter_date, Date arrival_date, Vector3D departurePos, Vector3D flybyPos, Vector3D arrivalPos) {
 //        this.mass = mass;
         super();
+        this.g = 274; //gravity sun
         this.radius = 2000;
         this.fromPlanet = fromPlanet;
         this.Jupiter = Jupiter;
@@ -194,8 +195,9 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
 
         if(!flyByInitialize && inSphereJupiter && distanceToJupiter > Jupiter.getSphereOfInfluence()) {
             System.out.println("Out of sphere of JUPITER");
-            System.out.println(tof_left);
-            System.out.println(current_date);
+            System.out.println("\t" + tof_left);
+            System.out.println("\t" + current_date);
+            System.out.println("\t fuel: " + fuelMass);
             impulseMoments = alongPositionUpdates(tof_left, dt, amount_impulseUpdates_alongTheWayPhase2);
             counter = 0;
             impulseMoments.add(0);
@@ -211,14 +213,15 @@ public class InterPlanetaryRocketToTitanFlyByJupiter extends Falcon9Imaginary im
             counter = 0;
             impulseMoments.add(0);
             System.out.println("In sphere of SATURN: " + this.getCentralPos().substract(Saturn.getCentralPos()).length());
-            System.out.println(tof_left);
-            System.out.println(current_date);
+            System.out.println("\t" + tof_left);
+            System.out.println("\t" + current_date);
+            System.out.println("\t fuel: " + fuelMass);
             inSphereSaturn = true;
         }
 
         if(!inSphereTitan && distanceToTitan < toPlanet.getSphereOfInfluence()) {
             System.out.println("In sphere of TITAN");
-            System.out.println("Fuel left: " + this.getFuelMass());
+            System.out.println("\t" + "Fuel left: " + this.getFuelMass());
             inSphereTitan = true;
         }
 

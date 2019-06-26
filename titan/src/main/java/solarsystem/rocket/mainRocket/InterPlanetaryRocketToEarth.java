@@ -56,6 +56,7 @@ public class InterPlanetaryRocketToEarth extends Falcon9Imaginary implements ODE
     public InterPlanetaryRocketToEarth(double mass, Planet fromPlanet, Planet toPlanet, Date current_date, Vector3D departurePos, Vector3D departureVel, Vector3D destinationPos, Date arrivalDate) {
 //        this.mass = mass;
         super();
+        this.g = 274; //gravity sun
         this.radius = 2000;
         this.fromPlanet = fromPlanet;
         this.toPlanet = toPlanet;

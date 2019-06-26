@@ -7,8 +7,7 @@ import utils.vector.Vector3D;
 import java.util.ArrayList;
 
 /**
- *
- *
+ * An interface to distuingish all the components that can be solved by an ODE solver
  */
 public interface ODEsolvable {
         /**
