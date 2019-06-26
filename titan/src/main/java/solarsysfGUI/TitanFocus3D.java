@@ -1,5 +1,7 @@
 package solarsysfGUI;
 
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import com.interactivemesh.jfx.importer.tds.TdsModelImporter;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -27,8 +29,12 @@ import solarsystem.rocket.SpaceCraft;
 import solarsystem.rocket.lunarLander.Lunarlander;
 import utils.Date;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class TitanFocus3D extends Application {
@@ -55,7 +61,7 @@ public class TitanFocus3D extends Application {
     // InterPlanetaryRocketToTitan vars
     private SpaceCraft spaceCraftObj;
     private ArrayList<SpaceCraft> obj;
-
+    private static final String FILE_LOC = "src/main/resources/rocketObj/scifi_cartoon_rocket.obj";
     //HID Event flags
     private final int CAMERA_MOVEMENT_STEP_SIZE = 10;
     private final int CAMERA_MAX_SPEED = 100;
@@ -106,15 +112,16 @@ public class TitanFocus3D extends Application {
         light.setColor(Color.LIGHTGOLDENRODYELLOW);
 
         //Titan & Lunarlander:
-        Box rocket = new Box(20, 100, 20);
-        rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
+        int rocketScale = 8;
+        Group rocket = loadRocket();
+        rocket.setScaleX(rocketScale);
+        rocket.setScaleY(rocketScale);
+        rocket.setScaleZ(rocketScale);
+        rocket.setTranslateX(20);
+        rocket.setTranslateY(-40);
         Rotate rotate = new Rotate();
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
-
-        //InterPlanetaryRocketToTitan.setTranslateX(spaceCraftObj.getCentralPos().getX());
-        rocket.setTranslateX(20);
-        rocket.setTranslateY(-40);
 
         Cylinder landingPad = new Cylinder(60, 1);
         landingPad.setTranslateY(0);
@@ -124,7 +131,7 @@ public class TitanFocus3D extends Application {
         landingPad.setMaterial(new PhongMaterial(Color.DARKBLUE));
 
 
-            Sphere titan = new Sphere(3000);
+        Sphere titan = new Sphere(3000);
         titan.setTranslateY(3000);
         PhongMaterial titanMaterial = new PhongMaterial();
         titanMaterial.setDiffuseMap(new Image("textures/moonmap.jpg"));
@@ -171,31 +178,30 @@ public class TitanFocus3D extends Application {
             }
 
             public void run() {
-                while(!pauseStatus) {
-                    if(spaceCraftObj instanceof Lunarlander) {
-                        Lunarlander lunarlander = (Lunarlander) spaceCraftObj;
-                        if (lunarlander.getLanded()) { //if landed
-                            System.out.println("Thanks for flying with Paredis Spacelines.");
-                            pauseStatus = true;
-                            oneMoreRun = true;
-                        }
-                        else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
-                            vVref.updateLocation(10, TimeUnit.MILLISECONDS);
-                            lastUpdate = System.nanoTime();
-                        }
-                    }else{
-                        if (spaceCraftObj.phaseFinished()) { //if landed
-                            System.out.println("Thanks for flying with Paredis Spacelines.");
-                            pauseStatus = true;
-                            oneMoreRun = true;
-                        }
-                        else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
-                            vVref.updateLocation(10, TimeUnit.MILLISECONDS);
-                            lastUpdate = System.nanoTime();
-                        }
+                while(true) {
+                    if (!pauseStatus) {
+                        if (spaceCraftObj instanceof Lunarlander) {
+                            Lunarlander lunarlander = (Lunarlander) spaceCraftObj;
+                            if (lunarlander.getLanded()) { //if landed
+                                System.out.println("Thanks for flying with Paredis Spacelines.");
+                                pauseStatus = true;
+                                oneMoreRun = true;
+                            } else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
+                                vVref.updateLocation(10, TimeUnit.MILLISECONDS);
+                                lastUpdate = System.nanoTime();
+                            }
+                        } else {
+                            if (spaceCraftObj.phaseFinished()) { //if landed
+                                System.out.println("Thanks for flying with Paredis Spacelines.");
+                                pauseStatus = true;
+                                oneMoreRun = true;
+                            } else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
+                                vVref.updateLocation(10, TimeUnit.MILLISECONDS);
+                                lastUpdate = System.nanoTime();
+                            }
 
+                        }
                     }
-
                 }
             }
         }
@@ -295,7 +301,7 @@ public class TitanFocus3D extends Application {
                     rocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
                     if(spaceCraftObj instanceof Lunarlander) rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY()/100);
                     else rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY());
-                    rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight() / 2D);
+                    rocket.setTranslateY(rocket.getTranslateY());
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(spaceCraftObj.getCentralPos().getZ()));
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("LD " +
@@ -385,6 +391,28 @@ public class TitanFocus3D extends Application {
         this.ODEsolver = new VerletVelocity(obj, date);
 
         //push to start
+    }
+
+    public Group loadRocket() {
+        File file = new File(FILE_LOC);
+        ObjModelImporter objImporter = new ObjModelImporter();
+        TdsModelImporter tdsImporter = new TdsModelImporter();
+        String filename = "";
+        try {
+            filename = file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(filename);
+        objImporter.read(filename);
+        final Node[] tdsMesh = (Node[]) objImporter.getImport();
+        objImporter.close();
+
+        Group rocketGroup = new Group();
+        for (int i = 1; i < tdsMesh.length; i++) {
+            rocketGroup.getChildren().add(tdsMesh[i]);
+        }
+        return rocketGroup;
     }
 
     public void setODEsolver(physics.ODEsolver ODEsolver) {

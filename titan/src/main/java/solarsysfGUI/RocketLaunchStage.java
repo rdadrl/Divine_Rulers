@@ -1,8 +1,11 @@
 package solarsysfGUI;
 
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import com.interactivemesh.jfx.importer.tds.TdsModelImporter;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Point3D;
 import javafx.scene.*;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -27,7 +30,9 @@ import utils.Date;
 import utils.MathUtil;
 import utils.vector.Vector3D;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -52,9 +57,9 @@ public class RocketLaunchStage extends Application {
     private boolean goNorth, goSouth, goEast, goWest;
     private final boolean USELIGHTS = true;
     private Label identifierLabel;
+    private static final String FILE_LOC = "src/main/resources/rocketObj/scifi_cartoon_rocket.obj";
 
-
-    private HashMap<Sphere, Projectile> projectileList = new HashMap<>();
+    private HashMap<Group, Projectile> projectileList = new HashMap<>();
     private SolarSystem solarSystem;
     private CelestialObject followObject;
 
@@ -83,9 +88,18 @@ public class RocketLaunchStage extends Application {
         CelestialObject neptuneObj = solarSystem.getPlanets().getNeptune();
         CelestialObject venusObj = solarSystem.getPlanets().getVenus();
         for (Projectile projObj: solarSystem.getProjectiles()) {
-            Sphere proj = createGUIobject(projObj, null, null);
+
+            double rocketScale = 0.2;
+            Group rocket = loadRocket();
+            rocket.setScaleX(rocketScale);
+            rocket.setScaleY(rocketScale);
+            rocket.setScaleZ(rocketScale);
+            rocket.setTranslateX(20);
+            rocket.setTranslateY(-40);
+
+
             followObject = projObj;
-            projectileList.put(proj, projObj);
+            projectileList.put(rocket, projObj);
         }
 
 //        followObject = sunObj; //set followup object as sun (the middle planet)
@@ -267,8 +281,8 @@ public class RocketLaunchStage extends Application {
                 updateGUIobject(venus, venusObj);
 
                 //Update projectile positions & check whether it's close enough to titan to activate landing phase
-                for(Sphere guiObject: projectileList.keySet()){
-                    updateGUIobject(guiObject, projectileList.get(guiObject));
+                for(Group guiObject: projectileList.keySet()){
+                    updateRocket(guiObject, projectileList.get(guiObject));
 
                     if (projectileList.get(guiObject).phaseFinished()) { //i love to play with this variable, and you will too.
                         pauseStatus = true;
@@ -340,6 +354,39 @@ public class RocketLaunchStage extends Application {
 
         return guiOb;
     }
+    public Group loadRocket() {
+        File file = new File(FILE_LOC);
+        ObjModelImporter objImporter = new ObjModelImporter();
+        TdsModelImporter tdsImporter = new TdsModelImporter();
+        String filename = "";
+        try {
+            filename = file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(filename);
+        objImporter.read(filename);
+        final Node[] tdsMesh = (Node[]) objImporter.getImport();
+
+        Map<String, PhongMaterial> mapTexs = objImporter.getNamedMaterials();
+        Iterator<String> it = mapTexs.keySet().iterator();
+        boolean differCol = true;
+        while (it.hasNext()) {
+            String key = it.next();
+            if (differCol) mapTexs.get(key).setDiffuseColor(Color.RED);
+            else mapTexs.get(key).setDiffuseColor(Color.WHITE);
+
+            differCol = !differCol;
+        }
+
+        objImporter.close();
+
+        Group rocketGroup = new Group();
+        for (int i = 1; i < tdsMesh.length; i++) {
+            rocketGroup.getChildren().add(tdsMesh[i]);
+        }
+        return rocketGroup;
+    }
 
     private void updateGUIobject(Sphere guiObject, CelestialObject cObject){
         Vector3D coordinate = cObject.getCentralPos();
@@ -349,6 +396,13 @@ public class RocketLaunchStage extends Application {
         guiObject.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
         guiObject.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
         guiObject.setRotate(guiObject.getRotate() + 20);
+    }
+    private void updateRocket(Group guiObject, CelestialObject cObject){
+        Vector3D coordinate = cObject.getCentralPos();
+        coordinate = coordinate.substract(followObject.getCentralPos());
+        guiObject.setTranslateX(coordinate.getX() * DistanceMultiplier / MathUtil.AU);
+        guiObject.setTranslateY(coordinate.getY() * DistanceMultiplier * -1 / MathUtil.AU);
+        guiObject.setTranslateZ(coordinate.getZ() * DistanceMultiplier / MathUtil.AU);
     }
 
     private void updateRadius(Sphere guiObject, CelestialObject cObject) {
