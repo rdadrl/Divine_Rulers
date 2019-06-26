@@ -47,7 +47,6 @@ public class RungeKutta4_2 {
         dfs = new Vector3D[bodies.size()][2];
     }
 
-//    @Override
     public void initialize(ArrayList<? extends ODEsolvable> bodies, Date date) {
         this.currentDate = date;
         this.bodies = bodies;
@@ -76,6 +75,9 @@ public class RungeKutta4_2 {
         doty[2]=g0*Math.pow(R/(R+y[3]),2)*Math.sin(y[2])/y[4]-y[1];
         doty[3]=y[4]*Math.cos(y[2]);
         doty[4]=F/y[0]-g*Math.cos(y[2]);
+        for(int i = 0; i < doty.length; i++) {
+            doty[i] = doty[i] * dt;
+        }
         return doty;
     }
 
