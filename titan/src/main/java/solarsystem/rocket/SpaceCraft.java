@@ -15,6 +15,7 @@ public abstract class SpaceCraft extends Projectile {
     protected BigDecimal totTime = new BigDecimal("0.0");
     protected double dryMass; //kg
     protected double fuelMass; // kg
+    protected double fuelMass_t0; //kg
     protected double J; //moment of inertia kg m^2
     protected double maxFtPropulsion; //newton
     protected double maxFlPropulsion; //newton
@@ -24,8 +25,10 @@ public abstract class SpaceCraft extends Projectile {
     protected double dt;
     protected Trajectory trajectory;
 
-    protected boolean phaseFinished;
+//    protected boolean phaseFinished;
     protected double g;
+
+
 
 
     public void calculateMass() {
@@ -34,6 +37,7 @@ public abstract class SpaceCraft extends Projectile {
         fuelMass = fuelMass - fuelMassLoss;
         if(fuelMass<0){
             System.out.println("Ran out of fuel!");
+            System.exit(-1);
             fuelMass = 0;
         }
         mass = dryMass + fuelMass;
@@ -44,10 +48,10 @@ public abstract class SpaceCraft extends Projectile {
         return (date.getTimeInMillis() - this.current_date.getTimeInMillis())/1000D;
     }
 
-
-    public boolean phaseFinished(){
-        return phaseFinished;
+    protected long differenceInMiliSeconds(Date date) {
+        return (date.getTimeInMillis() - this.current_date.getTimeInMillis());
     }
+
 
     public Trajectory getTrajectory() { return trajectory; }
     public void setTrajectory(Trajectory trajectory) { this.trajectory = trajectory; }
@@ -61,5 +65,27 @@ public abstract class SpaceCraft extends Projectile {
 
     public BigDecimal getTotTime() {
         return totTime;
+    }
+
+    public double getFuelMass() {
+        return fuelMass;
+    }
+
+    public double getDryMass() {
+        return dryMass;
+    }
+
+    public void setFuelMass_t0(double fuelMass_t0) {
+        this.fuelMass_t0 = fuelMass_t0;
+        this.fuelMass = fuelMass_t0;
+        this.mass = fuelMass + dryMass;
+    }
+
+    public double getFuelMass_t0() {
+        return fuelMass_t0;
+    }
+
+    public double getFuellUsed() {
+        return fuelMass_t0 - fuelMass;
     }
 }

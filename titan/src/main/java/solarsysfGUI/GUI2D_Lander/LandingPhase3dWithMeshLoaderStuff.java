@@ -55,7 +55,7 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
     private double verletUpdateUnitInMs = 10;
     private int verletUpdateUnitMultiplier = 1;
     private int counter;
-    // InterPlanetaryRocket vars
+    // InterPlanetaryRocketToTitan vars
     private Lunarlander lunarlanderObj;
     private ArrayList<Lunarlander> obj;
     private static final String MESH_FILENAME = "lunarlandernofoil_carbajal.3ds";
@@ -87,7 +87,7 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
     private int goDownDelta = 50;
 
 
-    //Something is VEEERY wrong with titan, or InterPlanetaryRocket. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
+    //Something is VEEERY wrong with titan, or InterPlanetaryRocketToTitan. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
     @Override
     public void start(Stage landingStage) throws Exception {
         //add any fx componenents to this root group.
@@ -111,8 +111,8 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
         light.setColor(Color.LIGHTGOLDENRODYELLOW);
 
         //Titan & Lunarlander:
-        //Box InterPlanetaryRocket = new Box(20, 100, 20);
-        //InterPlanetaryRocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
+        //Box InterPlanetaryRocketToTitan = new Box(20, 100, 20);
+        //InterPlanetaryRocketToTitan.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
 
 
         int rocketScale = 8;
@@ -129,7 +129,7 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
 
 
 
-        //InterPlanetaryRocket.prefHeight(100);
+        //InterPlanetaryRocketToTitan.prefHeight(100);
 
         Cylinder landingPad = new Cylinder(60, 1);
         landingPad.setTranslateY(0);
@@ -290,9 +290,9 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
 //                            ", Z: " + landingDot.getTranslateZ()
 //                    );
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("RK " +
-//                            "X: " + InterPlanetaryRocket.getTranslateX() +
-//                            ", Y: " + InterPlanetaryRocket.getTranslateY() +
-//                            ", Z: " + InterPlanetaryRocket.getTranslateZ()
+//                            "X: " + InterPlanetaryRocketToTitan.getTranslateX() +
+//                            ", Y: " + InterPlanetaryRocketToTitan.getTranslateY() +
+//                            ", Z: " + InterPlanetaryRocketToTitan.getTranslateZ()
 //                    );
                     if (DEBUG) debugText.setText(constructDebugText());
                     currentFPS = (int) (1000 / differancePerAnimationFrameInMS);

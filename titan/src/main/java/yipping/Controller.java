@@ -8,10 +8,11 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import utils.vector.Vector;
 import utils.vector.Vector3D;
 
 public class Controller {
-	
+	private Vector3D initialV;
 	public Controller(View view) {
 		Canvas cvs = view.cvs;
 		ControlPanel cp = view.cp;
@@ -19,7 +20,10 @@ public class Controller {
 		JSpinner s2 = view.cp.sSpeed2;
 		Planet[] planets = view.cvs.planets;
 		
-		Vector3D initialV = new Vector3D(Constant.escapeV *1e3, Constant.escapeV*1e3, 0);
+		initialV = new Vector3D(Constant.escapeV *1e3, Constant.escapeV*1e3, 0);
+//		double u = Constant.G*planets[1].getMass();
+//		double v = Math.sqrt(u/planets[1].r);
+//		initialV = new Vector3D(v, 0, 0);
 		Vector3D[][] dfs = new Vector3D[planets.length][2];
 
 		ActionListener lst = new ActionListener() {
@@ -85,7 +89,7 @@ public class Controller {
 				cvs.running = true;
 				Planet earth = cvs.earth;
 				
-				Planet ball = new Planet(earth.getPos().add(new Vector3D(6.371e6,6.371e6,6.371e6)), initialV, 1000, 100, "cannon");
+				Planet ball = new Planet(earth.getPos().add(new Vector3D(6.371e6,6.371e6,6.371e6)), initialV, 60000, 100, "cannon");
 				cvs.ball = ball;
 				for(int i = 0; i <cvs.planets.length;i++) {
 					if(cvs.planets[i] == null) {

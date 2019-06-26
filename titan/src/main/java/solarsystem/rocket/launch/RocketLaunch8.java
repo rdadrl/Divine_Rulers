@@ -38,6 +38,7 @@ public class RocketLaunch8 extends SpaceCraft {
     private double theta;
     private double beta;
     private double v;
+    private int i = 0;
 
     private double totalTime;
 
@@ -187,6 +188,13 @@ public class RocketLaunch8 extends SpaceCraft {
            // dy[i] = dt/6*(k1[i] + 2*(k2[i] + k3[i]) + k4[i]);
             dy[i] = dt*k1[i];
         }
+        i ++;
+        if(i%1000 == 0){
+            double Fg = -g * mass;
+            double F = Fg+ Ft;
+            System.out.println("t: " + i*dt + ", mass: " + mass + ", theta: " + theta + ", beta: " + beta + ", h: " + h + ", v: " +  v + ", a: " + (F/mass) + ", Ft: " + Ft + ", Fg: " + Fg + ", netF: " + F);
+        }
+
 
         return dy;
     }

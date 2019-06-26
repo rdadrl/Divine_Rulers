@@ -251,15 +251,16 @@ public class LambertSolverTest {
 
         double mu = sol_depart.getPlanets().getSun().getMass() * MathUtil.G;
         Vector3D r1 = cannonBall.getCentralPos();
-        System.out.println(r1);
+        System.out.println("r1: " + r1);
         Vector3D r2 = tit_arr.getCentralPos();
-        System.out.println(r2);
+        System.out.println("r2: " + r2);
+        System.out.println("E_S: " + sol_depart.getPlanets().getEarth().getCentralPos());
 
         LambertSolver lambertSolver = new LambertSolver(mu, r1, r2, tof);
 
         Vector3D[] vel = lambertSolver.getVelocityVectors().get(0);
-        System.out.println(vel[0]);
-        System.out.println(vel[1]);
+        System.out.println("v1: " + vel[0]);
+        System.out.println("v2: " + vel[1]);
 
         cannonBall.setStartVelocityVector(vel[0]);
 
@@ -658,6 +659,78 @@ public class LambertSolverTest {
         }
 
         Vector3D jup_arr_pos = sol_depart.getPlanets().getJupiter().getCentralPos();
+        Vector3D can_arr_pos = cannonBall.getCentralPos();
+        Vector3D can_arr_vel = cannonBall.getCentralVel();
+        System.out.println(arrivalDate + ", " + sol_depart.getCurrentDate());
+
+        System.out.println("Jup pos: " + jup_arr_pos);
+        System.out.println("Jup pred pos: " + r2);
+        System.out.println("Dist with pred " + can_arr_pos.substract(r2).length());
+        System.out.println("Diff with pred " + can_arr_pos.substract(r2));
+        System.out.println("Kepler vs sim: " + jup_arr_pos.substract(r2).length());
+
+        System.out.println();
+
+        System.out.println("Jup pos: " + jup_arr_pos);
+        System.out.println("Cannon ball pos: " + can_arr_pos);
+        System.out.println("Distance: " + jup_arr_pos.substract(can_arr_pos).length());
+        System.out.println("Diff: " + jup_arr_pos.substract(can_arr_pos));
+
+        System.out.println();
+
+        System.out.println("Jup pred: " + r2);
+        System.out.println("Cannon ball pos: " + can_arr_pos);
+        System.out.println("Distance: " + r2.substract(can_arr_pos).length());
+        System.out.println("Diff: " + r2.substract(can_arr_pos));
+        System.out.println("Sphere of influence: " + jup_arr.getSphereOfInfluence());
+        System.out.println();
+        System.out.println("Cannon ball vel: " + can_arr_vel);
+        System.out.println("Cannon ball pre: " + vel[1]);
+        System.out.println("Diff: " + vel[1].substract(can_arr_vel));
+
+
+
+    }
+
+    @Test
+    public void backTest() throws IOException {
+        Date departDate = new Date(2028, 9, 12);
+        SolarSystem sol_depart = new SolarSystem();
+        sol_depart.setPositionsPlanetsAtDateKepler(departDate);
+
+        Date arrivalDate = new Date(2034, 4, 22);
+        SolarSystem sol_arrival = new SolarSystem();
+        sol_arrival.setPositionsPlanetsAtDateKepler(arrivalDate);
+
+        Planet jup_arr = sol_arrival.getPlanets().getEarth();
+        Planet jup_dep = sol_depart.getPlanets().getEarth();
+        Planet earth_dep = sol_depart.getPlanets().getSaturn();
+
+        double mu = sol_arrival.getPlanets().getSun().getMass() * MathUtil.G;
+        Vector3D r1 = earth_dep.getCentralPos();
+        System.out.println(r1);
+        Vector3D r2 = jup_arr.getCentralPos();
+        System.out.println(r2);
+        double tof = (arrivalDate.getTimeInMillis() - departDate.getTimeInMillis()) / 1000D;
+        LambertSolver lambertSolver = new LambertSolver(mu, r1, r2, tof);
+
+        Vector3D[] vel = lambertSolver.getVelocityVectors().get(0);
+        System.out.println(vel[0]);
+        System.out.println(vel[1]);
+
+        CannonBall cannonBall = new CannonBall(1000, 100, earth_dep, jup_dep, departDate, vel[0]);
+        cannonBall.initializeCartesianCoordinates(departDate);
+        System.out.println(cannonBall.getCentralVel());
+        ArrayList<Projectile> proj = new ArrayList<>();
+        proj.add(cannonBall);
+
+        sol_depart.initializeAnimationWithPlanets(departDate, proj);
+        long timestep_seconds = 30;
+        for(double tof_left = tof; tof_left > 0; tof_left = tof_left - timestep_seconds){
+            sol_depart.updateAnimation(timestep_seconds, TimeUnit.SECONDS);
+        }
+
+        Vector3D jup_arr_pos = sol_depart.getPlanets().getEarth().getCentralPos();
         Vector3D can_arr_pos = cannonBall.getCentralPos();
         Vector3D can_arr_vel = cannonBall.getCentralVel();
         System.out.println(arrivalDate + ", " + sol_depart.getCurrentDate());

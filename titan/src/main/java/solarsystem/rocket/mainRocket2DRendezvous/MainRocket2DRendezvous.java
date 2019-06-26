@@ -56,9 +56,9 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
     }
 
 
+    // Coast along the entry orbit towards the point were the rocket fleis by Titan tangentially
     public void phase1() {
-        //trajectory.getTargetBody().setCentralPos(new Vector3D(0,-1*trajectory.getTargetBody().getRadius()/2,0));
-
+        // Switch to second phase once rocket flies tangentially by Titan
         if (isTangentialToTarget(this)) {
             // Bring the Rocket to it's elliptical orbit
             double muh = G* (trajectory.getCentralBodyMass() + this.mass); // https://en.wikipedia.org/wiki/Orbital_mechanics
@@ -67,7 +67,6 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             this.centralVel = this.centralVel.unit().scale(Math.sqrt((-muh/trajectory.getSemiMajorAxis() + 2*muh/centralPos.norm()))); // Astrobook page 61 (reformulated formula)
             if (this.centralVel.norm() < priorVel.norm())  {
                 int i = 0;
-
             }
             this.trajectory.setPeriod(Math.round(2*Math.PI*Math.sqrt(Math.pow(this.trajectory.getSemiMajorAxis(), 3)/muh))); // Astrobook p.37 (reformed)
             this.departureTime = new Date(current_date);
@@ -77,11 +76,11 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
 
 
             //Put the lander that is on it's transfer orbit
-            double landerMass = 1000; // kg
+            double landerMass = 1e3; // kg
             muh = G* (trajectory.getCentralBodyMass() + landerMass); // https://en.wikipedia.org/wiki/Orbital_mechanics
-            double semimajorAxis = (centralPos.norm() + 400e3)/2;//(trajectory.getCentralBodySphereOfInfluence())/2); // Astrobook page 61
-            Vector3D velocity = getCentralVel().unit().scale(Math.sqrt((-muh/semimajorAxis + 2*muh/(centralPos.norm())))); // Astrobook page 61 (reformulated formula)
-            double period = 2*Math.sqrt((Math.pow(semimajorAxis,3)/muh)*(Math.PI)); // probably in seconds Astrobook p.37 (reformed) // TODO: check whether this needs to be rounded
+            double semimajorAxis = (centralPos.norm() + 1200e3)/2;
+            Vector3D velocity = getCentralVel().unit().scale(Math.sqrt(muh*(2/centralPos.norm() - 1/semimajorAxis)));
+            double period = 2*Math.sqrt((Math.pow(semimajorAxis,3)/muh))*(Math.PI); // probably in seconds Astrobook p.37 (reformed) // TODO: check whether this needs to be rounded
             Trajectory trajectory = new Trajectory(this.trajectory.getCentralBodyMass(), this.trajectory.getCentralBodySphereOfInfluence(), semimajorAxis, period);
             lander.setTrajectory(trajectory);
             lander.setDepartureTimeInMillis(this.departureTime.getTimeInMillis()-(long)(1e3*period/2));
@@ -92,7 +91,9 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         }
     }
 
+    // Coast along the parking orbit for the course of one period
     private void phase2() {
+        // Switch to phase 3 when rocket has to leave
         if (current_date.after(departureTime)) {
             System.out.println("Rocket time to leave " + current_date.getTimeInMillis());
             trajectory.setPeriod(0); trajectory.setSemiMajorAxis(0);
@@ -104,6 +105,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         }
     }
 
+    // Coast along the exit orbit
     private void phase3() {
 
     }

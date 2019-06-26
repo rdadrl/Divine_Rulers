@@ -35,7 +35,7 @@ public class LandingPhase3DLauncherRendezvousWithLunarLander extends Application
             ArrayList<SpaceCraft> spaceCrafts = new ArrayList<>();
             spaceCrafts.add(rocket); spaceCrafts.add(lander);
             LandingPhase3dRendevous landingPhaseApp = new LandingPhase3dRendevous(spaceCrafts, date);
-            landingPhaseApp.setODEsolver(new RungeKutta4());
+            //landingPhaseApp.setODEsolver(new RungeKutta4());
             landingPhaseApp.start(new Stage()); //start with a empty stage (or you may go ahead and give some specs)
         } catch (Exception e) {
             e.printStackTrace();
