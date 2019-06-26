@@ -12,7 +12,6 @@ public class MathUtil {
     public static final double GAU = 1.993E-44;          // AU^3/kg*s^2
     public static final double G =  6.6742867E-11;         // m/kg*s^2
 
-
     /**
      * Sinus function for degrees
      * @param degree degree

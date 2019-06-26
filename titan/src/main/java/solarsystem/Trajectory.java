@@ -11,19 +11,20 @@ public class Trajectory {
     protected double o; // change of ascending node
     protected double w_a ; // argument of the periphelion
     protected double T; // Period
-    protected CelestialObject targetBody;
+    protected double centralBodyMass; // Mass of central body
+    protected double centralBodySphereOfInfluence;
 
-    public Trajectory(CelestialObject targetBody, CelestialObject centralBody, double semiMajorAxis, double period,
+    public Trajectory(CelestialObject centralBody, double semiMajorAxis, double period,
                      double eccentricity, double departureInclination, double longitude, double periphelion) {
-        this.targetBody = targetBody; this.a = semiMajorAxis; this.T = period;
+        this.a = semiMajorAxis; this.T = period;
     }
 
-    public Trajectory(CelestialObject targetBody, double semiMajorAxis, double period){
-        this.targetBody = targetBody; this.a = semiMajorAxis; this.T = period;
+    public Trajectory(double centralBodyMass, double centralBodySphereOfInfluence, double semiMajorAxis, double period) {
+        this.centralBodyMass = centralBodyMass; this.centralBodySphereOfInfluence = centralBodySphereOfInfluence; this.a = semiMajorAxis; this.T = period;
     }
 
     //public void setTarget(CelestialObject target) { this.target = target; }
-    //public CelestialObject getTargetBody() { return target; }
+    //public CelestialObject getTarget() { return target; }
 
     public void setSemiMajorAxis(double semiMajorAxis) { this.a = semiMajorAxis; }
     public double getSemiMajorAxis() { return this.a; }
@@ -31,7 +32,7 @@ public class Trajectory {
     public void setPeriod(double period) { this.T = period; }
     public double getPeriod() { return this.T; }
 
-    public CelestialObject getTargetBody() {
-        return targetBody;
-    }
+    public double getCentralBodySphereOfInfluence() { return centralBodySphereOfInfluence; }
+    public double getCentralBodyMass() { return centralBodyMass; }
+
 }

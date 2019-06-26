@@ -41,7 +41,7 @@ public abstract class SpaceCraft extends Projectile {
 
     protected double differenceInSeconds(Date date) {
 
-        return (date.getTimeInMillis() - this.old_date.getTimeInMillis())/1000D;
+        return (date.getTimeInMillis() - this.current_date.getTimeInMillis())/1000D;
     }
 
 
@@ -54,7 +54,7 @@ public abstract class SpaceCraft extends Projectile {
 
     public boolean isTangentialToTarget(SpaceCraft spaceCraft) {
 
-        Vector3D dUnit = (spaceCraft.getCentralPos().substract(spaceCraft.getTrajectory().getTargetBody().getCentralPos())).unit();
+        Vector3D dUnit = spaceCraft.getCentralPos().unit();
         Vector3D vUnit = spaceCraft.getCentralVel().unit();
         return ((vUnit.dot(dUnit) < 0.05) && (vUnit.dot(dUnit) > -0.05));
     }

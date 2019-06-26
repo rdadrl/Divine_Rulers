@@ -72,7 +72,9 @@ public class SolarSystem {
         this.allAnimatedObjects = allAnimatedObjects;
     }
 
-    public void addAnimatedObject(CelestialObject animatedObject) { allAnimatedObjects.add(animatedObject); }
+    public void addAnimatedObject(CelestialObject animatedObject) {
+
+        allAnimatedObjects.add(animatedObject); }
 
     public void removeAnimatedObject(String name) {
         for (CelestialObject o : allAnimatedObjects) {
@@ -93,7 +95,7 @@ public class SolarSystem {
 
     /**
      * Initialize an animation with all the planets present
-     * @param date Date of initialization old_date
+     * @param date Date of initialization current_date
      * @param projectiles Additional projectiles such as CannonBalls or Rockets that need to be
      *                    part of the animation
      */

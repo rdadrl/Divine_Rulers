@@ -749,14 +749,13 @@ public class LambertSolverTest {
 //        assertEquals(31.92512637681035,     vel[1].getY(), EPSILON)  ;
 //        assertEquals(13.8371359382399057,   vel[1].getZ(), EPSILON)  ;
 
-        assertEquals(-10.043744763368577 * 1000,   vel[0].getX(), EPSILON)  ;
-        assertEquals(-9.170253018655829 * 1000,     vel[0].getY(), EPSILON)  ;
-        assertEquals(-3.9739226746543727 * 1000,    vel[0].getZ(), EPSILON)  ;
+        assertEquals(-10.043744763368577 * 1000,    vel[0].getX(), EPSILON)     ;
+        assertEquals(-9.170253018655829  * 1000,    vel[0].getY(), EPSILON)     ;
+        assertEquals(-3.9739226746543727 * 1000,    vel[0].getZ(), EPSILON)     ;
 
-        assertEquals(1.6168679513671668 * 1000,    vel[1].getX(), EPSILON)  ;
-        assertEquals(31.925126376810356 * 1000,     vel[1].getY(), EPSILON)  ;
-        assertEquals(13.837135938239913 * 1000,   vel[1].getZ(), EPSILON)  ;
-
+        assertEquals(1.6168679513671668  * 1000,    vel[1].getX(), EPSILON)     ;
+        assertEquals(31.925126376810356  * 1000,    vel[1].getY(), EPSILON)     ;
+        assertEquals(13.837135938239913  * 1000,    vel[1].getZ(), EPSILON)     ;
     }
 
 
@@ -820,12 +819,10 @@ public class LambertSolverTest {
         return results;
     }
 
-
     public void alongPosTest() {
         HashSet<Integer> pos = alongPositionUpdates(30000, 30, 3);
         for(int i: pos){
             System.out.println(i);
         }
-
     }
 }

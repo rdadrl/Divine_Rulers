@@ -25,7 +25,7 @@ public class CannonBall extends Projectile {
         this.name = "Cannonball " + counter++;
         this.mass = mass;
         this.radius = radius;
-        this.old_date = date;
+        this.current_date = date;
 
         this.toPlanet = toPlanet;
         this.fromPlanet = fromPlanet;
@@ -41,8 +41,8 @@ public class CannonBall extends Projectile {
     }
 
     /**
-     * initialize the cartesian coordinates at a specific old_date
-     * @param date old_date for the coordinates to be initialized
+     * initialize the cartesian coordinates at a specific current_date
+     * @param date current_date for the coordinates to be initialized
      */
     @Override
     public void initializeCartesianCoordinates(Date date) {
@@ -52,7 +52,7 @@ public class CannonBall extends Projectile {
         // add the radius vector and put it outside the sphere of influence
         Vector3D addRadX = fromPlanet.getCentralPosAtDate(date).unit().scale((fromPlanet.getSphereOfInfluence()));
         // add the departureVelocity vector so that we don't crash immediately with the planet.
-        // Vector3D addRadY = fromPlanet.getCentralVelAtDate(old_date).unit().scale((fromPlanet
+        // Vector3D addRadY = fromPlanet.getCentralVelAtDate(current_date).unit().scale((fromPlanet
         // .getRadius() * 1000));
         centralPos = centralPos.add(addRadX);
         // centralPos = centralPos.add(addRadY);

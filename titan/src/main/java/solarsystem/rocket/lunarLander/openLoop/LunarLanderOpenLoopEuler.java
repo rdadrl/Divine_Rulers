@@ -292,7 +292,7 @@ public class LunarLanderOpenLoopEuler extends Projectile {
 
     @Override
     public void setCentralVel(Vector3D newCentralVel) {
-        this.old_date = new Date(old_date);
+        this.current_date = new Date(current_date);
         this.centralVel = newCentralVel;
     }
 
@@ -306,7 +306,7 @@ public class LunarLanderOpenLoopEuler extends Projectile {
     }
 
     private double differenceInSeconds(Date date) {
-        return (date.getTimeInMillis() - this.old_date.getTimeInMillis())/1000D;
+        return (date.getTimeInMillis() - this.current_date.getTimeInMillis())/1000D;
     }
 
     @Override
