@@ -46,7 +46,9 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
         }
     }
 
+    // The lander coasts along it's transfer orbit towards Titan
     private void phase1() {
+        // Introduce the second phase once target altitude is reached and lander flies by Titan tangentially
         if (getCentralPos().norm() < 1250e3 && isTangentialToTarget(this)) { // 200000 is the expected altitude at perigee
             System.out.println("Lander phase 1 ");
             this.departureVelocity = centralVel;
@@ -59,9 +61,10 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
         super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));
     }
 
+    // Halt the here simlated flight of the lander such that the closed loop landing procedure can be performed
     private void phase2() {
 
-        // Transition to phase 3
+        // Transition to phase once liftoff time is reached
         if (current_date.getTimeInMillis() > endMillis) {
             System.out.println("Lander time to leave: " + current_date.getTimeInMillis());
             centralVel = departureVelocity;
@@ -74,6 +77,7 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
         super.acceleration = new Vector3D(0,0,0);
     }
 
+    // Cost towards the rocket which is waiting in its parking orbit for the rendezvous
     private void phase3() {
         Vector3D d = centralPos;
         super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));

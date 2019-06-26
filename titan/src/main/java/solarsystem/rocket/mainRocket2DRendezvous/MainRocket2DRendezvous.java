@@ -56,9 +56,9 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
     }
 
 
+    // Coast along the entry orbit towards the point were the rocket fleis by Titan tangentially
     public void phase1() {
-        //trajectory.getTargetBody().setCentralPos(new Vector3D(0,-1*trajectory.getTargetBody().getRadius()/2,0));
-
+        // Switch to second phase once rocket flies tangentially by Titan
         if (isTangentialToTarget(this)) {
             // Bring the Rocket to it's elliptical orbit
             double muh = G* (trajectory.getCentralBodyMass() + this.mass); // https://en.wikipedia.org/wiki/Orbital_mechanics
@@ -67,7 +67,6 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
             this.centralVel = this.centralVel.unit().scale(Math.sqrt((-muh/trajectory.getSemiMajorAxis() + 2*muh/centralPos.norm()))); // Astrobook page 61 (reformulated formula)
             if (this.centralVel.norm() < priorVel.norm())  {
                 int i = 0;
-
             }
             this.trajectory.setPeriod(Math.round(2*Math.PI*Math.sqrt(Math.pow(this.trajectory.getSemiMajorAxis(), 3)/muh))); // Astrobook p.37 (reformed)
             this.departureTime = new Date(current_date);
@@ -92,7 +91,9 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         }
     }
 
+    // Coast along the parking orbit for the course of one period
     private void phase2() {
+        // Switch to phase 3 when rocket has to leave
         if (current_date.after(departureTime)) {
             System.out.println("Rocket time to leave " + current_date.getTimeInMillis());
             trajectory.setPeriod(0); trajectory.setSemiMajorAxis(0);
@@ -104,6 +105,7 @@ public class MainRocket2DRendezvous extends SpaceCraft implements ODEsolvable {
         }
     }
 
+    // Coast along the exit orbit
     private void phase3() {
 
     }
