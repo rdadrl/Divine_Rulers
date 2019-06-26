@@ -1,0 +1,75 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 10.07.2016 00:30:52
+
+newmtl 01___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\3dsMax\_IMAGE ~ MAP\all max images\metal\chrome4.jpg
+	map_Kd D:\3dsMax\_IMAGE ~ MAP\all max images\metal\chrome4.jpg
+
+newmtl 02___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\3dsMax\_IMAGE ~ MAP\all max images\metal\metal (37).jpg
+	map_Kd D:\3dsMax\_IMAGE ~ MAP\all max images\metal\metal (37).jpg
+	map_refl Map__6_Raytrace.tga
+
+newmtl 03___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\3dsMax\_IMAGE ~ MAP\all max images\metal\Aluminm5.jpg
+	map_Kd D:\3dsMax\_IMAGE ~ MAP\all max images\metal\Aluminm5.jpg
+	map_refl Map__7_Raytrace.tga
+
+newmtl 12___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\3dsMax\_IMAGE ~ MAP\HDRI\06000 HDRi-020-krpano.jpg
+	map_Kd D:\3dsMax\_IMAGE ~ MAP\HDRI\06000 HDRi-020-krpano.jpg
+
+newmtl 07___Default
+	Ns 42.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.7020 0.7020 0.7020
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\3dsMax\_IMAGE ~ MAP\all max images\metal\MERALIG1.JPG
+	map_Kd D:\3dsMax\_IMAGE ~ MAP\all max images\metal\MERALIG1.JPG
+	map_refl Map__8_Raytrace.tga

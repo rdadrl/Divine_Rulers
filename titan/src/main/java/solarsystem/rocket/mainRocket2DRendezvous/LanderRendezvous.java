@@ -47,7 +47,7 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
     }
 
     private void phase1() {
-        if (getCentralPos().norm() < 1050e3 && isTangentialToTarget(this)) { // 200000 is the expected altitude at perigee
+        if (getCentralPos().norm() < 1250e3 && isTangentialToTarget(this)) { // 200000 is the expected altitude at perigee
             System.out.println("Lander phase 1 ");
             this.departureVelocity = centralVel;
             centralVel = new Vector3D(0,0,0);
