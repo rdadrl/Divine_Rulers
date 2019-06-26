@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.*;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -31,7 +32,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class TitanFocus3D extends Application {
+public class EarthFocus3D extends Application {
 
     // yipping variables
     private Scene mainScene;
@@ -51,8 +52,7 @@ public class TitanFocus3D extends Application {
     private double verletUpdateUnitInMs = 10;
     private int verletUpdateUnitMultiplier = 1;
     private int counter;
-    private boolean pauseSet;
-    // InterPlanetaryRocketToTitan vars
+    // InterPlanetaryRocket vars
     private SpaceCraft spaceCraftObj;
     private ArrayList<SpaceCraft> obj;
 
@@ -82,7 +82,7 @@ public class TitanFocus3D extends Application {
     Group trail = new Group();
     PhongMaterial trailMaterial;
 
-    //Something is VEEERY wrong with titan, or InterPlanetaryRocketToTitan. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
+    //Something is VEEERY wrong with titan, or InterPlanetaryRocket. Not sure. for the sake of simplicity, I'll switch back to 2D for this phase.
     @Override
     public void start(Stage landingStage) throws Exception {
         //add any fx componenents to this root group.
@@ -106,13 +106,13 @@ public class TitanFocus3D extends Application {
         light.setColor(Color.LIGHTGOLDENRODYELLOW);
 
         //Titan & Lunarlander:
-        Box rocket = new Box(20, 100, 20);
+        Box rocket = new Box(200, 1000, 200);
         rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
         Rotate rotate = new Rotate();
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
 
-        //InterPlanetaryRocketToTitan.setTranslateX(spaceCraftObj.getCentralPos().getX());
+        //InterPlanetaryRocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
         rocket.setTranslateX(20);
         rocket.setTranslateY(-40);
 
@@ -124,14 +124,15 @@ public class TitanFocus3D extends Application {
         landingPad.setMaterial(new PhongMaterial(Color.DARKBLUE));
 
 
-            Sphere titan = new Sphere(3000);
-        titan.setTranslateY(3000);
-        PhongMaterial titanMaterial = new PhongMaterial();
-        titanMaterial.setDiffuseMap(new Image("textures/moonmap.jpg"));
-        titanMaterial.setBumpMap(new Image("textures/moonbump.jpg"));
-        titan.setMaterial(titanMaterial);
+        Sphere earth = new Sphere(6371);
+        earth.setTranslateY(6500);
+        PhongMaterial earthMaterial = new PhongMaterial();
+        earthMaterial.setDiffuseMap(new Image("textures/earthmap.jpg"));
+        earthMaterial.setBumpMap(new Image("textures/earthbump.jpg"));
+        earthMaterial.setSpecularMap(new Image("textures/earthspecular.jpg"));
+        earth.setMaterial(earthMaterial);
 
-        root.getChildren().addAll(titan, rocket, light, landingDot, trail);
+        root.getChildren().addAll(earth, rocket, light, landingDot, trail);
         //Camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFieldOfView(35);
@@ -153,7 +154,18 @@ public class TitanFocus3D extends Application {
         cursorView.setFitWidth(scnH / 10);
         cursorView.toFront();*/
 
-        globalRoot.getChildren().addAll(subScene);
+        //Pause/Play button
+        Hyperlink pausePlayButton = new Hyperlink("❚❚");
+        pausePlayButton.setTextFill(Color.WHITE);
+        pausePlayButton.setBorder(null);
+        pausePlayButton.setOnAction(e -> {
+            pauseStatus = !pauseStatus;
+            if (pauseStatus) pausePlayButton.setText("▶");
+            else pausePlayButton.setText("❚❚");
+        });
+        globalRoot.setAlignment(pausePlayButton, Pos.TOP_RIGHT);
+
+        globalRoot.getChildren().addAll(subScene, pausePlayButton);
 
         //Anchor the elems
         //globalRoot.setAlignment(cursorView, Pos.CENTER);
@@ -171,31 +183,31 @@ public class TitanFocus3D extends Application {
             }
 
             public void run() {
-                while(!pauseStatus) {
-                    if(spaceCraftObj instanceof Lunarlander) {
-                        Lunarlander lunarlander = (Lunarlander) spaceCraftObj;
-                        if (lunarlander.getLanded()) { //if landed
-                            System.out.println("Thanks for flying with Paredis Spacelines.");
-                            pauseStatus = true;
-                            oneMoreRun = true;
-                        }
-                        else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
-                            vVref.updateLocation(10, TimeUnit.MILLISECONDS);
-                            lastUpdate = System.nanoTime();
-                        }
-                    }else{
-                        if (spaceCraftObj.phaseFinished()) { //if landed
-                            System.out.println("Thanks for flying with Paredis Spacelines.");
-                            pauseStatus = true;
-                            oneMoreRun = true;
-                        }
-                        else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
-                            vVref.updateLocation(10, TimeUnit.MILLISECONDS);
-                            lastUpdate = System.nanoTime();
+                while (true) {
+                    if (!pauseStatus) {
+                        if (spaceCraftObj instanceof Lunarlander) {
+                            Lunarlander lunarlander = (Lunarlander) spaceCraftObj;
+                            if (lunarlander.getLanded()) { //if landed
+                                System.out.println("Thanks for flying with Paredis Spacelines.");
+                                pauseStatus = true;
+                                oneMoreRun = true;
+                            } else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
+                                vVref.updateLocation(10, TimeUnit.MILLISECONDS);
+                                lastUpdate = System.nanoTime();
+                            }
+                        } else {
+                            if (spaceCraftObj.phaseFinished()) { //if landed
+                                System.out.println("Thanks for flying with Paredis Spacelines.");
+                                pauseStatus = true;
+                                oneMoreRun = true;
+                            } else if (System.nanoTime() - lastUpdate >= verletUpdateUnitInMs * 1000000) {
+                                vVref.updateLocation(10, TimeUnit.MILLISECONDS);
+                                lastUpdate = System.nanoTime();
+                            }
+
                         }
 
                     }
-
                 }
             }
         }
@@ -214,7 +226,7 @@ public class TitanFocus3D extends Application {
                 if (key == KeyCode.DOWN) goSouth = true;
                 if (key == KeyCode.RIGHT) goEast = true;
                 if (key == KeyCode.LEFT) goWest = true;
-                if (key == KeyCode.SPACE) goUp = true;
+                if (key == KeyCode.CONTROL) goUp = true;
                 if (key == KeyCode.SHIFT) goDown = true;
 
                 if (key == KeyCode.R) {
@@ -250,7 +262,7 @@ public class TitanFocus3D extends Application {
                 if (key == KeyCode.DOWN) goSouth = false;
                 if (key == KeyCode.RIGHT) goEast = false;
                 if (key == KeyCode.LEFT) goWest = false;
-                if (key == KeyCode.SPACE) goUp = false;
+                if (key == KeyCode.CONTROL) goUp = false;
                 if (key == KeyCode.SHIFT) goDown = false;
                 if (key == KeyCode.F10) {
                     landingStage.setFullScreen(!landingStage.isFullScreen());
@@ -294,7 +306,7 @@ public class TitanFocus3D extends Application {
                 if ((oneMoreRun) || (!pauseStatus && differancePerAnimationFrameInMS >= 1000 / MAX_ANIMATION_FPS)) {
                     rocket.setTranslateX(spaceCraftObj.getCentralPos().getX());
                     if(spaceCraftObj instanceof Lunarlander) rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY()/100);
-                    else rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY());
+                    else rocket.setTranslateY(-spaceCraftObj.getCentralPos().getY()/100);
                     rocket.setTranslateY(rocket.getTranslateY() - rocket.getHeight() / 2D);
                     rocket.setTranslateZ(0);
                     rotate.setAngle(-Math.toDegrees(spaceCraftObj.getCentralPos().getZ()));
@@ -304,9 +316,9 @@ public class TitanFocus3D extends Application {
 //                            ", Z: " + landingDot.getTranslateZ()
 //                    );
 //                    if (counter % 10 == 0 || oneMoreRun) System.out.println("RK " +
-//                            "X: " + InterPlanetaryRocketToTitan.getTranslateX() +
-//                            ", Y: " + InterPlanetaryRocketToTitan.getTranslateY() +
-//                            ", Z: " + InterPlanetaryRocketToTitan.getTranslateZ()
+//                            "X: " + InterPlanetaryRocket.getTranslateX() +
+//                            ", Y: " + InterPlanetaryRocket.getTranslateY() +
+//                            ", Z: " + InterPlanetaryRocket.getTranslateZ()
 //                    );
                     if (DEBUG) debugText.setText(constructDebugText());
                     currentFPS = (int) (1000 / differancePerAnimationFrameInMS);
@@ -376,7 +388,7 @@ public class TitanFocus3D extends Application {
         landingStage.show();
     }
 
-    public TitanFocus3D(SpaceCraft spaceCraftObj, Date date) throws Exception {
+    public EarthFocus3D(SpaceCraft spaceCraftObj, Date date) throws Exception {
         this.date = date;
         this.spaceCraftObj = spaceCraftObj;
         startTime = date.getTimeInMillis();

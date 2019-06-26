@@ -5,11 +5,13 @@ import solarsystem.Planet;
 import utils.vector.Vector3D;
 
 /**
- * A projectile class which is used as a building block for all projectiles i.e., InterPlanetaryRocket and
+ * A projectile class which is used as a building block for all projectiles i.e., InterPlanetaryRocketToTitan and
  * cannonballs.
  *
  */
 public abstract class Projectile extends CelestialObject {
+    protected boolean phaseFinished;
+
     public static double minDistanceAll = Double.MAX_VALUE;
     public static double minDistanceAllCurrentDT = Double.MAX_VALUE;
     private double closestDistanceThisProjectile = Double.MAX_VALUE;
@@ -91,15 +93,9 @@ public abstract class Projectile extends CelestialObject {
     public void setCentralPos(Vector3D newCentralPos) {
         oldCentralPos = centralPos;
         centralPos = newCentralPos;
-        if(!crashed){
-            // if the projectile hasn't crashed yet we will update the location as normal
-            super.setCentralPos(newCentralPos);
-            if(toPlanet != null) checkClosestDistance();
-        }else{
-            // if the projectile crashe the location of the projectile whould be that of the crashed
-            // planet.
-            super.setCentralPos(crashedPlanet.getCentralPos());
-        }
+        // if the projectile hasn't crashed yet we will update the location as normal
+        super.setCentralPos(newCentralPos);
+        if(toPlanet != null) checkClosestDistance();
     }
 
 
@@ -205,5 +201,9 @@ public abstract class Projectile extends CelestialObject {
         minDistanceAll = Double.MAX_VALUE;
         minDistanceAllCurrentDT = Double.MAX_VALUE;
 
+    }
+
+    public boolean phaseFinished(){
+        return phaseFinished;
     }
 }

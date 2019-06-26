@@ -3,11 +3,15 @@ package solarsysfGUI.LanderRendevous;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import physics.RungeKutta4;
-import solarsystem.SolarSystem;
 import solarsystem.Trajectory;
+import solarsystem.rocket.SpaceCraft;
+import solarsystem.rocket.mainRocket2DRendezvous.LanderRendezvous;
 import solarsystem.rocket.mainRocket2DRendezvous.MainRocket2DRendezvous;
+import sun.jvm.hotspot.memory.Space;
 import utils.Date;
 import utils.vector.Vector3D;
+
+import java.util.ArrayList;
 
 public class LandingPhase3DLauncherRendezvous extends Application {
     @Override
@@ -20,12 +24,15 @@ public class LandingPhase3DLauncherRendezvous extends Application {
             Vector3D initialPos = new Vector3D(-0.7071, 0.7071,0);
             initialPos = initialPos.scale(1.3*sphereOfInfluence);
             //initialPos = initialPos.add((new Vector3D(0,-1,0)).scale(solarSystem.getPlanets().getTitan().getRadius()*1e03));
-            Vector3D initialVel = new Vector3D(0,-1,0).scale(5e02);
+            Vector3D initialVel = new Vector3D(0,-1,0).scale(6e02);
             Trajectory trajectory = new Trajectory(titanMass, sphereOfInfluence, 0, 0);
+            LanderRendezvous lander = new LanderRendezvous(initialPos, initialVel, date, trajectory);
 
-            MainRocket2DRendezvous rocket = new MainRocket2DRendezvous(100000000, initialPos,
-                    initialVel, date, trajectory);
-            LandingPhase3dRendevous landingPhaseApp = new LandingPhase3dRendevous(rocket, date);
+            MainRocket2DRendezvous rocket = new MainRocket2DRendezvous(100000000.0, initialPos,
+                    initialVel, date, trajectory, lander);
+            ArrayList<SpaceCraft> spaceCrafts = new ArrayList<>();
+            spaceCrafts.add(rocket); spaceCrafts.add(lander);
+            LandingPhase3dRendevous landingPhaseApp = new LandingPhase3dRendevous(spaceCrafts, date);
             landingPhaseApp.setODEsolver(new RungeKutta4());
             landingPhaseApp.start(new Stage()); //start with a empty stage (or you may go ahead and give some specs)
         } catch (Exception e) {

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
- * Rocket_temp lander closed loop. works in a 2D environment where a InterPlanetaryRocket tries to land on Titan.
+ * Rocket_temp lander closed loop. works in a 2D environment where a InterPlanetaryRocketToTitan tries to land on Titan.
  * Forces are still calculated as a 3D vector as we use the z component for the calculation of
  * the rotation vector.
  *
@@ -67,30 +67,11 @@ public class LunarlanderLanderClosedLoop_advancedWind_good extends Lunarlander {
         this.centralVel = centralVel;
         this.stochasticWind = stochasticWind;
         this.meanWindSpeed = meanWindSpeed;
-//        pidYdiff_far = new PIDcontroller(-12.5, 0, -2350);
-//        pidYdiff_close = new PIDcontroller(-26.0, 0, -900);
-//        pidXdiff_far = new PIDcontroller(0.002, 0, 0.06);
-//        pidXdiff_close = new PIDcontroller(0.007, 0.0000015, 0.06);
-//        pidRot_far = new PIDcontroller(1000, 0,5000);
-//        pidRot_close = new PIDcontroller(2500, 0,8500);
 
         pidYdiff_far = new PIDcontroller(-11.5, 0, -2350);
-
-        //pidYdiff_far = new PIDcontroller(-12.5, 0, -1792);
         pidYdiff_close = new PIDcontroller(-26.0, 0, -950);
         pidXdiff_far = new PIDcontroller(0.004, 0, 0.08);
-
         pidXdiff_far_MT = new PIDcontroller(-11.0, 0, -2350);
-
-//        pidXdiff_close = new PIDcontroller(0.001, 0.00001, 0.);
-//        pidXdiff_close = new PIDcontroller(0.006,  0, 0.24);
-//        pidXdiff_close = new PIDcontroller(0.002, 0.000005, 0.1);
-//        pidXdiff_close = new PIDcontroller(0.0008, 0.00001, 0.2);
-
-
-
-
-
         pidRot_far = new PIDcontroller(1000, 0,5000);
 
         max_pidRot = new PIDcontroller(500, 0,8000);

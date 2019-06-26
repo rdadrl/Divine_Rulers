@@ -2,7 +2,6 @@ package solarsystem.rocket.mainRocket2DRendezvous;
 
 import physics.ODEsolvable;
 import solarsystem.CelestialObject;
-import solarsystem.Planet;
 import solarsystem.rocket.SpaceCraft;
 import solarsystem.Trajectory;
 import utils.Date;
@@ -15,7 +14,8 @@ import static utils.MathUtil.G;
 public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
     int phase = 1;
     Vector3D departureVelocity;
-    Date departureTime;
+    long endMillis;
+    Trajectory trajectory;
 
     @Override
     public void initializeCartesianCoordinates(Date date) { }
@@ -44,27 +44,42 @@ public class LanderRendezvous  extends SpaceCraft implements ODEsolvable {
             case 2: phase2(); break;
             case 3: phase3(); break;
         }
+    }
+
+    private void phase1() {
+        if (getCentralPos().norm() < 1050e3 && isTangentialToTarget(this)) { // 200000 is the expected altitude at perigee
+            System.out.println("Lander phase 1 ");
+            this.departureVelocity = centralVel;
+            centralVel = new Vector3D(0,0,0);
+            super.acceleration = new Vector3D(0,0,0);
+            phase = 2;
+            return;
+        }
         Vector3D d = centralPos;
         super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));
     }
 
-    private void phase1() {
-        if (getCentralPos().norm() < 250000 && isTangentialToTarget(this)) { // 200000 is the expected altitude at perigee
-            centralVel = new Vector3D(0,0,0);
-            phase = 2;
-        }
-    }
-
     private void phase2() {
-        if (current_date.after(departureTime)) {
+
+        // Transition to phase 3
+        if (current_date.getTimeInMillis() > endMillis) {
+            System.out.println("Lander time to leave: " + current_date.getTimeInMillis());
             centralVel = departureVelocity;
+            Vector3D d = centralPos;
+            super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));
             phase = 3;
+            return;
         }
+
+        super.acceleration = new Vector3D(0,0,0);
     }
 
     private void phase3() {
-
+        Vector3D d = centralPos;
+        super.acceleration = d.scale(-G* trajectory.getCentralBodyMass()/Math.pow(d.norm(),3));
     }
 
-    public void setDepartureTime(Date date) { this.departureTime = departureTime; }
+    public void setTrajectory(Trajectory trajectory) { this.trajectory = trajectory; }
+
+    public void setDepartureTimeInMillis(long millis) { this.endMillis = millis; }
 }

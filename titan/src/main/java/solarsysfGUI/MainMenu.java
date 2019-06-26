@@ -134,7 +134,7 @@ public class MainMenu extends Application {
         {
             public void handle(long currentNanoTime)
             {
-                //rotate the InterPlanetaryRocket
+                //rotate the InterPlanetaryRocketToTitan
                 rotate.setAngle(rotate.getAngle() + 0.5);
             }
         }.start();
