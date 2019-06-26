@@ -19,7 +19,6 @@ import java.util.HashSet;
  *
  */
 public class InterPlanetaryRocketToEarth extends Falcon9Imaginary implements ODEsolvable {
-    private Vector3D velSetPoint;
     private Vector3D startingPos;
     private Vector3D destinationPos;
 
@@ -28,7 +27,7 @@ public class InterPlanetaryRocketToEarth extends Falcon9Imaginary implements ODE
     private BigDecimal time_increment;
     private int counter; //counter
 
-    private boolean impulseManouvre;
+
     private HashSet<Integer> impulseTimes;;
     private boolean inSphereEarth;
 
@@ -40,16 +39,19 @@ public class InterPlanetaryRocketToEarth extends Falcon9Imaginary implements ODE
     private Planet Sun;
     private Planet Earth;
 
+    private Vector3D velSetPoint;
+    private boolean impulseManouvre;
+
     private PIDcontroller x_control;
     private PIDcontroller y_control;
     private PIDcontroller z_control;
 
     private final double REFERENCE_MASS = 546300.0; // mass on which the P controller was tuned.
 
-    private double netForce = 0;
-
     double P = 15000;
     double I = 0;
+
+    private double netForce = 0;
 
 
 
@@ -103,10 +105,10 @@ public class InterPlanetaryRocketToEarth extends Falcon9Imaginary implements ODE
 
         Ft = 0;
         // Get current gravity
-        Vector3D GravitationalForces = gravitationalForces(this, objectsInSpace);
+        Vector3D gravitationalForces = gravitationalForces(this, objectsInSpace);
 
         if(dt == 0) {
-            acceleration = GravitationalForces.scale(1D/mass);
+            acceleration = gravitationalForces.scale(1D/mass);
             return;
         }
 
@@ -115,11 +117,11 @@ public class InterPlanetaryRocketToEarth extends Falcon9Imaginary implements ODE
 //            centralVel = velSetPoint;
         }
 
-        Vector3D thrust_Force = new Vector3D();
+        Vector3D thrustForce = new Vector3D();
 
         if(impulseManouvre) {
-            thrust_Force = impulseManouvre(GravitationalForces);
-            Ft = thrust_Force.length();
+            thrustForce = impulseManouvre(gravitationalForces);
+            Ft = thrustForce.length();
             calculateMass();
             netForce = netForce + Ft;
         }
@@ -129,7 +131,7 @@ public class InterPlanetaryRocketToEarth extends Falcon9Imaginary implements ODE
             System.out.println("NF: " + netForce);
         }
 
-        acceleration = GravitationalForces.add(thrust_Force).scale(1D/mass);
+        acceleration = gravitationalForces.add(thrustForce).scale(1D/mass);
         totTime = totTime.add(time_increment);
         counter++;
     }
