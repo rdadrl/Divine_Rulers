@@ -61,7 +61,7 @@ public class TitanFocus3D extends Application {
     // InterPlanetaryRocketToTitan vars
     private SpaceCraft spaceCraftObj;
     private ArrayList<SpaceCraft> obj;
-    private static final String FILE_LOC = "src/main/resources/rocketObj/scifi_cartoon_rocket.obj";
+    private static final String FILE_LOC = "src/main/resources/Lander.obj";
     //HID Event flags
     private final int CAMERA_MOVEMENT_STEP_SIZE = 10;
     private final int CAMERA_MAX_SPEED = 100;
@@ -109,10 +109,10 @@ public class TitanFocus3D extends Application {
         }
 
         AmbientLight light = new AmbientLight();
-        light.setColor(Color.LIGHTGOLDENRODYELLOW);
+        light.setColor(Color.WHITE);
 
         //Titan & Lunarlander:
-        int rocketScale = 8;
+        int rocketScale = 28;
         Group rocket = loadRocket();
         rocket.setScaleX(rocketScale);
         rocket.setScaleY(rocketScale);
@@ -406,10 +406,18 @@ public class TitanFocus3D extends Application {
         System.out.println(filename);
         objImporter.read(filename);
         final Node[] tdsMesh = (Node[]) objImporter.getImport();
+        /*Map<String, PhongMaterial> mapTexs = objImporter.getNamedMaterials();
+        Iterator<String> it = mapTexs.keySet().iterator();
+        boolean differCol = true;
+        while (it.hasNext()) {
+            String key = it.next();
+            mapTexs.get(key).setBumpMap(new Image("src/main/resources/Lander.obj"));
+        }*/
         objImporter.close();
 
+
         Group rocketGroup = new Group();
-        for (int i = 1; i < tdsMesh.length; i++) {
+        for (int i = 0; i < tdsMesh.length; i++) {
             rocketGroup.getChildren().add(tdsMesh[i]);
         }
         return rocketGroup;
