@@ -20,8 +20,8 @@ public class JSONcompare {
         JSONObject horizons;
         JSONObject keplers;
 
-        String hs = new String(Files.readAllBytes(Paths.get("temp_titan/horizons_output.json")), StandardCharsets.UTF_8);
-        String ks = new String(Files.readAllBytes(Paths.get("temp_titan/last_output.json")), StandardCharsets.UTF_8);
+        String hs = new String(Files.readAllBytes(Paths.get("src/main/resources/temp_titan/horizons_output.json")), StandardCharsets.UTF_8);
+        String ks = new String(Files.readAllBytes(Paths.get("src/main/resources/temp_titan/last_output.json")), StandardCharsets.UTF_8);
 
         horizons = new JSONObject(hs);
         keplers = new JSONObject(ks);
