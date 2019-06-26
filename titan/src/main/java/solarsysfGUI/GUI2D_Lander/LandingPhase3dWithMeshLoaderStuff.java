@@ -369,6 +369,40 @@ public class LandingPhase3dWithMeshLoaderStuff extends Application {
         ODEsolver.initialize(obj, date);
     }
 
+    public Group loadSmellyObjectRocket() {
+        File file = new File(FILE_LOC);
+        ObjModelImporter objImporter = new ObjModelImporter();
+        TdsModelImporter tdsImporter = new TdsModelImporter();
+        String filename = "";
+        try {
+            filename = file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(filename);
+        objImporter.read(filename);
+        final Node[] tdsMesh = (Node[]) objImporter.getImport();
+
+        Map<String, PhongMaterial> mapTexs = objImporter.getNamedMaterials();
+        Iterator<String> it = mapTexs.keySet().iterator();
+        boolean differCol = true;
+        while (it.hasNext()) {
+            String key = it.next();
+            if (differCol) mapTexs.get(key).setDiffuseColor(Color.RED);
+            else mapTexs.get(key).setDiffuseColor(Color.WHITE);
+
+            differCol = !differCol;
+        }
+
+        objImporter.close();
+
+        Group rocketGroup = new Group();
+        for (int i = 1; i < tdsMesh.length; i++) {
+            rocketGroup.getChildren().add(tdsMesh[i]);
+        }
+        return rocketGroup;
+    }
+
     public Group loadRocket() {
 
         File file = new File(FILE_LOC);

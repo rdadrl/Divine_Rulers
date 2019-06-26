@@ -1,5 +1,7 @@
 package solarsysfGUI.LanderRendevous;
 
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import com.interactivemesh.jfx.importer.tds.TdsModelImporter;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -25,8 +27,12 @@ import physics.VerletVelocity;
 import solarsystem.rocket.SpaceCraft;
 import utils.Date;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class LandingPhase3dRendevous extends Application {
@@ -99,8 +105,7 @@ public class LandingPhase3dRendevous extends Application {
         light.setColor(Color.LIGHTGOLDENRODYELLOW);
 
         //Titan & SpaceCraft:
-        Box rocket = new Box(200, 200, 200);
-        rocket.setMaterial(new PhongMaterial(Color.BLUEVIOLET));
+        Group rocket = loadSmellyObjectRocket("src/main/resources/rocketObj/scifi_cartoon_rocket.obj");
         Rotate rotate = new Rotate();
         rotate.setAxis(new Point3D(0,0,90));
         rocket.getTransforms().add(rotate);
@@ -110,8 +115,7 @@ public class LandingPhase3dRendevous extends Application {
         rocket.setTranslateY(-40);
 
 
-        Box rocket2 = new Box(100, 100, 100);
-        rocket2.setMaterial(new PhongMaterial(Color.RED));
+        Group rocket2 = loadRocket("src/main/resources/Lander.obj");
         Rotate rotate2 = new Rotate();
         rotate2.setAxis(new Point3D(0,0,90));
         rocket2.getTransforms().add(rotate2);
@@ -236,22 +240,23 @@ public class LandingPhase3dRendevous extends Application {
                 }
                 if (key == KeyCode.MINUS){
 
-                    rocket.setHeight(rocket.getHeight() * 0.5);
-                    rocket.setWidth(rocket.getWidth() * 0.5);
+                    rocket.setScaleX(rocket.getScaleX() * 0.5);
+                    rocket.setScaleY(rocket.getScaleY() * 0.5);
+                    rocket.setScaleZ(rocket.getScaleZ() * 0.5);
 
-                    rocket2.setHeight(rocket2.getHeight() * 0.5);
-                    rocket2.setWidth(rocket2.getWidth() * 0.5);
+                    rocket2.setScaleX(rocket.getScaleX() * 0.5);
+                    rocket2.setScaleY(rocket.getScaleY() * 0.5);
+                    rocket2.setScaleZ(rocket.getScaleZ() * 0.5);
 
                 }
                 if (key == KeyCode.EQUALS){
-                    rocket.setHeight(rocket.getHeight() * 1.25);
-                    rocket.setWidth(rocket.getWidth() * 1.25);
+                    rocket.setScaleX(rocket.getScaleX() * 1.25);
+                    rocket.setScaleY(rocket.getScaleY() * 1.25);
+                    rocket.setScaleZ(rocket.getScaleZ() * 1.25);
 
-                    rocket2.setHeight(rocket2.getHeight() * 1.25);
-                    rocket2.setWidth(rocket2.getWidth() * 1.25);
-
-
-
+                    rocket2.setScaleX(rocket.getScaleX() * 1.25);
+                    rocket2.setScaleY(rocket.getScaleY() * 1.25);
+                    rocket2.setScaleZ(rocket.getScaleZ() * 1.25);
                 }
             }
         });
@@ -389,6 +394,69 @@ public class LandingPhase3dRendevous extends Application {
     public void setODEsolver(physics.ODEsolver ODEsolver) {
         this.ODEsolver = ODEsolver;
         ODEsolver.initialize(obj, date);
+    }
+
+    public Group loadRocket(String location) {
+        File file = new File(location);
+        ObjModelImporter objImporter = new ObjModelImporter();
+        String filename = "";
+        try {
+            filename = file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(filename);
+        objImporter.read(filename);
+        final Node[] tdsMesh = (Node[]) objImporter.getImport();
+        /*Map<String, PhongMaterial> mapTexs = objImporter.getNamedMaterials();
+        Iterator<String> it = mapTexs.keySet().iterator();
+        boolean differCol = true;
+        while (it.hasNext()) {
+            String key = it.next();
+            mapTexs.get(key).setBumpMap(new Image("src/main/resources/Lander.obj"));
+        }*/
+        objImporter.close();
+
+
+        Group rocketGroup = new Group();
+        for (int i = 0; i < tdsMesh.length; i++) {
+            rocketGroup.getChildren().add(tdsMesh[i]);
+        }
+        return rocketGroup;
+    }
+
+    public Group loadSmellyObjectRocket(String location) {
+        File file = new File(location);
+        ObjModelImporter objImporter = new ObjModelImporter();
+        TdsModelImporter tdsImporter = new TdsModelImporter();
+        String filename = "";
+        try {
+            filename = file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(filename);
+        objImporter.read(filename);
+        final Node[] tdsMesh = (Node[]) objImporter.getImport();
+
+        Map<String, PhongMaterial> mapTexs = objImporter.getNamedMaterials();
+        Iterator<String> it = mapTexs.keySet().iterator();
+        boolean differCol = true;
+        while (it.hasNext()) {
+            String key = it.next();
+            if (differCol) mapTexs.get(key).setDiffuseColor(Color.RED);
+            else mapTexs.get(key).setDiffuseColor(Color.WHITE);
+
+            differCol = !differCol;
+        }
+
+        objImporter.close();
+
+        Group rocketGroup = new Group();
+        for (int i = 1; i < tdsMesh.length; i++) {
+            rocketGroup.getChildren().add(tdsMesh[i]);
+        }
+        return rocketGroup;
     }
 
     public String constructDebugText () {
